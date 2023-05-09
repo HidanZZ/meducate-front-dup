@@ -1,11 +1,12 @@
 // ** MUI Imports
 
 import Grid from '@mui/material/Grid'
-import { JSXElementConstructor, ReactElement, useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { Avatar, Badge, Box, useTheme } from '@mui/material'
 import { motion, useAnimation } from 'framer-motion'
 import Card from 'src/views/pages/home/Card'
 import { useRouter } from 'next/router'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 const Home = () => {
   const controls = useAnimation()
@@ -120,6 +121,6 @@ const Home = () => {
   )
 }
 
-Home.getLayout = (page: ReactElement<any, string | JSXElementConstructor<any>>) => page
+Home.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
 export default Home

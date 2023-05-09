@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactElement, useEffect ,JSXElementConstructor} from 'react'
+import { useEffect , ReactNode} from 'react'
 
 // ** Next Imports
 import { useRouter } from 'next/router'
@@ -9,6 +9,7 @@ import Spinner from 'src/@core/components/spinner'
 
 // ** Hook Imports
 import { useAuth } from 'src/hooks/useAuth'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 /**
  *  Set Home URL based on User Roles
@@ -40,7 +41,7 @@ const Home = () => {
   return <Spinner />
 }
 
-Home.getLayout = (page: ReactElement<any, string | JSXElementConstructor<any>>) => page
+Home.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
 
 export default Home
