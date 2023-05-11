@@ -3,6 +3,8 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import CardMedia from '@mui/material/CardMedia'
 import ReactPlayer from 'react-player'
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
 
 const Stage = () => {
 
@@ -17,24 +19,45 @@ const Stage = () => {
 
   return (
     <Box sx={{  flexDirection: 'column'}}>
-        <Card sx={{ position: 'relative', alignItems: 'center', justifyContent: 'center', margin: 5, padding: '0 10' }}>
+                <Typography variant='h4' sx={{ whiteSpace: 'nowrap', color: 'text.primary', textAlign: 'center', m:6 }}>
+                    {video.title}
+                </Typography>
+        <Card sx={{ position: 'relative', margin: '0 auto', padding: '0 10', width: '70%' }}>
             <CardMedia sx={{ aspectRatio: '16/9' }}>
                 <ReactPlayer url={video.link} width="100%" height="100%" />
             </CardMedia>
         </Card>
-        <Card sx={{ position: 'relative', alignItems : 'center', justifyContent : 'center', margin : 5, padding : '0 10' }}>
             <Box sx={{ gap: 2, m:8.75, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center'  }}>
-                <Typography variant='h5' sx={{ whiteSpace: 'nowrap', color: 'text.primary' }}>
-                    {video.title}
-                </Typography>
-                <Typography variant='h6' sx={{ whiteSpace: 'nowrap', color: 'text.primary' }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}
+                > 
+                    <Avatar
+                    alt='Robert Meyer'
+                    src='/images/avatars/1.png'
+                    sx={{
+                        width: 75,
+                        height: 75,
+                        border: theme => `0.25rem solid ${theme.palette.common.white}`
+                    }}    
+                    />
+                    <Typography variant='h6' sx={{ whiteSpace: 'nowrap', color: 'text.primary',margin:5 }}>
                     {video.author}
                 </Typography>
+                </Box> 
+                
                 <Typography variant='body1' sx={{ whiteSpace: 'wrap', color: 'text.primary' }}>
                     {video.description}
                 </Typography>
             </Box>
-        </Card>
+        
+            
+        
     </Box>
 
   )
