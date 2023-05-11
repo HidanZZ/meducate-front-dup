@@ -8,7 +8,7 @@ import CardContent from '@mui/material/CardContent'
 import AvatarGroup from '@mui/material/AvatarGroup'
 
 
-const CardNavigationCenter = () => {
+const EventCard = () => {
 
   return (
     <Card sx={{ position: 'relative', alignItems : 'center', justifyContent : 'center', margin : '0 auto', padding : '0 10' }}>
@@ -90,4 +90,4 @@ const CardNavigationCenter = () => {
   )
 }
 
-export default CardNavigationCenter
+export default EventCard
