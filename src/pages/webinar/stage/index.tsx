@@ -10,7 +10,7 @@ const Stage = () => {
 
     const video = {
         link : 'https://www.youtube.com/watch?v=RK1RRVR9A2g',
-        title : 'Webinar 1',
+        title : 'Beauty of nature',
         description : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, diam id aliquam ultrices, nunc nisl ultrices nunc, nec ultricies nisl nisl nec nisl. Sed euismod, diam id aliquam ultrices, nunc nisl ultrices nunc, nec ultricies nisl nisl nec nisl. Sed euismod, diam id aliquam ultrices, nunc nisl ultrices nunc, nec ultricies nisl nisl nec nisl. Sed euismod, diam id aliquam ultrices, nunc nisl ultrices nunc, nec ultricies nisl nisl nec nisl. Sed euismod, diam id aliquam ultrices, nunc nisl ultrices nunc, nec ultricies nisl nisl nec nisl. Sed euismod, diam id aliquam ultrices, nunc nisl ultrices nunc, nec ultricies nisl nisl nec nisl.',
         author : 'John Doe',
         date : '2021-10-10',
@@ -19,10 +19,10 @@ const Stage = () => {
 
   return (
     <Box sx={{  flexDirection: 'column'}}>
-                <Typography variant='h4' sx={{ whiteSpace: 'nowrap', color: 'text.primary', textAlign: 'center', m:6 }}>
+                <Typography variant='h3' sx={{ whiteSpace: 'nowrap', color: 'text.primary', textAlign: 'center', m:6 }}>
                     {video.title}
                 </Typography>
-        <Card sx={{ position: 'relative', margin: '0 auto', padding: '0 10', width: '70%' }}>
+        <Card sx={{ position: 'relative', margin: '0 auto', padding: '0 10', width: '70%', my:10  }}>
             <CardMedia sx={{ aspectRatio: '16/9' }}>
                 <ReactPlayer url={video.link} width="100%" height="100%" />
             </CardMedia>
@@ -41,8 +41,8 @@ const Stage = () => {
                     alt='Robert Meyer'
                     src='/images/avatars/1.png'
                     sx={{
-                        width: 75,
-                        height: 75,
+                        width: 50,
+                        height: 50,
                         border: theme => `0.25rem solid ${theme.palette.common.white}`
                     }}    
                     />
