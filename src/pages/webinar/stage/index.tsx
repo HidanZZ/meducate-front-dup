@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography'
 import CardMedia from '@mui/material/CardMedia'
 import ReactPlayer from 'react-player'
 import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
 
 const Stage = () => {
 
