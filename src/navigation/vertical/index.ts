@@ -19,12 +19,16 @@ const navigation = (): VerticalNavItemsType => {
       badgeColor: 'success',
       children: [
         {
-          title: 'Home',
-          path: '/webinar'
+          title: 'single webinar',
+          path: '/webinar/single-webinar'
         },
         {
           title: 'Stage',
           path: '/webinar/stage'
+        },
+        {
+          title: 'schedule',
+          path: '/webinar/schedule'
         },
         {
           title: 'Speakers',
