@@ -1,6 +1,6 @@
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
-import SpeakerCard from 'src/views/ui/cards/SpeakerCard'
+import SpeakerCard from 'src/views/pages/webinar/cards/SpeakerCard'
 
 const Speakers = () => {
 

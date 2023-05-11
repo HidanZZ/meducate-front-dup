@@ -1,6 +1,6 @@
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
-import EventCard from 'src/views/ui/cards/EventCard'
+import EventCard from 'src/views/pages/webinar/cards/EventCard'
 
 
 const Webinar = () => {
