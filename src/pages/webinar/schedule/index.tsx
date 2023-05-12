@@ -178,9 +178,7 @@ const WebinarList = () => {
             <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                 {day.webinars.sort((a, b) => a.start_time.localeCompare(b.start_time)).map((webinar) => (
                     <Box key={webinar.id} m={4} sx={{ flex: '0 0 auto', minWidth: '300px', maxWidth: '400px' }}>
-                        <Typography variant="subtitle1">
-                            {webinar.start_time} - {webinar.end_time}
-                        </Typography>
+                       
                         <ReducedEventCard webinar={webinar} />
                     </Box>
                 ))}

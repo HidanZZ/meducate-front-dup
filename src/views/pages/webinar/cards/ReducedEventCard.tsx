@@ -40,9 +40,15 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
     cursor: 'pointer'
   }}
 >
-  <Typography variant='h6' ml={3} mt={1} fontSize={14}>
-    {webinar.title}
-  </Typography>
+  <Box display="flex" justifyContent="space-between" alignItems="center" ml={3} mt={1}>
+    <Typography variant='h6'  fontSize={14}>
+      {webinar.title}
+    </Typography>
+    <Typography variant="subtitle1" mr={3}>
+      {webinar.start_time} - {webinar.end_time}
+    </Typography>      
+  </Box>
+
   <Box
     sx={{
       display: 'flex',
