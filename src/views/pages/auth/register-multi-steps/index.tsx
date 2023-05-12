@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Step from '@mui/material/Step'
@@ -8,40 +8,43 @@ import StepLabel from '@mui/material/StepLabel'
 import Typography from '@mui/material/Typography'
 
 // ** Step Components
-import StepPersonalInfo from 'src/views/pages/auth/register-multi-steps/StepPersonalInfo'
-import StepAccountDetails from 'src/views/pages/auth/register-multi-steps/StepAccountDetails'
-import StepBillingDetails from 'src/views/pages/auth/register-multi-steps/StepBillingDetails'
+import StepPersonalDetails from 'src/views/pages/auth/register-multi-steps/StepPersonalInfo'
+import StepProfessionalInfo from 'src/views/pages/auth/register-multi-steps/StepProfessionalInfo'
 
 // ** Custom Component Import
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
+import { useSelector } from 'react-redux'
+import FallbackSpinner from 'src/@core/components/spinner'
+import { useRouter } from 'next/router'
+import { toast } from 'react-hot-toast'
 
 const steps = [
   {
-    title: 'Account',
-    subtitle: 'Account Details'
-  },
-  {
     title: 'Personal',
-    subtitle: 'Enter Information'
+    subtitle: 'Enter Your Information'
   },
   {
-    title: 'Billing',
-    subtitle: 'Payment Details'
+    title: 'Professional',
+    subtitle: 'Enter Your Information'
   }
 ]
 
 const RegisterMultiSteps = () => {
   // ** States
   const [activeStep, setActiveStep] = useState<number>(0)
+  const {status,error} = useSelector((state: any) => state.register)
+  const router =useRouter()
 
   // Handle Stepper
   const handleNext = () => {
     setActiveStep(activeStep + 1)
   }
   const handlePrev = () => {
+    console.log('activeStep', activeStep);
+    
     if (activeStep !== 0) {
       setActiveStep(activeStep - 1)
     }
@@ -50,16 +53,26 @@ const RegisterMultiSteps = () => {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <StepAccountDetails handleNext={handleNext} />
+        return <StepPersonalDetails handleNext={handleNext} />
+    
       case 1:
-        return <StepPersonalInfo handleNext={handleNext} handlePrev={handlePrev} />
-      case 2:
-        return <StepBillingDetails handlePrev={handlePrev} />
+        return <StepProfessionalInfo handlePrev={handlePrev} />
 
       default:
         return null
     }
   }
+  useEffect(() => {
+    switch (status) {
+      case 'success':
+        router.push('/login')
+        break;
+      case 'error':
+        toast.error(error.message)
+        break;
+    }
+      
+  }, [status,error,router])
 
   const renderContent = () => {
     return getStepContent(activeStep)
@@ -67,6 +80,14 @@ const RegisterMultiSteps = () => {
 
   return (
     <>
+    {
+      status ==='loading' ? (
+          <FallbackSpinner sx={{
+            height: '100%',
+          }}/>
+        
+      ):(
+        <>
       <StepperWrapper sx={{ mb: 10 }}>
         <Stepper activeStep={activeStep}>
           {steps.map((step, index) => {
@@ -88,6 +109,10 @@ const RegisterMultiSteps = () => {
       </StepperWrapper>
       {renderContent()}
     </>
+      )
+    }
+    </>
+    
   )
 }
 

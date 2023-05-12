@@ -68,7 +68,7 @@ const Home = () => {
       py={16}
       px={{ xs: 6, md: 16, lg: 32 }}
       sx={{
-        height: '100vh'
+        height: '100vh',
       }}
       display={'flex'}
       flexDirection={'column'}
