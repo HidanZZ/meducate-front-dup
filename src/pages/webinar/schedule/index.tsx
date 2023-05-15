@@ -1,197 +1,202 @@
-import React from 'react';
+import { Grid, Typography, Divider } from '@mui/material';
+import { parseISO, format } from 'date-fns';
+import Box from '@mui/material/Box';
 import ReducedEventCard from 'src/views/pages/webinar/cards/ReducedEventCard';
-import { Grid, Typography, Divider, Box} from '@mui/material';  
-
-
 
 const WebinarList = () => {
-  const daysOfWeek = [
-    {
-        day:'Monday',
-        webinars:[ 
-            {
+    const webinars = [
+    
+        {
+            id: 1,
+            title: 'Data Analytics for Population Health Management',
+            date: '2023-07-15',
+            start_time: '10:00',
+            end_time: '11:00',
+            speaker:{
                 id: 4,
-                title: 'Webinar 4',
-                date: '2023-07-15',
-                start_time: '10:00',
-                end_time: '11:00',
-                speaker:{
-                    id: 4,
-                    firstName: 'David',
-                    lastName: 'Chen',
-                    picture: '',
-                    company: 'Finance Academy',
-                    jobTitle: 'Investment Strategist',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
-                }
-            },
-            {
+                firstName: 'David',
+                lastName: 'Chen',
+                picture: '',
+                company: 'Finance Academy',
+                jobTitle: 'Investment Strategist',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
+            }
+        },
+        {
+            id: 2,
+            title: 'Emerging Technologies in Surgery: Robotic-Assisted Procedures',
+            date: '2023-08-01',
+            start_time: '15:00',
+            end_time: '16:00',
+            speaker:{
                 id: 5,
-                title: 'Webinar 5',
-                date: '2023-08-01',
-                start_time: '15:00',
-                end_time: '16:00',
-                speaker:{
-                    id: 5,
-                    firstName: 'Sarah',
-                    lastName: 'Johnson',
-                    picture: '',
-                    company: 'Marketing Minds',
-                    jobTitle: 'Chief Marketing Officer',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
-                }
-            },
-            {
-                id: 6,
-                title: 'Webinar 6',
-                date: '2023-08-15',
-                start_time: '14:00',
-                end_time: '15:00',
-                speaker:{
-                    id: 6,
-                    firstName: 'John',
-                    lastName: 'Smith',
-                    picture: '',
-                    company: 'Data Analytics Inc',
-                    jobTitle: 'Data Scientist',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',    
-                }
+                firstName: 'Sarah',
+                lastName: 'Johnson',
+                picture: '',
+                company: 'Marketing Minds',
+                jobTitle: 'Chief Marketing Officer',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
             }
-        ]
-    },
-    
-    {
-        day: 'Tuesday',
-        webinars: [
-            {
+        },
+        {
+            id: 3,
+            title: 'Cybersecurity in the Age of Digital Health: Protecting Patient Data',
+            date: '2023-08-15',
+            start_time: '14:00',
+            end_time: '15:00',
+            speaker:{
                 id: 6,
-                title: 'Webinar 6',
-                date: '2023-08-15',
-                start_time: '10:00',
-                end_time: '11:00',
-                speaker:{
-                    id: 6,
-                    firstName: 'John',
-                    lastName: 'Smith',
-                    picture: '',
-                    company: 'Data Analytics Inc',
-                    jobTitle: 'Data Scientist',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',    
-                }
+                firstName: 'John',
+                lastName: 'Smith',
+                picture: '',
+                company: 'Data Analytics Inc',
+                jobTitle: 'Data Scientist',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',    
             }
-        ]
-
-    }, 
-    {
-        day:'Wednesday',
-        webinars: [
-            {
+        },
+        {
+            id: 4,
+            title: 'Exploring AI in Healthcare: Improving Diagnostics and Treatment',
+            date: '2023-08-15',
+            start_time: '14:00',
+            end_time: '15:00',
+            speaker:{
+                id: 6,
+                firstName: 'John',
+                lastName: 'Smith',
+                picture: '',
+                company: 'Data Analytics Inc',
+                jobTitle: 'Data Scientist',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',    
+            }
+        },
+        {
+            id: 5,
+            title: 'ftiyftkckytftyitdfiytfy gy tgtg  tgtgtgtg§gtgt9',
+            date: '2023-08-01',
+            start_time: '10:00',
+            end_time: '12:00',
+            speaker:{
                 id: 5,
-                title: 'Webinar 5',
-                date: '2023-08-01',
-                start_time: '15:00',
-                end_time: '16:00',
-                speaker:{
-                    id: 5,
-                    firstName: 'Sarah',
-                    lastName: 'Johnson',
-                    picture: '',
-                    company: 'Marketing Minds',
-                    jobTitle: 'Chief Marketing Officer',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
-                }
+                firstName: 'Sarah',
+                lastName: 'Johnson',
+                picture: '',
+                company: 'Marketing Minds',
+                jobTitle: 'Chief Marketing Officer',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
             }
-        ]
-
-    }, 
-    {
-        day:'Thursday',
-        webinars: [
-            {
+        },
+        {
+            id: 6,
+            title: 'Advancements in Wearable Technology for Personalized Health Monitoring',
+            date: '2023-06-01',
+            start_time: '13:00',
+            end_time: '14:00',
+            speaker:{
                 id: 1,
-                title: 'Webinar 1',
-                date: '2023-06-01',
-                start_time: '13:00',
-                end_time: '14:00',
-                speaker:{
-                    id: 1,
-                    firstName: 'John',
-                    lastName: 'Doe',
-                    picture: '',
-                    company: 'meducate',
-                    jobTitle: 'CEO',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
-                }
-            },
-            {
-                id: 2,
-                title: 'Webinar 2',
-                date: '2023-06-15',
-                start_time: '10:00',
-                end_time: '12:00',
-                speaker:{
-                    id: 2,
-                    firstName: 'Jane',
-                    lastName: 'Smith',
-                    picture: '',
-                    company: 'edTech Solutions',
-                    jobTitle: 'CTO',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
-                }
+                firstName: 'John',
+                lastName: 'Doe',
+                picture: '',
+                company: 'meducate',
+                jobTitle: 'CEO',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
             }
-        ]
-    }, 
-    {
-        day:'Friday',
-        webinars: [
-            {
+        },
+        {
+            id: 7,
+            title: 'The Future of Telemedicine: Revolutionizing Healthcare Delivery',
+            date: '2023-06-15',
+            start_time: '10:00',
+            end_time: '12:00',
+            speaker:{
+                id: 2,
+                firstName: 'Jane',
+                lastName: 'Smith',
+                picture: '',
+                company: 'edTech Solutions',
+                jobTitle: 'CTO',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
+            }
+        },
+        {
+            id: 8,
+            title: 'The Impact of Technology on Mental Health',
+            date: '2023-07-01',
+            start_time: '11:00',
+            end_time: '12:00',
+            speaker:{
                 id: 3,
-                title: 'Webinar 3',
-                date: '2023-07-01',
-                start_time: '11:00',
-                end_time: '12:00',
-                speaker:{
-                    id: 3,
-                    firstName: 'Bob',
-                    lastName: 'Jones',
-                    picture: '',
-                    company: 'edTech Solutions',
-                    jobTitle: 'CTO',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
-                }
-            },
-        ]
-    }];
+                firstName: 'Bob',
+                lastName: 'Jones',
+                picture: '',
+                company: 'edTech Solutions',
+                jobTitle: 'CTO',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed purus risus. Nunc mollis a tortor eu mattis. Etiam scelerisque magna ac pretium faucibus. Ut arcu felis, gravida eget vulputate nec, tincidunt ut ante. Curabitur cursus nulla eros, eu dictum lectus elementum sollicitudin. Aenean rutrum erat non ullamcorper semper. Maecenas lacus ante, aliquam hendrerit turpis eget, ullamcorper elementum orci. Sed lacinia molestie diam eu dapibus. Nullam suscipit, tortor at commodo pharetra, enim nisi tristique magna, a consectetur dui odio et tellus. Vivamus lobortis odio urna, sit amet sollicitudin neque scelerisque at. Suspendisse tempus nibh vitae odio tempor imperdiet. Suspendisse at enim mollis, vestibulum mi in, porttitor magna. Sed et luctus diam. Quisque convallis imperdiet enim, sit amet elementum arcu tincidunt sed.',
+            }
+        },
+        
+    ];
 
-  return (
-    <Grid container spacing={2}>
-        <Typography variant="h3" component="h1">
-            Schedule
-        </Typography>
-      {daysOfWeek.map((day) => (
-        <Grid item xs={12} key={day.day}>
-            <Divider />
-            <Typography variant="h5" component="h2">
-                {day.day}
-            </Typography>
-
-            <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                {day.webinars.sort((a, b) => a.start_time.localeCompare(b.start_time)).map((webinar) => (
-                    <Box key={webinar.id} m={4} sx={{ flex: '0 0 auto', minWidth: '300px', maxWidth: '400px' }}>
-                       
-                        <ReducedEventCard webinar={webinar} />
-                    </Box>
-                ))}
-            </Box>
-
-        </Grid>
-      ))}
-    </Grid>
-  );
-};
-
+    const sortedWebinars = webinars.sort((a, b) => {
+        const dateA = parseISO(`${a.date}T${a.start_time}`);
+        const dateB = parseISO(`${b.date}T${b.start_time}`);
+        return dateA - dateB;
+    });
     
-
-
+    let previousDate = null;
+    
+    return (
+        <Grid container spacing={4} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
+          <Typography variant="h3" component="h1">
+            Schedule
+          </Typography>
+          <Divider sx={{ width: '100%' }} />
+          {sortedWebinars.map((webinar) => {
+            const currentDate = webinar.date;
+            const renderDate = currentDate !== previousDate;
+            previousDate = currentDate;
+    
+            return (
+              <Grid item xs={12} sm={6} md={4} key={webinar.id}>
+                {renderDate && (
+                  <>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        mt: 2,
+                      }}
+                    >
+                      <Typography variant="h5" component="h2">
+                        {getDayOfWeek(webinar.date)}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        component="h2"
+                        sx={{ ml: 1, opacity: 0.6 }}
+                      >
+                        {webinar.date}
+                      </Typography>
+                    </Box>
+                  </>
+                )}
+    
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <ReducedEventCard webinar={webinar} />
+                  </Grid>
+                </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+      );
+    };
+    
+function getDayOfWeek(dateString) {
+  const date = parseISO(dateString);
+  const dayOfWeek = format(date, 'EEEE');
+  return dayOfWeek;
+}
 
 export default WebinarList;
