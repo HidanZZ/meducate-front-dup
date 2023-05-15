@@ -30,67 +30,77 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
       
     
   return (
-<Card
-  sx={{
-    maxWidth: '235px',
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0 10',
-    cursor: 'pointer'
-  }}
->
-  <Box display="flex" justifyContent="space-between" alignItems="center" ml={3} mt={1}>
-    <Typography variant='h6'  fontSize={14}>
-      {webinar.title}
-    </Typography>
-    <Typography variant="subtitle1" mr={3}>
-      {webinar.start_time} - {webinar.end_time}
-    </Typography>      
-  </Box>
-
-  <Box
+  <Card
     sx={{
-      display: 'flex',
-      flexWrap: 'wrap',
-      flexDirection: 'row',
+      position: 'relative',
       alignItems: 'center',
-      margin: '0 auto',
+      justifyContent: 'center',
+      padding: '0 10',
+      cursor: 'pointer'
     }}
   >
-    <CardMedia sx={{m:2, mt:0}}>
-      {webinar.speaker.picture ? (
-        <Avatar
-          alt='Robert Meyer'
-          src={webinar.speaker.picture}
-          sx={{
-            width: 25,
-            height: 25,
-            border: theme => `0.25rem solid ${theme.palette.common.white}`,
-          }}
-        />
-      ) : (
-        <Avatar
-          alt='Robert Meyer'
-          src='/images/avatars/1.png'
-          sx={{
-            width: 40,
-            height: 40,
-            border: theme => `0.25rem solid ${theme.palette.common.white}`,
-          }}
-        />
-      )}
-    </CardMedia>
-    <Box sx={{ display: 'flex', flexDirection: 'column', ml:4  }}>
-      <Typography variant='body1' sx={{ m: 0, fontSize: 14 }}>
-        {webinar.speaker.firstName} {webinar.speaker.lastName}
-      </Typography>
-      <Typography variant='caption' sx={{ m: 0, fontSize: 12 }}>
-        {webinar.speaker.jobTitle}
-      </Typography>
+    <CardMedia sx={{ height: '12.625rem' }} image='/images/icons/LOGO-M-V2.png'/>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        ml={3}
+        mr={2}
+        mt={1}
+        mb={3}
+        flexDirection="row"
+        flexWrap="wrap"
+      >
+        <Typography variant='h6' fontSize={14} sx={{ minWidth: 0, flexBasis: '100%' }}>
+          {webinar.title}
+        </Typography>
+        <Typography variant="subtitle1" mr={3} width={100} noWrap>
+          {webinar.start_time} - {webinar.end_time}
+        </Typography>
+      </Box>
+
+    <Box
+      sx={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        alignItems: 'center',
+        mb: 2,
+      }}
+    >
+      <CardMedia sx={{m:2, mt:0}}>
+        {webinar.speaker.picture ? (
+          <Avatar
+            alt='Robert Meyer'
+            src={webinar.speaker.picture}
+            sx={{
+              width: 25,
+              height: 25,
+              border: theme => `0.25rem solid ${theme.palette.common.white}`,
+            }}
+          />
+        ) : (
+          <Avatar
+            alt='Robert Meyer'
+            src='/images/avatars/1.png'
+            sx={{
+              width: 40,
+              height: 40,
+              border: theme => `0.25rem solid ${theme.palette.common.white}`,
+            }}
+          />
+        )}
+      </CardMedia>
+      <Box sx={{ display: 'flex', flexDirection: 'column', ml:4  }}>
+        <Typography variant='body1' sx={{ m: 0, fontSize: 14 }}>
+          {webinar.speaker.firstName} {webinar.speaker.lastName}
+        </Typography>
+        <Typography variant='caption' sx={{ m: 0, fontSize: 12 }}>
+          {webinar.speaker.jobTitle}
+        </Typography>
+      </Box>
     </Box>
-  </Box>
-</Card>
+  </Card>
 
 
 
