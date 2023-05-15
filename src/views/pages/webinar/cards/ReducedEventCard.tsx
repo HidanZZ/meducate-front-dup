@@ -122,9 +122,12 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
 };
 
 
-function getDayOfWeek(dateString) {
+function getDayOfWeek(dateString: string) {
   const date = parseISO(dateString);
   const dayOfWeek = format(date, 'EEEE');
+
   return dayOfWeek;
+  
 }
+
 export default ReducedEventCard

@@ -1,6 +1,5 @@
-import { Grid, Typography, Divider } from '@mui/material';
-import { parseISO, format } from 'date-fns';
-import Box from '@mui/material/Box';
+import { Grid } from '@mui/material';
+import { parseISO } from 'date-fns';
 import ReducedEventCard from 'src/views/pages/webinar/cards/ReducedEventCard';
 
 const WebinarList = () => {
@@ -138,16 +137,15 @@ const WebinarList = () => {
     ];
 
     const sortedWebinars = webinars.sort((a, b) => {
-        const dateA = parseISO(`${a.date}T${a.start_time}`);
-        const dateB = parseISO(`${b.date}T${b.start_time}`);
+        const dateA = parseISO(`${a.date}T${a.start_time}`).getTime();
+        const dateB = parseISO(`${b.date}T${b.start_time}`).getTime();
+      
         return dateA - dateB;
-    });
-    
-    let previousDate = null;
-    
+      });
+        
     return (
         <Grid container spacing={5} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
-        {sortedWebinars.map((webinar, index) => (
+        {sortedWebinars.map((webinar) => (
           <Grid key={webinar.id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
             <ReducedEventCard webinar={webinar} />
           </Grid>
