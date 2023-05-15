@@ -3,6 +3,8 @@ import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
+import { parseISO, format } from 'date-fns';
+
 
 
 type Webinar = {
@@ -37,7 +39,8 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
       justifyContent: 'center',
       padding: '0 10',
       cursor: 'pointer',
-      maxWidth: '20rem'
+      maxWidth: '22rem',
+      height: '100%',
     }}
   >
       <CardMedia sx={{ height: '12.625rem' }} >
@@ -61,7 +64,10 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
         <Typography variant='h6' fontSize={14} sx={{ minWidth: 0, flexBasis: '100%' }}>
           {webinar.title}
         </Typography>
-        <Typography variant="subtitle1" mr={3} width={100} noWrap>
+        <Typography variant="subtitle1" mr={3} width={100} >
+          {getDayOfWeek(webinar.date)} {webinar.date}
+        </Typography>
+        <Typography variant="subtitle1" mr={3} width={100} >
           {webinar.start_time} - {webinar.end_time}
         </Typography>
       </Box>
@@ -99,10 +105,10 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
         )}
       </CardMedia>
       <Box sx={{ display: 'flex', flexDirection: 'column', ml:4  }}>
-        <Typography variant='body1' sx={{ m: 0, fontSize: 14 }}>
+        <Typography variant='body1' sx={{ m: 0 }}>
           {webinar.speaker.firstName} {webinar.speaker.lastName}
         </Typography>
-        <Typography variant='caption' sx={{ m: 0, fontSize: 12 }}>
+        <Typography variant='caption' sx={{ m: 0 }}>
           {webinar.speaker.jobTitle}
         </Typography>
       </Box>
@@ -113,6 +119,12 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
 
 
   )
-}
+};
 
+
+function getDayOfWeek(dateString) {
+  const date = parseISO(dateString);
+  const dayOfWeek = format(date, 'EEEE');
+  return dayOfWeek;
+}
 export default ReducedEventCard

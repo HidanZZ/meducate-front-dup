@@ -146,57 +146,17 @@ const WebinarList = () => {
     let previousDate = null;
     
     return (
-        <Grid container spacing={4} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
-          <Typography variant="h3" component="h1">
-            Schedule
-          </Typography>
-          <Divider sx={{ width: '100%' }} />
-          {sortedWebinars.map((webinar) => {
-            const currentDate = webinar.date;
-            const renderDate = currentDate !== previousDate;
-            previousDate = currentDate;
+        <Grid container spacing={5} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
+        {sortedWebinars.map((webinar, index) => (
+          <Grid key={webinar.id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
+            <ReducedEventCard webinar={webinar} />
+          </Grid>
+        ))}
+      </Grid>
+      
+    );
+};
     
-            return (
-              <Grid item xs={12} sm={6} md={4} key={webinar.id}>
-                {renderDate && (
-                  <>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        mt: 2,
-                      }}
-                    >
-                      <Typography variant="h5" component="h2">
-                        {getDayOfWeek(webinar.date)}
-                      </Typography>
-                      <Typography
-                        variant="subtitle1"
-                        component="h2"
-                        sx={{ ml: 1, opacity: 0.6 }}
-                      >
-                        {webinar.date}
-                      </Typography>
-                    </Box>
-                  </>
-                )}
-    
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <ReducedEventCard webinar={webinar} />
-                  </Grid>
-                </Grid>
-              </Grid>
-            );
-          })}
-        </Grid>
-      );
-    };
-    
-function getDayOfWeek(dateString) {
-  const date = parseISO(dateString);
-  const dayOfWeek = format(date, 'EEEE');
-  return dayOfWeek;
-}
+
 
 export default WebinarList;
