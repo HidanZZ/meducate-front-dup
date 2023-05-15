@@ -36,10 +36,17 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '0 10',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      maxWidth: '20rem'
     }}
   >
-    <CardMedia sx={{ height: '12.625rem' }} image='/images/icons/LOGO-M-V2.png'/>
+      <CardMedia sx={{ height: '12.625rem' }} >
+        <img 
+          src='/images/icons/LOGO-M-V2.png' 
+          alt='Logo'
+          style={{ height: '100%', width: 'auto', alignItems : 'center', justifyContent : 'center', display : 'flex', margin : '0 auto', padding : '0 10'}} 
+        />
+      </CardMedia>  
       <Box
         display="flex"
         justifyContent="space-between"
