@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from 'axios'
+import apiClient from 'src/axios/client'
 import { PersonalInfo, ProfessionalInfo } from 'src/types/apps/register'
 
 interface RegisterState {
@@ -25,7 +25,7 @@ const initialState: RegisterState = {
     highestQualification: '',
     profile: '',
     speciality: '',
-    yearsOfExperience: '',
+    yearsOfExperience: Number(''),
     sector: '',
     workEnvironment: '',
     institution: ''
@@ -37,10 +37,21 @@ const initialState: RegisterState = {
 export const registerUser = createAsyncThunk(
   'register/registerUser',
   async (user: { personalInfo: PersonalInfo; professionalInfo: ProfessionalInfo }) => {
-    const response = await axios.post('/api/register', {
+    type Body = PersonalInfo & ProfessionalInfo
+    const userBody: Body = {
       ...user.personalInfo,
       ...user.professionalInfo
-    })
+    }
+
+    const body: Partial<Body> = {}
+
+    for (const key in userBody) {
+      if (userBody[key as keyof Body] !== '' && userBody[key as keyof Body] !== '0' && key !== 'confirmPassword') {
+        body[key as keyof Body] = userBody[key as keyof Body]
+      }
+    }
+
+    const response = await apiClient.post('/auth/sign-up', body)
 
     return response.data
   }
@@ -65,7 +76,7 @@ const registerSlice = createSlice({
       .addCase(registerUser.fulfilled, state => {
         state.status = 'succeeded'
 
-        // Add any necessary updates to state based on response here
+        console.log('User registered successfully')
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed'

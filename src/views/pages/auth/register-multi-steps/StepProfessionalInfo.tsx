@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import Icon from 'src/@core/components/icon'
+import Cleave from 'cleave.js/react'
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -15,6 +16,8 @@ import { useSelector } from 'react-redux'
 import {  HighestQualification, PersonalInfo, ProfessionalInfo, Profile, Sector, WorkEnvironment } from 'src/types/apps/register'
 import { useDispatch } from 'react-redux'
 import { registerUser, setProfessionalInfo } from 'src/store/apps/register'
+import { AppDispatch } from 'src/store'
+import CleaveWrapper from 'src/@core/styles/libs/react-cleave'
 
 const StepProfessionalInfo = ({ handlePrev }: { handlePrev: () => void }) => {
   const {personalInfo,professionalInfo}:{personalInfo:PersonalInfo,professionalInfo:ProfessionalInfo} = useSelector((state: any) => state.register)
@@ -22,12 +25,12 @@ const StepProfessionalInfo = ({ handlePrev }: { handlePrev: () => void }) => {
     highestQualification: yup.string(),
     profile: yup.string(),
     speciality: yup.string(),
-    yearsOfExperience: yup.number(),
+    yearsOfExperience: yup.string(),
     sector: yup.string(),
     workEnvironment: yup.string(),
     institution: yup.string(),
   })
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   
 
@@ -43,12 +46,12 @@ const StepProfessionalInfo = ({ handlePrev }: { handlePrev: () => void }) => {
   const onSubmit = (data: ProfessionalInfo) => {
     dispatch(setProfessionalInfo(data))
 
-    //@ts-ignore
    dispatch(registerUser({ personalInfo, professionalInfo: data }));
   }
   
 
   return (
+    <CleaveWrapper>
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box sx={{ mb: 4 }}>
         <Typography variant='h5'>Professional Information</Typography>
@@ -167,7 +170,9 @@ const StepProfessionalInfo = ({ handlePrev }: { handlePrev: () => void }) => {
               name='yearsOfExperience'
               control={control}
               render={({ field }) => (
-                <TextField {...field} fullWidth label='Years Of Experience' type='number' placeholder='69' error={Boolean(errors.yearsOfExperience)} />
+                 <Cleave id='numeral' placeholder='years' options={{ numeral: true }} {...field} style={{
+                  width: '100%',
+                 }} />
               )}
             />
             {errors.yearsOfExperience && <FormHelperText sx={{ color: 'error.main' }}>{errors.yearsOfExperience.message}</FormHelperText>}
@@ -231,13 +236,14 @@ const StepProfessionalInfo = ({ handlePrev }: { handlePrev: () => void }) => {
             >
               Previous
             </Button>
-            <Button color='success' variant='contained' onClick={() => alert('Submitted..!!')}>
+            <Button type='submit' color='success' variant='contained'>
               Submit
             </Button>
           </Box>
         </Grid>
       </Grid>
     </form>
+    </CleaveWrapper>
   )
 }
 

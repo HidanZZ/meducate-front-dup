@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -13,10 +13,12 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { FormHelperText, IconButton, InputAdornment, MenuItem, Select } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { City, Country } from 'src/types/misc/countries'
+import { ICountry, ICity } from 'country-state-city'
 import { PersonalInfo, Title } from 'src/types/apps/register'
 import { useDispatch } from 'react-redux'
 import { setPersonalInfo } from 'src/store/apps/register'
+import { fetchCities as fc,fetchCountries as fcn } from 'src/store/countries'
+import { AppDispatch } from 'src/store'
 
 interface PasswordInfo {
   password: string;
@@ -24,27 +26,14 @@ interface PasswordInfo {
 }
 type ExtendedPersonalInfo = PersonalInfo & PasswordInfo;
 const StepPersonalDetails = ({ handleNext }: { handleNext: () => void }) => {
-  // const { countries, cities } = useSelector((state: any) => state.countries)
-  const countries = [
-    {
-      name: 'United States',
-      iso2: 'US'
-    },
-    {
-      name: 'United Kingdom',
-      iso2: 'GB'
-    },
-    {
-      name: 'Afghanistan',
-      iso2: 'AF'
-    }
-  ]
+  const { countries, cities } = useSelector((state: any) => state.countries)
+
   const schema = yup.object().shape({
     title: yup.string().required(),
     firstName: yup.string().required(),
     lastName: yup.string().required(),
     email: yup.string().email().required(),
-    password: yup.string().required(),
+    password: yup.string().required().min(8),
     confirmPassword: yup
       .string()
       .required()
@@ -58,8 +47,12 @@ const StepPersonalDetails = ({ handleNext }: { handleNext: () => void }) => {
     //@ts-ignore
     event.preventDefault()
   }
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const {personalInfo}:{personalInfo:ExtendedPersonalInfo } = useSelector((state: any) => state.register)
+  
+  useEffect(() => {
+    dispatch(fcn())
+  }, [])
 
   const {
     control,
@@ -78,7 +71,7 @@ const StepPersonalDetails = ({ handleNext }: { handleNext: () => void }) => {
     handleNext()
   }
   const fetchCities = (country: string) => {
-    console.log(country)
+    dispatch(fc(country))
   }
 
   return (
@@ -272,8 +265,8 @@ const StepPersonalDetails = ({ handleNext }: { handleNext: () => void }) => {
                     placeholder='Country'
                     error={Boolean(errors.country)}
                   >
-                    {countries.map((country: Country) => (
-                      <MenuItem key={country.iso2} value={country.iso2}>
+                    {countries.map((country: ICountry) => (
+                      <MenuItem key={country.isoCode} value={country.isoCode}>
                         {country.name}
                       </MenuItem>
                     ))}
@@ -301,7 +294,7 @@ const StepPersonalDetails = ({ handleNext }: { handleNext: () => void }) => {
                     error={Boolean(errors.city)}
                     disabled={!watchCountry}
                   >
-                    {countries.map((city: City) => (
+                    {cities.map((city: ICity) => (
                       <MenuItem key={city.name} value={city.name}>
                         {city.name}
                       </MenuItem>

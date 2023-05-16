@@ -1,11 +1,10 @@
-// src/store/countries/index.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
-import { City, Country } from 'src/types/misc/countries'
+import { ICountry, ICity } from 'country-state-city'
+import { Country as CSCCountry, City as CSCCity } from 'country-state-city'
 
 interface CountriesState {
-  countries: Array<Country>
-  cities: Array<City>
+  countries: Array<ICountry>
+  cities: Array<ICity> | undefined
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | undefined | null
 }
@@ -17,22 +16,16 @@ const initialState: CountriesState = {
   error: null
 }
 
-//add "X-CSCAPI-KEY", "API_KEY" to headers
-const headers = {
-  'X-CSCAPI-KEY': process.env.NEXT_PUBLIC_CSCAPI_KEY,
-  'Content-Type': 'application/json'
-}
-
 export const fetchCountries = createAsyncThunk('countries/fetchCountries', async () => {
-  const response = await axios.get('https://api.countrystatecity.in/v1/countries', { headers })
+  // Use the getAllCountries function from the package to fetch all countries
+  const countries = CSCCountry.getAllCountries()
 
-  return response.data
+  return countries
 })
 
 export const fetchCities = createAsyncThunk('countries/fetchCities', async (ciso: string) => {
-  const response = await axios.get(`https://api.countrystatecity.in/v1/countries/${ciso}/cities`, { headers })
-
-  return response.data
+  // Use the getStatesOfCountry function to fetch all states of a country
+  return CSCCity.getCitiesOfCountry(ciso)
 })
 
 const countriesSlice = createSlice({
