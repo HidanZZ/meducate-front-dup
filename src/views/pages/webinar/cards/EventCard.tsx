@@ -6,31 +6,55 @@ import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import AvatarGroup from '@mui/material/AvatarGroup'
+import ReactPlayer from 'react-player'
 
 
 const EventCard = () => {
-
   return (
-    <Card sx={{ position: 'relative', alignItems : 'center', justifyContent : 'center', margin : '0 auto', padding : '0 10' }}>
-      <CardMedia sx={{ height: '12.625rem' }} >
-        <img 
-          src='/images/icons/LOGO-M-V2.png' 
-          alt='Logo'
-          style={{ height: '100%', width: 'auto', alignItems : 'center', justifyContent : 'center', display : 'flex', margin : '0 auto', padding : '0 10'}} 
-        />
-      </CardMedia>    
-      <Box
+    <Card
       sx={{
-        mt: 5.75,
-        ml: 4,
-        mr: 4,
-        display: 'flex',
-        flexWrap: 'wrap',
-        flexDirection: 'row',
+        position: 'relative',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'center',
+        margin: '0 auto',
+        padding: '0 10',
       }}
-      > 
+    >
+     
+      <CardMedia sx={{ aspectRatio: '21/9',position:'relative' }}>
+        <ReactPlayer
+          url={'https://www.youtube.com/watch?v=wNTrWZ42olc'}
+          playing
+          loop
+          muted
+          width="100%"
+          height="100%"
+          controls={false}
+          config={{
+            youtube: {
+              playerVars: {
+                start: 30, // Start playing from 30 seconds
+                end: 60, // Play until 60 seconds
+                showinfo: 0,
+              },
+            },
+          }}
+        />
+      </CardMedia>
+    
+
+      <Box
+        sx={{
+          mt: 5.75,
+          ml: 4,
+          mr: 4,
+          display: 'flex',
+          flexWrap: 'wrap',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
         <Avatar
           alt='Robert Meyer'
           src='/images/avatars/1.png'
