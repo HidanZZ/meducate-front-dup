@@ -2,8 +2,12 @@ import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 
+interface WebinarFormProps {
+  open: boolean;
+  onClose: (value: boolean) => void;
+}
 
-const WebinarForm = ({ open, onClose }) => {
+const WebinarForm: React.FC<WebinarFormProps> = ({ open, onClose }) => {
     return (
       <Dialog open={open} onClose={() => onClose(false)}>
         <DialogTitle>Webinar Confirmation</DialogTitle>
