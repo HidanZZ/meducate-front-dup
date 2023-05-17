@@ -8,23 +8,10 @@ import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import AvatarGroup from '@mui/material/AvatarGroup'
-import Dialog from '@mui/material/Dialog'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
+import WebinarForm from '../JoinDialogueForm'
 
 import ReactPlayer from 'react-player'
 import Countdown from '../Countdown'
-
-const WebinarFrom = ({ open, onClose }) => {
-  return (
-    <Dialog open={open} onClose={() => onClose(false)}>
-      <DialogTitle>Webinar Confirmation</DialogTitle>
-      <DialogContent>
-        <p>Are you sure you want to join the webinar?</p>
-      </DialogContent>
-    </Dialog>
-  );
-};
 
 const EventCard = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -151,7 +138,7 @@ const EventCard = () => {
         </Box>
         
       </CardContent>
-      <WebinarFrom open={dialogOpen} onClose={() => setDialogOpen(false)} />
+      <WebinarForm open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </Card>
 
   )
