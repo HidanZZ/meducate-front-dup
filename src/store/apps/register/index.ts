@@ -85,8 +85,6 @@ const registerSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, state => {
         state.status = 'succeeded'
-
-        console.log('User registered successfully')
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed'

@@ -18,6 +18,8 @@ import { useDispatch } from 'react-redux'
 import { registerUser, setProfessionalInfo } from 'src/store/apps/register'
 import { AppDispatch } from 'src/store'
 import CleaveWrapper from 'src/@core/styles/libs/react-cleave'
+import { toast } from 'react-hot-toast'
+import { setEmail } from 'src/store/apps/verification'
 
 const StepProfessionalInfo = ({ handlePrev }: { handlePrev: () => void }) => {
   const {personalInfo,professionalInfo}:{personalInfo:PersonalInfo,professionalInfo:ProfessionalInfo} = useSelector((state: any) => state.register)
@@ -46,7 +48,14 @@ const StepProfessionalInfo = ({ handlePrev }: { handlePrev: () => void }) => {
   const onSubmit = (data: ProfessionalInfo) => {
     dispatch(setProfessionalInfo(data))
 
-   dispatch(registerUser({ personalInfo, professionalInfo: data }));
+   dispatch(registerUser({ personalInfo, professionalInfo: data })).unwrap().then(({email}:{email:string}) => {
+    dispatch(setEmail(email))
+    
+   }).catch((err) => {
+      console.log('err', err);
+      
+      toast.error(err.message)
+   })
   }
   
 

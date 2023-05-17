@@ -69,7 +69,7 @@ const RegisterMultiSteps = () => {
   useEffect(() => {
     switch (status) {
       case 'succeeded':
-        router.push('/login') 
+        router.push('/verify-email') 
         dispatch(reset())
         break;
       case 'failed':
