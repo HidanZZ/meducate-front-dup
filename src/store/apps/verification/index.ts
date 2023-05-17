@@ -13,20 +13,6 @@ const initialState: VerificationState = {
   error: null
 }
 
-export const verifyUser = createAsyncThunk('verification/verifyUser', async (token: string, { rejectWithValue }) => {
-  try {
-    const response = await apiClient.get(`/user/verification/${token}`)
-
-    return response.data
-  } catch (err: any) {
-    if (!err.response) {
-      throw err
-    }
-
-    return rejectWithValue(err.response.data)
-  }
-})
-
 export const resendVerificationEmail = createAsyncThunk(
   'verification/resendVerificationEmail',
   async (email: string, { rejectWithValue }) => {
@@ -54,25 +40,6 @@ const verificationSlice = createSlice({
     }
   },
   extraReducers: builder => {
-    builder.addCase(verifyUser.pending, state => {
-      state.status = 'loading'
-    })
-    builder.addCase(verifyUser.fulfilled, state => {
-      state.status = 'succeeded'
-
-      // state.email = payload.email
-    })
-    builder.addCase(verifyUser.rejected, (state, action) => {
-      state.status = 'failed'
-      if (action.payload) {
-        // If a payload is available, it means we have a response from the server
-        //@ts-ignore
-        state.error = action.payload
-      } else {
-        // Otherwise, we only have an error message
-        state.error = action.error.message
-      }
-    })
     builder.addCase(resendVerificationEmail.pending, state => {
       state.status = 'loading'
     })
