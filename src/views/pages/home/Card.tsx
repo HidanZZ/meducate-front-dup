@@ -1,4 +1,4 @@
-import { ArrowForward } from '@mui/icons-material'
+import  ArrowForward  from '@mui/icons-material/ArrowForward'
 import { Box, Typography } from '@mui/material'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
