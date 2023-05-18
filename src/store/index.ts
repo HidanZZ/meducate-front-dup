@@ -4,6 +4,7 @@ import example from './apps/example'
 import countries from './countries'
 import register from './apps/register'
 import verification from './apps/verification'
+import login from './apps/login'
 
 // ** Reducers
 
@@ -12,7 +13,8 @@ export const store = configureStore({
     example,
     countries,
     register,
-    verification
+    verification,
+    login
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

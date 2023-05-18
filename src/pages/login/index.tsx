@@ -34,15 +34,17 @@ import Icon from 'src/@core/components/icon'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { FormHelperText } from '@mui/material'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/store'
+import { FormInputs } from 'src/types/apps/login'
+import { signin } from 'src/store/apps/login'
+import { toast } from 'react-hot-toast'
 
 
 interface State {
   showPassword: boolean
 }
-interface FormInputs {
-  email: string
-  password: string
-}
+
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -71,6 +73,7 @@ const LoginPage = () => {
   const [values, setValues] = useState<State>({
     showPassword: false
   })
+  const dispatch = useDispatch<AppDispatch>()
 
   // ** Hook
   const { register, handleSubmit, formState: { errors } } = useForm<FormInputs>({
@@ -78,7 +81,12 @@ const LoginPage = () => {
   })
 
    const onSubmit = (data: FormInputs) => {
-    console.log(data)
+    dispatch(signin(data)).unwrap().then((data) => {
+console.log(data);
+
+    }).catch((err) => {
+      toast.error(err.message)
+    })
   }
 
   const handleClickShowPassword = () => {
@@ -97,7 +105,6 @@ const LoginPage = () => {
            <Image src='/images/logo-meducate.png' alt='logo' height={256} width={256} />
           </Box>
           <Box sx={{ mb: 6 }}>
-           
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
