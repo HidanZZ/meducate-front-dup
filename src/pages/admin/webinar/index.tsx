@@ -2,9 +2,10 @@ import { Button, Card, Grid } from '@mui/material';
 import { parseISO } from 'date-fns';
 import AdminEventCard from 'src/views/pages/webinar/admin/AdminEventCard';
 import Box from '@mui/material/Box'
+import { useState } from 'react';
 
 const WebinarList = () => {
-    const webinars = [
+    const [webinars,setWebinars] = useState([
     
         {
             id: 1,
@@ -135,7 +136,13 @@ const WebinarList = () => {
             }
         },
         
-    ];
+    ])
+
+    // Delete function
+    const handleDelete = (webinarId: number) => {
+        setWebinars((prevWebinars) => prevWebinars.filter((webinar) => webinar.id !== webinarId));
+    };
+  
 
     const sortedWebinars = webinars.sort((a, b) => {
         const dateA = parseISO(`${a.date}T${a.start_time}`).getTime();
@@ -150,7 +157,7 @@ const WebinarList = () => {
                 
             <Grid key={webinar.id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
 
-                <AdminEventCard webinar={webinar} />
+                <AdminEventCard webinar={webinar} handleDelete={() => handleDelete(webinar.id)}  />
 
             </Grid>
             
