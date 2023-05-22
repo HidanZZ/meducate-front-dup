@@ -1,19 +1,7 @@
-import axios, { AxiosInstance } from 'axios'
-import { LoginParams } from 'src/context/types'
-import { PersonalInfo, ProfessionalInfo } from 'src/types/apps/register'
-
-declare module 'axios' {
-  export interface AxiosInstance {
-    registerUser: (user: Partial<PersonalInfo & ProfessionalInfo>) => Promise<any>
-    verifyEmail: (token: string) => Promise<any>
-    requestVerificationEmail: (email: string) => Promise<any>
-    login: (params: LoginParams) => Promise<any>
-    me: () => Promise<any>
-  }
-}
+import axios from 'axios'
 
 // Create an instance of axios with default configuration
-const apiClient: AxiosInstance = axios.create({
+const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL, // API URL from env
   headers: {
     'Content-Type': 'application/json'
