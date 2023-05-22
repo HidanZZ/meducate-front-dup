@@ -6,6 +6,7 @@ import Avatar from '@mui/material/Avatar'
 import { parseISO, format } from 'date-fns';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
+import Icon from 'src/@core/components/icon'
 
 
 
@@ -138,7 +139,16 @@ const ReducedEventCard = ({webinar}:ReducedEventCardProps) => {
         </Box>
       </Box>
     </Box>
-    
+    <CardActions sx={{  padding: 0, margin: 0, width: '100%' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+        <Button variant="contained" color="primary" sx={{ flex: 1, borderRadius: '0px 0px 0px 4px' }}>
+            <Icon icon='mdi:trash' fontSize="medium" /> Delete
+        </Button>
+        <Button variant="contained" color="secondary" sx={{ flex: 1, borderRadius: '0px 0px 0px 4px' }}>
+            <Icon icon='mdi:edit' fontSize="medium"/>  Edit
+        </Button>
+      </Box>
+      </CardActions>
     </Card>
   
 
