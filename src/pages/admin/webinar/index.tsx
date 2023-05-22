@@ -3,6 +3,8 @@ import { parseISO } from 'date-fns';
 import AdminEventCard from 'src/views/pages/webinar/admin/AdminEventCard';
 import Box from '@mui/material/Box'
 import { useState } from 'react';
+import Icon from 'src/@core/components/icon'
+
 
 const WebinarList = () => {
     const [webinars,setWebinars] = useState([
@@ -152,17 +154,19 @@ const WebinarList = () => {
       });
         
     return (
-        <Grid container spacing={5} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
-            {sortedWebinars.map((webinar) => (
-                
-            <Grid key={webinar.id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
-
-                <AdminEventCard webinar={webinar} handleDelete={() => handleDelete(webinar.id)}  />
-
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Button variant="contained" color="secondary" sx={{ width: '50%', maxWidth: '240px', mb: 4 }}>
+                <Icon icon='mdi:edit' fontSize="medium" /> Edit
+            </Button>
+            <Grid container spacing={5} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
+                {sortedWebinars.map((webinar) => (
+                <Grid key={webinar.id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
+                    <AdminEventCard webinar={webinar} onEdit={() => handleDelete(webinar.id)} onDelete={() => handleDelete(webinar.id)} />
+                </Grid>
+                ))}
             </Grid>
-            
-            ))}
-        </Grid>
+        </Box>
+
       
     );
 };

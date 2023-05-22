@@ -29,15 +29,20 @@ type Webinar = {
   
   type ReducedEventCardProps = {
     webinar: Webinar;
-    handleDelete: (webinarId: number) => void;
+    onDelete: (webinarId: number) => void;
+    onEdit: (webinarId: number) => void;
   };
 
-const ReducedEventCard = ({webinar, handleDelete}:ReducedEventCardProps) => {
+const ReducedEventCard = ({webinar, onDelete, onEdit}:ReducedEventCardProps) => {
 
     const onDeleteClick = () => {
-        handleDelete(webinar.id);
+        onDelete(webinar.id);
     };
     
+    const handleEdit = () => {
+        onEdit(webinar.id);
+    };
+
     return (
         <Card
         sx={{
@@ -148,7 +153,7 @@ const ReducedEventCard = ({webinar, handleDelete}:ReducedEventCardProps) => {
             <Button variant="contained" color="primary" sx={{ flex: 1, borderRadius: '0px 0px 0px 4px' }} onClick={onDeleteClick}>
                 <Icon icon='mdi:trash' fontSize="medium" /> Delete
             </Button>
-            <Button variant="contained" color="secondary" sx={{ flex: 1, borderRadius: '0px 0px 0px 4px' }}>
+            <Button variant="contained" color="secondary" sx={{ flex: 1, borderRadius: '0px 0px 0px 4px' }} onClick={handleEdit}>
                 <Icon icon='mdi:edit' fontSize="medium"/>  Edit
             </Button>
         </Box>
