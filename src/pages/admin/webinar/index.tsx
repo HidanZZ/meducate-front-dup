@@ -147,7 +147,29 @@ const WebinarList = () => {
         setWebinars((prevWebinars) => prevWebinars.filter((webinar) => webinar.id !== webinarId));
     };
   
-    
+    const addWebinar = (data) => {
+        const formattedDate = data.date.toISOString().split('T')[0];
+        const newWebinar = {
+            
+            title: data.title || '',
+            date: formattedDate || '',
+            startTime: data.startTime || '',
+            endTime: data.endTime || '',
+            speaker:{
+                id:'9',
+                firstName: data.firstName || '',
+                lastName: data.lastName || '',
+                picture: '',
+                company: data.company || '',
+                jobTitle: data.jobTitle || '',
+                speakerDescription: data.speakerDescription || '',
+
+            }
+        };
+        
+        setWebinars([...webinars, newWebinar]);
+    };
+      
 
     const sortedWebinars = webinars.sort((a, b) => {
         const dateA = parseISO(`${a.date}T${a.start_time}`).getTime();
@@ -168,7 +190,7 @@ const WebinarList = () => {
                 </Grid>
                 ))}
             </Grid>
-            <NewEventForm open={dialogOpen} onClose={() => setDialogOpen(false)} />
+            <NewEventForm open={dialogOpen} onClose={() => setDialogOpen(false)} onSubmit={addWebinar} />
 
         </Box>
         

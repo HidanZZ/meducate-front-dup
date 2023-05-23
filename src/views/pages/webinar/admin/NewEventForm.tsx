@@ -53,9 +53,10 @@ const CustomInput = forwardRef(({ ...props }, ref) => {
 interface NewEventFormProps {
     open: boolean;
     onClose: (value: boolean) => void;
-  }
+    onSubmit: (data: any) => void;
+}
   
-const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose }) => {   // ** States
+const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) => {   
    const [state, setState] = useState({
     password: '',
     showPassword: false
@@ -67,22 +68,18 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose }) => {   // 
     handleSubmit,
     formState: { errors }
   } = useForm({ defaultValues })
-
-  const handleClickShowPassword = () => {
-    setState({ ...state, showPassword: !state.showPassword })
-  }
-
-  const handleMouseDownPassword = event => {
-    event.preventDefault()
-  }
   
-  const onSubmit = () => alert('Form Submitted');
+  
+  const handleFormSubmit = (data) => {
+    onSubmit(data);
+    onClose(false);
+  };
 
   return (
     <Dialog open={open} onClose={() => onClose(false)} fullWidth>
       <DialogTitle>Webinar Confirmation</DialogTitle>
       <DialogContent>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
       <DialogTitle>Webinar info :</DialogTitle>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
@@ -215,7 +212,7 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose }) => {   // 
               </FormControl>
             </Grid>
         </Grid>
-        
+
         <DialogTitle>Speaker info :</DialogTitle>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
