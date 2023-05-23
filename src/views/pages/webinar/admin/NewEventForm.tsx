@@ -1,62 +1,72 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import DatePicker from 'react-datepicker';
+import Grid from '@mui/material/Grid';
+import Radio from '@mui/material/Radio';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import FormLabel from '@mui/material/FormLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import 'react-datepicker/dist/react-datepicker.css';
 
-import { useForm, Controller } from 'react-hook-form'
-import DatePicker from 'react-datepicker'
+type FormData = {
+  title: string;
+  date: Date | null;
+  startTime: string;
+  endTime: string;
+  webinarDescription: string;
+  lastName: string;
+  firstName: string;
+  company: string;
+  jobTitle: string;
+  speakerDescription: string;
+  gender: string;
+  select: string;
+  checkbox: boolean;
+};
 
-import Grid from '@mui/material/Grid'
-import Radio from '@mui/material/Radio'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import FormLabel from '@mui/material/FormLabel'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Dialog from '@mui/material/Dialog'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
+const defaultValues: FormData = {
+  title: '',
+  date: null,
+  startTime: '',
+  endTime: '',
+  webinarDescription: '',
+  lastName: '',
+  firstName: '',
+  company: '',
+  jobTitle: '',
+  speakerDescription: '',
+  gender: '',
+  select: '',
+  checkbox: false,
+};
 
 
 
-const defaultValues = {
-    dob: null,
-    title: '',
-    date: '',
-    startTime: '',
-    endTime: '',
-    webinarDescription: '',
-    
-    lastName: '',
-    firstName: '',
-    company: '',
-    jobTitle: '',
-    speakerDescription: '',
-    gender: '',
-
-    select: '',
-    checkbox: false
-}
-  
-const CustomInput = forwardRef(({ ...props }, ref) => {
-    return <TextField inputRef={ref} {...props} sx={{ width: '100%' }} />
-})
+const CustomInput = forwardRef<HTMLInputElement, any>(({ ...props }, ref) => {
+  return <TextField inputRef={ref} {...props} sx={{ width: '100%' }} />;
+});
 
 interface NewEventFormProps {
-    open: boolean;
-    onClose: (value: boolean) => void;
-    onSubmit: (data: any) => void;
+  open: boolean;
+  onClose: (value: boolean) => void;
+  onSubmit: (data: FormData) => void;
 }
-  
-const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) => {   
 
+const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors }
-  } = useForm({ defaultValues })
-  
-  
-  const handleFormSubmit = (data) => {
+    formState: { errors },
+  } = useForm<FormData>({ defaultValues });
+
+  const handleFormSubmit = (data: FormData) => {
     onSubmit(data);
     onClose(false);
   };
@@ -65,8 +75,8 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
     <Dialog open={open} onClose={() => onClose(false)} fullWidth>
       <DialogTitle>Webinar Confirmation</DialogTitle>
       <DialogContent>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <DialogTitle>Webinar info :</DialogTitle>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
+          <DialogTitle>Webinar info :</DialogTitle>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
@@ -74,12 +84,11 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                   name='title'
                   control={control}
                   rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
+                  render={({ field }) => (
                     <TextField
-                      value={value}
+                      {...field}
                       label='Title'
-                      onChange={onChange}
-                      placeholder='title'
+                      placeholder='Title'
                       error={Boolean(errors.title)}
                       aria-describedby='validation-basic-title'
                     />
@@ -98,18 +107,18 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                 name='date'
                 control={control}
                 rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
+                render={({ field }) => (
                   <DatePicker
-                    selected={value}
+                    selected={field.value}
                     showYearDropdown
                     showMonthDropdown
-                    onChange={e => onChange(e)}
+                    onChange={(date) => field.onChange(date)}
                     placeholderText='MM/DD/YYYY'
                     customInput={
                       <CustomInput
-                        value={value}
-                        onChange={onChange}
-                        label='Date '
+                        value={field.value ? field.value.toISOString().substring(0, 10) : ''}
+                        onChange={field.onChange}
+                        label='Date of Birth'
                         error={Boolean(errors.date)}
                         aria-describedby='validation-basic-date'
                       />
@@ -125,52 +134,51 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
             </Grid>
 
             <Grid item xs={12} sm={6}>
-                <Controller
-                    name='startTime'
-                    control={control}
-                    rules={{
-                    required: true,
-                    pattern: {
-                        value: /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
-                        message: 'Invalid start time format (HH:MM)',
-                    },
-                    }}
-                    render={({ field: { value, onChange }, fieldState: { error } }) => (
-                    <TextField
-                        label='Start Time'
-                        value={value}
-                        onChange={onChange}
-                        error={Boolean(error)}
-                        helperText={error?.message || ''}
-                        placeholder='HH:MM'
-                    />
-                    )}
-                />
+              <Controller
+                name='startTime'
+                control={control}
+                rules={{
+                  required: true,
+                  pattern: {
+                    value: /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                    message: 'Invalid start time format (HH:MM)',
+                  },
+                }}
+                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                  <TextField
+                    label='Start Time'
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message || ''}
+                    placeholder='HH:MM'
+                  />
+                )}
+              />
             </Grid>
 
-
             <Grid item xs={12} sm={6}>
-            <Controller
-                    name='endTime'
-                    control={control}
-                    rules={{
-                    required: true,
-                    pattern: {
-                        value: /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
-                        message: 'Invalid end time format (HH:MM)',
-                    },
-                    }}
-                    render={({ field: { value, onChange }, fieldState: { error } }) => (
-                    <TextField
-                        label='End Time'
-                        value={value}
-                        onChange={onChange}
-                        error={Boolean(error)}
-                        helperText={error?.message || ''}
-                        placeholder='HH:MM'
-                    />
-                    )}
-                />
+              <Controller
+                name='endTime'
+                control={control}
+                rules={{
+                  required: true,
+                  pattern: {
+                    value: /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                    message: 'Invalid end time format (HH:MM)',
+                  },
+                }}
+                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                  <TextField
+                    label='End Time'
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message || ''}
+                    placeholder='HH:MM'
+                  />
+                )}
+              />
             </Grid>
 
             <Grid item xs={12}>
@@ -185,7 +193,7 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                       multiline
                       {...field}
                       label='Webinar Description'
-                      error={Boolean(errors.speakerDescription)}
+                      error={Boolean(errors.webinarDescription)}
                       aria-describedby='validation-webinar-description'
                     />
                   )}
@@ -197,9 +205,9 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                 )}
               </FormControl>
             </Grid>
-        </Grid>
+          </Grid>
 
-        <DialogTitle>Speaker info :</DialogTitle>
+          <DialogTitle>Speaker info :</DialogTitle>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
@@ -207,11 +215,10 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                   name='firstName'
                   control={control}
                   rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
+                  render={({ field }) => (
                     <TextField
-                      value={value}
+                      {...field}
                       label='First Name'
-                      onChange={onChange}
                       placeholder='Leonard'
                       error={Boolean(errors.firstName)}
                       aria-describedby='validation-basic-first-name'
@@ -232,11 +239,10 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                   name='lastName'
                   control={control}
                   rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
+                  render={({ field }) => (
                     <TextField
-                      value={value}
+                      {...field}
                       label='Last Name'
-                      onChange={onChange}
                       placeholder='Carter'
                       error={Boolean(errors.lastName)}
                       aria-describedby='validation-basic-last-name'
@@ -257,11 +263,10 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                   name='company'
                   control={control}
                   rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
+                  render={({ field }) => (
                     <TextField
-                      value={value}
+                      {...field}
                       label='Company'
-                      onChange={onChange}
                       placeholder='Meducate'
                       error={Boolean(errors.company)}
                       aria-describedby='validation-basic-company'
@@ -282,13 +287,12 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                   name='jobTitle'
                   control={control}
                   rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
+                  render={({ field }) => (
                     <TextField
-                      value={value}
+                      {...field}
                       label='Job Title'
-                      onChange={onChange}
                       placeholder='CEO'
-                      error={Boolean(errors.company)}
+                      error={Boolean(errors.jobTitle)}
                       aria-describedby='validation-job-title'
                     />
                   )}
@@ -363,17 +367,15 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
                 )}
               </FormControl>
             </Grid>
-
-            <Grid item xs={12}>
-              <Button size='large' type='submit' variant='contained'>
-                Submit
-              </Button>
-            </Grid>
           </Grid>
+
+          <Button type='submit' variant='contained' color='primary'>
+            Submit
+          </Button>
         </form>
       </DialogContent>
     </Dialog>
   );
-}  
+};
 
 export default NewEventForm;

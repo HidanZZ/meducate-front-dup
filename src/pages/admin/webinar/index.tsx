@@ -6,11 +6,45 @@ import { useState } from 'react';
 import Icon from 'src/@core/components/icon'
 import NewEventForm from 'src/views/pages/webinar/admin/NewEventForm'
 
+interface Speaker {
+    id: number;
+    firstName: string;
+    lastName: string;
+    picture: string;
+    company: string;
+    jobTitle: string;
+    description: string;
+}
+  
+interface WebinarData {
+    id: number;
+    title: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+    speaker: Speaker;
+}
+
+type FormData = {
+    title: string;
+    date: Date | null;
+    startTime: string;
+    endTime: string;
+    webinarDescription: string;
+    lastName: string;
+    firstName: string;
+    company: string;
+    jobTitle: string;
+    speakerDescription: string;
+    gender: string;
+    select: string;
+    checkbox: boolean;
+};
+  
 
 const WebinarList = () => {
     const [dialogOpen,setDialogOpen] = useState(false);
-    const [webinars,setWebinars] = useState([
-    
+    const [webinars,setWebinars] = useState<WebinarData[]>([
         {
             id: 1,
             title: 'Data Analytics for Population Health Management',
@@ -147,40 +181,30 @@ const WebinarList = () => {
         setWebinars((prevWebinars) => prevWebinars.filter((webinar) => webinar.id !== webinarId));
     };
   
-    interface WebinarData {
-        title: string;
-        date: Date;
-        startTime: string;
-        endTime: string;
-        firstName: string;
-        lastName: string;
-        company: string;
-        jobTitle: string;
-        speakerDescription: string;
-    } 
+    
 
-    const addWebinar = (data : WebinarData) => {
-        const formattedDate = data.date.toISOString().split('T')[0];
-        const newWebinar = {
-            
-            title: data.title || '',
-            date: formattedDate || '',
-            startTime: data.startTime || '',
-            endTime: data.endTime || '',
-            speaker:{
-                id:'9',
-                firstName: data.firstName || '',
-                lastName: data.lastName || '',
-                picture: '',
-                company: data.company || '',
-                jobTitle: data.jobTitle || '',
-                speakerDescription: data.speakerDescription || '',
-
-            }
+    const addWebinar = (data: FormData) => {
+        const webinarData: WebinarData = {
+          id: webinars.length + 1,
+          title: data.title,
+          date: data.date?.toISOString().split('T')[0] || '',
+          start_time: data.startTime,
+          end_time: data.endTime,
+          speaker: {
+            id: 5,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            picture: '',
+            company: data.company,
+            jobTitle: data.jobTitle,
+            description: data.speakerDescription,
+          },
         };
-        
-        setWebinars([...webinars, newWebinar]);
-    };
+    
+        setWebinars([...webinars, webinarData]);
+        setDialogOpen(false);
+      };
+    
       
 
     const sortedWebinars = webinars.sort((a, b) => {
