@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef } from 'react'
 
 import { useForm, Controller } from 'react-hook-form'
 import DatePicker from 'react-datepicker'
@@ -48,12 +48,7 @@ interface NewEventFormProps {
 }
   
 const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) => {   
-   const [state, setState] = useState({
-    password: '',
-    showPassword: false
-  })
 
-  // ** Hooks
   const {
     control,
     handleSubmit,

@@ -1,4 +1,4 @@
-import { Button, Card, Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import { parseISO } from 'date-fns';
 import AdminEventCard from 'src/views/pages/webinar/admin/AdminEventCard';
 import Box from '@mui/material/Box'
@@ -147,7 +147,19 @@ const WebinarList = () => {
         setWebinars((prevWebinars) => prevWebinars.filter((webinar) => webinar.id !== webinarId));
     };
   
-    const addWebinar = (data) => {
+    interface WebinarData {
+        title: string;
+        date: Date;
+        startTime: string;
+        endTime: string;
+        firstName: string;
+        lastName: string;
+        company: string;
+        jobTitle: string;
+        speakerDescription: string;
+    } 
+
+    const addWebinar = (data : WebinarData) => {
         const formattedDate = data.date.toISOString().split('T')[0];
         const newWebinar = {
             
