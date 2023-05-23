@@ -4,9 +4,11 @@ import AdminEventCard from 'src/views/pages/webinar/admin/AdminEventCard';
 import Box from '@mui/material/Box'
 import { useState } from 'react';
 import Icon from 'src/@core/components/icon'
+import NewEventForm from 'src/views/pages/webinar/admin/NewEventForm'
 
 
 const WebinarList = () => {
+    const [dialogOpen,setDialogOpen] = useState(false);
     const [webinars,setWebinars] = useState([
     
         {
@@ -145,6 +147,7 @@ const WebinarList = () => {
         setWebinars((prevWebinars) => prevWebinars.filter((webinar) => webinar.id !== webinarId));
     };
   
+    
 
     const sortedWebinars = webinars.sort((a, b) => {
         const dateA = parseISO(`${a.date}T${a.start_time}`).getTime();
@@ -155,8 +158,8 @@ const WebinarList = () => {
         
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Button variant="contained" color="secondary" sx={{ width: '50%', maxWidth: '240px', mb: 4 }}>
-                <Icon icon='mdi:edit' fontSize="medium" /> Edit
+            <Button variant="contained" color="secondary" onClick={() => setDialogOpen(true)} sx={{ width: '50%', maxWidth: '240px', mb: 4 }}>
+                <Icon icon='mdi:plus' fontSize="medium" /> New Event
             </Button>
             <Grid container spacing={5} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
                 {sortedWebinars.map((webinar) => (
@@ -165,8 +168,10 @@ const WebinarList = () => {
                 </Grid>
                 ))}
             </Grid>
-        </Box>
+            <NewEventForm open={dialogOpen} onClose={() => setDialogOpen(false)} />
 
+        </Box>
+        
       
     );
 };
