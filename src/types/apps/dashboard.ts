@@ -10,3 +10,16 @@ export type DateRangeWithSentiment = DateRange & {
 }
 
 export type Sentiment = 'pos' | 'neg'
+
+export type TopNames = {
+  _id: string
+  name: string
+  count: number
+}
+
+export const allTimeDateRange: DateRange = {
+  startMonth: 1,
+  startYear: 1900,
+  endMonth: 12,
+  endYear: 2100
+}

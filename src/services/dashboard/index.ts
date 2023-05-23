@@ -1,10 +1,10 @@
 import dashboardApiClient from 'src/axios/dashboardClient'
-import { DateRange, DateRangeWithSentiment } from 'src/types/apps/dashboard'
+import { DateRange, DateRangeWithSentiment, TopNames } from 'src/types/apps/dashboard'
 
 class DashboardService {
   static async getTopNames(daterange: DateRange) {
     try {
-      const response = await dashboardApiClient.get(
+      const response = await dashboardApiClient.get<Array<TopNames>>(
         `/top-names/from/${daterange.startMonth}/${daterange.startYear}/to/${daterange.endMonth}/${daterange.endYear}`
       )
 
