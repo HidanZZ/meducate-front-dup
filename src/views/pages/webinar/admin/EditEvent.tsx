@@ -16,13 +16,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import 'react-datepicker/dist/react-datepicker.css';
 import { parseISO } from 'date-fns';
 
-type Webinar = {
-  id?: number;
-  title: string;
-  date: string;
-  start_time: string;
-  end_time: string;
-  speaker: {
+interface Speaker {
     id: number;
     firstName: string;
     lastName: string;
@@ -30,8 +24,16 @@ type Webinar = {
     company: string;
     jobTitle: string;
     description: string;
-  };
-};
+}
+  
+interface Webinar {
+    id: number;
+    title: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+    speaker: Speaker;
+}
 
 type FormData = {
   title: string;
@@ -86,7 +88,7 @@ const EditEventDialog: React.FC<EditEventFormProps> = ({ open, webinar, onClose,
 
   useEffect(() => {
     const webinarData = { ...webinar }; // Create a copy of the webinar object
-    delete webinarData.id; // Remove the 'id' property from the copy
+
 
     const newDefaultValues: FormData = {
       ...defaultValues,
