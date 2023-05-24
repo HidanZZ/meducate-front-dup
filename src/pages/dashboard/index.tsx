@@ -1,5 +1,7 @@
 import { Grid } from "@mui/material";
 import { useState } from "react";
+
+// import { useSelector } from "react-redux";
 import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
 import SearchField from "src/views/forms/dashboard/SearchField";
 import SentimentTrendChart from "src/views/pages/dashboard/SentimentTrendChart";
@@ -13,6 +15,8 @@ import WordcloudCard from "src/views/pages/dashboard/WordcloudCard";
 
 const Dashboard = () => {
     const [searchValue, setSearchValue] = useState('');
+
+    // const {names} = useSelector((state: any) => state.dashboard.searchNames);
 
     return(
         <ApexChartWrapper>

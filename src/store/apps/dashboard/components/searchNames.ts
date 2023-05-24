@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import DashboardService from 'src/services/dashboard'
+import { SearchName } from 'src/types/apps/dashboard'
 
 type State = {
-  names: any
+  names: Array<SearchName>
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null | undefined | { [key: string]: string[] }
 }

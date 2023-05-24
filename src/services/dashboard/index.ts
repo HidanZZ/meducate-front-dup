@@ -1,5 +1,5 @@
 import dashboardApiClient from 'src/axios/dashboardClient'
-import { DateRange, DateRangeWithSentiment, SentimentTrend, TopNames } from 'src/types/apps/dashboard'
+import { DateRange, DateRangeWithSentiment, SearchName, SentimentTrend, TopNames } from 'src/types/apps/dashboard'
 
 class DashboardService {
   static async getTopNames(daterange: DateRange) {
@@ -28,7 +28,7 @@ class DashboardService {
 
   static async searchNames(name: string) {
     try {
-      const response = await dashboardApiClient.get(`/search-names/${name}`)
+      const response = await dashboardApiClient.get<Array<SearchName>>(`/search-names/${name}`)
 
       return response.data
     } catch (err: any) {
