@@ -1,5 +1,5 @@
 import dashboardApiClient from 'src/axios/dashboardClient'
-import { DateRange, DateRangeWithSentiment, TopNames } from 'src/types/apps/dashboard'
+import { DateRange, DateRangeWithSentiment, SentimentTrend, TopNames } from 'src/types/apps/dashboard'
 
 class DashboardService {
   static async getTopNames(daterange: DateRange) {
@@ -47,7 +47,7 @@ class DashboardService {
   }
   static async getSentimentTrendOverTime(daterange: DateRange) {
     try {
-      const response = await dashboardApiClient.get(
+      const response = await dashboardApiClient.get<Array<SentimentTrend>>(
         `/sentiment-trend-over-time/from/${daterange.startMonth}/${daterange.startYear}/to/${daterange.endMonth}/${daterange.endYear}`
       )
 

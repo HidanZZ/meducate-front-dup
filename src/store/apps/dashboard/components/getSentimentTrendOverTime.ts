@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import DashboardService from 'src/services/dashboard'
-import { DateRange } from 'src/types/apps/dashboard'
+import { DateRange, SentimentTrend } from 'src/types/apps/dashboard'
 
 type State = {
-  trend: any
+  trend: Array<SentimentTrend>
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null | undefined | { [key: string]: string[] }
 }

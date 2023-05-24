@@ -15,25 +15,35 @@ import DatePickerRange from 'src/views/forms/dashboard/DatePicker'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { DateRange, TopNames, allTimeDateRange } from 'src/types/apps/dashboard'
-import { fetchTopNames } from 'src/store/apps/dashboard/components/topNames'
+import { DateRange, SentimentTrend, lastYearDateRange } from 'src/types/apps/dashboard'
 import { AppDispatch } from 'src/store'
 import SimpleSpinner from 'src/@core/components/spinner/Spinner'
 import { Typography } from '@mui/material'
+import { getTrend } from 'src/store/apps/dashboard/components/getSentimentTrendOverTime'
 
-const TopNamesChart = () => {
+const areaColors = {
+  series1: '#ab7efd',
+  series2: '#b992fe',
+  series3: '#e0cffe'
+}
+type Series = {
+    name: string
+    data : number[]
+}
+
+const SentimentTrendChart = () => {
   // ** Hook
   const theme = useTheme()
   const [options, setOptions] = useState({})
-  const [data, setData] = useState<number[]>([])
+  const [data, setData] = useState<Series[]>([])
   const dispatch = useDispatch<AppDispatch>()
-  const { topNames, status } = useSelector((state: any) => state.dashboard.topNames)
+  const {  status } = useSelector((state: any) => state.dashboard.getSentimentTrendOverTime)
   const [key, setKey] = useState<number>(0)
 
   const getData = (daterange: DateRange) => {
-    dispatch(fetchTopNames(daterange))
+    dispatch(getTrend(daterange))
       .unwrap()
-      .then((res: Array<TopNames>) => {
+      .then((res: Array<SentimentTrend>) => {
         const category = getCategory(res)
         const series = getSeries(res)
         setOptions({
@@ -51,29 +61,46 @@ const TopNamesChart = () => {
         console.log(err)
       })
   }
-  const getCategory = (data: Array<TopNames>) => {
-    const category = data.map((item: TopNames) => {
-      return item.name
+  const getCategory = (data: Array<SentimentTrend>) => {
+    const category = data.map((item: SentimentTrend) => {
+      const date = new Date(item.date.$date)
+        const month = date.toLocaleString('default', { month: 'short' })
+        const year = date.getFullYear()
+
+        return `${month}/${year}`
     })
 
     return category
   }
 
-  const getSeries = (data: Array<TopNames>) => {
-    const series = data.map((item: TopNames) => {
-      return item.count
-    })
+  const getSeries = (data: Array<SentimentTrend>) => {
+    const series = [
+      {
+        name: 'Positive',
+        data: data.map((item: SentimentTrend) => {
+            console.log(item);
+            
+          return item.sentiments.filter((item: any) => item.sentiment === 'POSITIVE')[0].count
+        })
+      },
+      {
+        name: 'Negative',
+        data: data.map((item: SentimentTrend) => {
+          return item.sentiments.filter((item: any) => item.sentiment === 'NEGATIVE')[0].count
+        })
+      }
+    ]
 
     return series
   }
 
   useEffect(() => {
-    getData(allTimeDateRange)
+    getData(lastYearDateRange)
   }, [])
   const handleOnChangeRange = (dates: any) => {
     const [start, end] = dates
     if (!end && !start) {
-      getData(allTimeDateRange)
+      getData(lastYearDateRange)
 
       return
     }
@@ -97,64 +124,56 @@ const TopNamesChart = () => {
   const defaultOptions: ApexOptions = {
     chart: {
       parentHeightOffset: 0,
-      toolbar: { show: false },
-      events: {
-        dataPointSelection: function (event, chartContext, config) {
-          const index = config.dataPointIndex
-          console.log(topNames[index])
-        }
-      }
+      toolbar: { show: false }
     },
-    plotOptions: {
-      bar: {
-        borderRadius: 4,
-        distributed: true,
-        columnWidth: '60%',
-        endingShape: 'rounded',
-        startingShape: 'rounded'
-      }
-    },
-    stroke: {
-      width: 2,
-      colors: [theme.palette.background.paper]
-    },
-    legend: { show: false },
-    grid: {
-      strokeDashArray: 7,
-      borderColor: theme.palette.divider,
-      padding: {
-        top: -1,
-        left: -9,
-        right: 0,
-        bottom: 5
-      }
-    },
+    tooltip: { shared: false },
     dataLabels: { enabled: false },
-    colors: [theme.palette.primary.main],
-    states: {
-      hover: {
-        filter: { type: 'none' }
+    stroke: {
+      show: false,
+      curve: 'straight'
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+      labels: { colors: theme.palette.text.secondary },
+      markers: {
+        offsetY: 1,
+        offsetX: -3
       },
-      active: {
-        filter: { type: 'none' }
+      itemMargin: {
+        vertical: 3,
+        horizontal: 10
+      }
+    },
+    colors: [areaColors.series3, areaColors.series2, areaColors.series1],
+    fill: {
+      opacity: 1,
+      type: 'solid'
+    },
+    grid: {
+      show: true,
+      borderColor: theme.palette.divider,
+      xaxis: {
+        lines: { show: true }
+      }
+    },
+    yaxis: {
+      labels: {
+        style: { colors: theme.palette.text.disabled }
       }
     },
     xaxis: {
-      categories: [],
-      tickPlacement: 'on',
-      labels: { show: false },
-      axisTicks: { show: false },
-      axisBorder: { show: false }
-    },
-    yaxis: {
-      show: true,
-      tickAmount: 4,
+      axisBorder: { show: false },
+      axisTicks: { color: theme.palette.divider },
+      crosshairs: {
+        stroke: { color: theme.palette.divider }
+      },
       labels: {
-        offsetY: 2,
-        offsetX: -17,
-        style: { colors: theme.palette.text.disabled },
-        formatter: value => `${value > 999 ? `${(value / 1000).toFixed(0)}k` : value}`
-      }
+        style: { colors: theme.palette.text.disabled }
+      },
+      categories: [
+        
+      ]
     }
   }
 
@@ -168,7 +187,7 @@ const TopNamesChart = () => {
               userSelect: 'none'
             }}
           >
-            Top Names
+            Sentiment Trend Over Time
           </Typography>
         }
         subheader={``}
@@ -182,14 +201,14 @@ const TopNamesChart = () => {
           }}
         >
           {status === 'loading' ? (
-            <SimpleSpinner sx={{ height: 300 }}></SimpleSpinner>
+            <SimpleSpinner sx={{ height: 500 }}></SimpleSpinner>
           ) : (
             <ReactApexcharts
               key={key}
-              type='bar'
-              height={300}
+              type='area'
+              height={500}
               options={options}
-              series={[{ name: 'Count', data: data }]}
+              series={data}
             />
           )}
         </Box>
@@ -198,4 +217,4 @@ const TopNamesChart = () => {
   )
 }
 
-export default TopNamesChart
+export default SentimentTrendChart

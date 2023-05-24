@@ -23,3 +23,19 @@ export const allTimeDateRange: DateRange = {
   endMonth: 12,
   endYear: 2100
 }
+export const lastYearDateRange: DateRange = {
+  startMonth: 1,
+  startYear: new Date().getFullYear() - 1,
+  endMonth: 12,
+  endYear: new Date().getFullYear() - 1
+}
+
+export type SentimentTrend = {
+  date: {
+    $date: string
+  }
+  sentiments: Array<{
+    sentiment: string
+    count: number
+  }>
+}
