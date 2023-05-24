@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import { useState } from 'react';
 import Icon from 'src/@core/components/icon'
 import NewEventForm from 'src/views/pages/webinar/admin/NewEventForm'
+import EditEvent from 'src/views/pages/webinar/admin/EditEvent'
 
 interface Speaker {
     id: number;
@@ -43,7 +44,8 @@ type FormData = {
   
 
 const WebinarList = () => {
-    const [dialogOpen,setDialogOpen] = useState(false);
+    const [addDialogOpen,setAddDialogOpen] = useState(false);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [webinars,setWebinars] = useState<WebinarData[]>([
         {
             id: 1,
@@ -176,12 +178,14 @@ const WebinarList = () => {
         
     ])
 
-    // Delete function
+    
     const handleDelete = (webinarId: number) => {
         setWebinars((prevWebinars) => prevWebinars.filter((webinar) => webinar.id !== webinarId));
     };
-  
-    
+
+    const handleEdit = () => {
+        setEditDialogOpen(true);
+    };
 
     const addWebinar = (data: FormData) => {
         const webinarData: WebinarData = {
@@ -202,8 +206,26 @@ const WebinarList = () => {
         };
     
         setWebinars([...webinars, webinarData]);
-        setDialogOpen(false);
-      };
+        setAddDialogOpen(false);
+    };
+
+    const editWebinar = (data: WebinarData) => {
+        const updatedWebinars = webinars.map((webinar) => {
+          if (webinar.id === data.id) {
+            // Replace the old webinar with the new one
+            return {
+              ...webinar,
+              ...data,
+            };
+          }
+          return webinar;
+        });
+      
+        setWebinars(updatedWebinars);
+        setEditDialogOpen(false);
+    };
+      
+      
     
       
 
@@ -216,18 +238,19 @@ const WebinarList = () => {
         
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Button variant="contained" color="secondary" onClick={() => setDialogOpen(true)} sx={{ width: '50%', maxWidth: '240px', mb: 4 }}>
+            <Button variant="contained" color="secondary" onClick={() => setAddDialogOpen(true)} sx={{ width: '50%', maxWidth: '240px', mb: 4 }}>
                 <Icon icon='mdi:plus' fontSize="medium" /> New Event
             </Button>
             <Grid container spacing={5} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
                 {sortedWebinars.map((webinar) => (
                 <Grid key={webinar.id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
-                    <AdminEventCard webinar={webinar} onEdit={() => handleDelete(webinar.id)} onDelete={() => handleDelete(webinar.id)} />
+                    <AdminEventCard webinar={webinar} onEdit={() => handleEdit()} onDelete={() => handleDelete(webinar.id)} />
+                    <EditEvent webinar ={webinar} open={editDialogOpen} onClose={() => setEditDialogOpen(false) }   onSubmit={(data:WebinarData) => editWebinar(data)}  />
                 </Grid>
                 ))}
             </Grid>
-            <NewEventForm open={dialogOpen} onClose={() => setDialogOpen(false)} onSubmit={addWebinar} />
-
+            <NewEventForm open={addDialogOpen} onClose={() => setAddDialogOpen(false)} onSubmit={addWebinar} />
+            
         </Box>
         
       

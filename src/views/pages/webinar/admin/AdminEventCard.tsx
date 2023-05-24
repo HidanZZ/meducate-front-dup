@@ -50,7 +50,6 @@ const ReducedEventCard = ({webinar, onDelete, onEdit}:ReducedEventCardProps) => 
         alignItems: 'center',
         justifyContent: 'center',
         padding: '0 10',
-        cursor: 'pointer',
         maxWidth: '22rem',
         height: '100%',
         display: 'flex',
@@ -159,10 +158,6 @@ const ReducedEventCard = ({webinar, onDelete, onEdit}:ReducedEventCardProps) => 
         </Box>
         </CardActions>
         </Card>
-    
-
-
-
 
     )
 };
