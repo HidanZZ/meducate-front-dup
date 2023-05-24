@@ -46,6 +46,7 @@ type FormData = {
 const WebinarList = () => {
     const [addDialogOpen,setAddDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [webinarToEdit, setWebinarToEdit] = useState(-1);
     const [webinars,setWebinars] = useState<WebinarData[]>([
         {
             id: 1,
@@ -183,7 +184,8 @@ const WebinarList = () => {
         setWebinars((prevWebinars) => prevWebinars.filter((webinar) => webinar.id !== webinarId));
     };
 
-    const handleEdit = () => {
+    const handleEdit = (webinarId: number) => {
+        setWebinarToEdit(webinarId);
         setEditDialogOpen(true);
     };
 
@@ -218,15 +220,13 @@ const WebinarList = () => {
               ...data,
             };
           }
+
           return webinar;
         });
       
         setWebinars(updatedWebinars);
         setEditDialogOpen(false);
     };
-      
-      
-    
       
 
     const sortedWebinars = webinars.sort((a, b) => {
@@ -244,13 +244,22 @@ const WebinarList = () => {
             <Grid container spacing={5} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
                 {sortedWebinars.map((webinar) => (
                 <Grid key={webinar.id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
-                    <AdminEventCard webinar={webinar} onEdit={() => handleEdit()} onDelete={() => handleDelete(webinar.id)} />
-                    <EditEvent webinar ={webinar} open={editDialogOpen} onClose={() => setEditDialogOpen(false) }   onSubmit={(data:WebinarData) => editWebinar(data)}  />
+                    
+                    <AdminEventCard webinar={webinar} onEdit={() => handleEdit(webinar.id)} onDelete={() => handleDelete(webinar.id)} />
+                    {webinarToEdit === webinar.id && (
+              <EditEvent
+                webinar={webinar}
+                open={editDialogOpen}
+                onClose={() => setEditDialogOpen(false)}
+                onSubmit={editWebinar}
+              />
+            )}
                 </Grid>
                 ))}
             </Grid>
             <NewEventForm open={addDialogOpen} onClose={() => setAddDialogOpen(false)} onSubmit={addWebinar} />
             
+
         </Box>
         
       
