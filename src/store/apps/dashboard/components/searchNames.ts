@@ -36,7 +36,9 @@ export const fetchNames = createAsyncThunk(
 const searchNamesSlice = createSlice({
   name: 'dashboard/searchNames',
   initialState,
-  reducers: {},
+  reducers: {
+    reset : () => initialState
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchNames.pending, state => {
@@ -61,5 +63,7 @@ const searchNamesSlice = createSlice({
       })
   }
 })
+
+export const { reset } = searchNamesSlice.actions
 
 export default searchNamesSlice.reducer

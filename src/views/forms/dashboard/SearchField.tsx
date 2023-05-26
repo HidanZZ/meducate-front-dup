@@ -3,6 +3,8 @@ import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { motion, useAnimation } from 'framer-motion';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useSelector } from 'react-redux';
+import SimpleSpinner from 'src/@core/components/spinner/Spinner';
 
 type SearchFieldProps = {
     inputValue: string
@@ -16,6 +18,8 @@ const SearchField = ({
   
   const [isDisabled, setIsDisabled] = useState(true);
   const controls = useAnimation();
+  const {status  } = useSelector((state: any) => state.dashboard.searchNames);
+
   
   const handleMouseEnter = async () => {
     await controls.start({
@@ -59,11 +63,17 @@ const SearchField = ({
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <IconButton>
-                <SearchIcon 
+                {
+                  status === 'loading'? (
+                    <SimpleSpinner 
+                    sx={{ height: '30px', width: '30px' }}
+                    />
+                  ) : (
+                    <SearchIcon 
                     sx={{ fontSize: '30px' }}
                 />
-              </IconButton>
+                  )
+                }
             </InputAdornment>
           ),
           endAdornment: (

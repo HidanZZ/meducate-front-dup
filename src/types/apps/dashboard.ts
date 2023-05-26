@@ -43,7 +43,7 @@ export type SentimentTrend = {
 export type SearchName = {
   name: string
   _id: string
-  negativePercent: number
-  positivePercent: number
+  negativeCount: number
+  positiveCount: number
   paragraphCount: number
 }

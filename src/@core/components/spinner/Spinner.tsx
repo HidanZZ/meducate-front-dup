@@ -17,7 +17,7 @@ const SimpleSpinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
       }}
     >
       
-      <CircularProgress disableShrink sx={{ mt: 6 }} />
+      <CircularProgress disableShrink  />
     </Box>
   )
 }
