@@ -3,9 +3,9 @@ import { styled } from '@mui/material/styles'
 
 const ApexChartWrapper = styled('div')(({ theme }) => ({
   '& .apexcharts-canvas': {
-    "& line[stroke='transparent']": {
-      display: 'none'
-    },
+    // "& line[stroke='transparent']": {
+    //   display: 'none'
+    // },
     '& .apexcharts-tooltip': {
       boxShadow: theme.shadows[3],
       borderColor: theme.palette.divider,

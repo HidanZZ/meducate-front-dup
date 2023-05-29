@@ -1,5 +1,13 @@
 import dashboardApiClient from 'src/axios/dashboardClient'
-import { DateRange, DateRangeWithSentiment, SearchName, SentimentTrend, TopNames } from 'src/types/apps/dashboard'
+import {
+  DateRange,
+  DateRangeWithSentiment,
+  EntityTreeMap,
+  Organization,
+  SearchName,
+  SentimentTrend,
+  TopNames
+} from 'src/types/apps/dashboard'
 
 class DashboardService {
   static async getTopNames(daterange: DateRange) {
@@ -38,7 +46,16 @@ class DashboardService {
 
   static async getByID(id: string) {
     try {
-      const response = await dashboardApiClient.get(`/get-by-id/${id}`)
+      const response = await dashboardApiClient.get<Organization>(`/get-by-id/${id}`)
+
+      return response.data
+    } catch (err: any) {
+      throw err
+    }
+  }
+  static async getEntityTreeMap(id: string) {
+    try {
+      const response = await dashboardApiClient.get<EntityTreeMap>(`/entity-tree-map/${id}`)
 
       return response.data
     } catch (err: any) {

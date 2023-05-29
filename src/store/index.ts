@@ -4,6 +4,7 @@ import countries from './countries'
 import register from './apps/register'
 import verification from './apps/verification'
 import dashboard from './apps/dashboard'
+import organization from './apps/organization'
 
 // ** Reducers
 
@@ -12,7 +13,8 @@ export const store = configureStore({
     countries,
     register,
     verification,
-    dashboard
+    dashboard,
+    organization
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
