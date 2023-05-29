@@ -39,7 +39,8 @@ const OrganizationHeader = ({
         alt='profile-header'
         image={'/images/pages/profile-banner.png'}
         sx={{
-          height: { xs: 150, md: 250 }
+          height: { xs: 150, md: 250 },
+          
         }}
       />
       <CardContent

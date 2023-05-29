@@ -39,6 +39,14 @@ export type SentimentTrend = {
     count: number
   }>
 }
+export type SentimentTrendId = {
+  categories: string[],
+  series: Array<{
+    data: number[],
+    name: string
+  }>
+  
+}
 type Paragraph = {
   datetime: string
   link: string

@@ -113,7 +113,11 @@ const donutColors = {
   }
 
   return (
-    <Card>
+    <Card
+    sx={{
+      flexGrow: 1
+    }}
+    >
       <CardHeader
         
         subheader={``}

@@ -100,7 +100,11 @@ const  getShortName = (name : string, maxLength  = 15)=> {
   }
 
   return (
-    <Card>
+    <Card
+    sx={{
+      flexGrow: 1,
+    }}
+    >
       <CardHeader
         
         subheader={``}
