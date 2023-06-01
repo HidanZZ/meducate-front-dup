@@ -32,6 +32,7 @@ const Dashboard = () => {
                         <Grid item xs={12}  >
                             <SentimentTrendChart />
                             </Grid>
+                            
             </Grid>
         </ApexChartWrapper>
     )

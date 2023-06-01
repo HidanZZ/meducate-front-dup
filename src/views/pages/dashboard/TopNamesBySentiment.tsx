@@ -22,6 +22,7 @@ import { Typography } from '@mui/material'
 import { Sentiment } from 'src/types/apps/dashboard'
 import { DateRangeWithSentiment } from 'src/types/apps/dashboard'
 import { fetchTopNamesBySentiment } from 'src/store/apps/dashboard/components/topNamesBySentiment'
+import { useRouter } from 'next/router'
 
 const TopNamesBySentimentChart = () => {
   // ** Hook
@@ -32,6 +33,7 @@ const TopNamesBySentimentChart = () => {
   const { topNames, status } = useSelector((state: any) => state.dashboard.topNamesBySentiment)
   const [key, setKey] = useState<number>(0)
   const [selectedSentiment, setSelectedSentiment] = useState<Sentiment>('pos')
+  const router = useRouter()
   const handleSentimentChange = (sentiment: Sentiment) => {
     setSelectedSentiment(sentiment)
     const fields : DateRangeWithSentiment = {
@@ -121,7 +123,8 @@ const TopNamesBySentimentChart = () => {
       events: {
         dataPointSelection: function (event, chartContext, config) {
           const index = config.dataPointIndex
-          console.log(topNames[index])
+          const id = topNames[index]._id
+          router.push(`/organization/${id}`)
         }
       }
     },

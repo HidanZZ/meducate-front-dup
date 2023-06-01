@@ -1,5 +1,6 @@
 import dashboardApiClient from 'src/axios/dashboardClient'
 import {
+  Article,
   DateRange,
   DateRangeWithSentiment,
   EntityTreeMap,
@@ -47,9 +48,20 @@ class DashboardService {
 
   static async getByID(id: string) {
     try {
-      console.log('id', id);
-      
+      console.log('id', id)
+
       const response = await dashboardApiClient.get<Organization>(`/get-by-id/${id}`)
+
+      return response.data
+    } catch (err: any) {
+      throw err
+    }
+  }
+  static async getArticlesByID(id: string, page: number) {
+    try {
+      console.log('id', id)
+
+      const response = await dashboardApiClient.get<Array<Article>>(`/get-articles-by-id/${id}/page/${page}`)
 
       return response.data
     } catch (err: any) {
@@ -79,24 +91,21 @@ class DashboardService {
 
   static async getSentimentTrendById(id: string) {
     try {
-      const response = await dashboardApiClient.get<SentimentTrendId>(
-        `/sentiment-data-by-id/${id}`
-      )
+      const response = await dashboardApiClient.get<SentimentTrendId>(`/sentiment-data-by-id/${id}`)
 
       return response.data
     } catch (err: any) {
       throw err
     }
   }
-  static async getWordCloudById(id: string,sentiment: string) {
+  static async getWordCloudById(id: string, sentiment: string) {
     try {
       const response = await dashboardApiClient.get<string>(`/wordcloud-by-id/${id}/sentiment/${sentiment}`)
 
       return response.data
-      } catch (err: any) {
-        throw err
-    
-      }
+    } catch (err: any) {
+      throw err
+    }
   }
   static async getKeywordAnalysis(fields: DateRangeWithSentiment) {
     try {
@@ -109,7 +118,6 @@ class DashboardService {
       throw err
     }
   }
-
 
   static async getWordCloud(fields: DateRangeWithSentiment) {
     try {

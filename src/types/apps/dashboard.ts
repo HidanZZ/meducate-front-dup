@@ -40,12 +40,11 @@ export type SentimentTrend = {
   }>
 }
 export type SentimentTrendId = {
-  categories: string[],
+  categories: string[]
   series: Array<{
-    data: number[],
+    data: number[]
     name: string
   }>
-  
 }
 type Paragraph = {
   datetime: string
@@ -57,6 +56,12 @@ type Paragraph = {
   }
   text: string
   title: string
+}
+export type Article = {
+  datetime: string
+  link: string
+  title: string
+  paragraphs: Array<Paragraph>
 }
 
 export type SearchName = {
@@ -73,7 +78,7 @@ export type Organization = {
   count: number
   positiveCount: number
   negativeCount: number
-  paragraphs: Array<Paragraph>
+  articles: Array<Article>
 }
 
 export type EntityTreeMap = {
