@@ -60,7 +60,7 @@ const WordcloudCard = ({id,sentiment}:WordcloudCardProps) => {
   return (
     <Card>
       <CardHeader
-        title={<Typography variant='h4'>
+        title={<Typography variant='h5'>
             {sentiment === 'pos'? sentiments.pos : sentiments.neg} Wordcloud
   
         </Typography>}
@@ -71,13 +71,13 @@ const WordcloudCard = ({id,sentiment}:WordcloudCardProps) => {
         <Box
           sx={{
             pb: 6,
-            height: 500,
+            height: 300,
             position: 'relative'
 
           }}
         >
           {status === 'loading' ? (
-            <SimpleSpinner sx={{ height: 500 }}></SimpleSpinner>
+            <SimpleSpinner sx={{ height: 300 }}></SimpleSpinner>
           ) : (
             <Image
             fill
