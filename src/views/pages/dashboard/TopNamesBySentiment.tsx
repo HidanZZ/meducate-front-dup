@@ -124,6 +124,7 @@ const TopNamesBySentimentChart = () => {
         dataPointSelection: function (event, chartContext, config) {
           const index = config.dataPointIndex
           const id = topNames[index]._id
+          
           router.push(`/organization/${id}`)
         }
       }

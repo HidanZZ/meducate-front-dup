@@ -57,7 +57,7 @@ const OrganizationPage = ({ data }: { data: Organization }) => {
           <WordcloudCard id={data._id} sentiment='neg' />
         </Grid>
         <Grid item xs={12}>
-          <Articles data={articles} handlePageIncrement={handlePageIncrement} />
+          <Articles data={articles} handlePageIncrement={handlePageIncrement} count={data.articlesCount} />
         </Grid>
         <Grid item xs={12}>
           {status === 'loading' && <SimpleSpinner />}

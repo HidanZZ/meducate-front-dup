@@ -78,7 +78,7 @@ export type Organization = {
   count: number
   positiveCount: number
   negativeCount: number
-  articles: Array<Article>
+  articlesCount:number
 }
 
 export type EntityTreeMap = {

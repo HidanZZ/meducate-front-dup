@@ -20,6 +20,7 @@ import { fetchTopNames } from 'src/store/apps/dashboard/components/topNames'
 import { AppDispatch } from 'src/store'
 import SimpleSpinner from 'src/@core/components/spinner/Spinner'
 import { Typography } from '@mui/material'
+import { useRouter } from 'next/router'
 
 const TopNamesChart = () => {
   // ** Hook
@@ -29,6 +30,7 @@ const TopNamesChart = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { topNames, status } = useSelector((state: any) => state.dashboard.topNames)
   const [key, setKey] = useState<number>(0)
+  const router = useRouter()
 
   const getData = (daterange: DateRange) => {
     dispatch(fetchTopNames(daterange))
@@ -101,7 +103,9 @@ const TopNamesChart = () => {
       events: {
         dataPointSelection: function (event, chartContext, config) {
           const index = config.dataPointIndex
-          console.log(topNames[index])
+          const id = topNames[index]._id
+          
+          router.push(`/organization/${id}`)
         }
       }
     },
