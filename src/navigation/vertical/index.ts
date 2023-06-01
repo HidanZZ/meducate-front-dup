@@ -22,6 +22,11 @@ const navigation = (): VerticalNavItemsType => {
       sectionTitle: 'Apps'
     },
     {
+      title: 'Chat',
+      path: '/apps/chat',
+      icon: 'mdi:message-outline'
+    },
+    {
       title: 'Webinar',
       icon: 'solar:play-stream-broken',
       badgeColor: 'success',

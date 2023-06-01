@@ -18,6 +18,9 @@ const CanViewNavSectionTitle = (props: Props) => {
 
   // ** Hook
   const ability = useContext(AbilityContext)
+  if (!(navTitle?.action && navTitle?.subject)) {
+    return <>{children}</>
+  }
 
   return ability && ability.can(navTitle?.action, navTitle?.subject) ? <>{children}</> : null
 }

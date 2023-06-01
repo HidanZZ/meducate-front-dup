@@ -5,6 +5,7 @@ import register from './apps/register'
 import verification from './apps/verification'
 import dashboard from './apps/dashboard'
 import organization from './apps/organization'
+import chat from './apps/chat'
 
 // ** Reducers
 
@@ -14,7 +15,8 @@ export const store = configureStore({
     register,
     verification,
     dashboard,
-    organization
+    organization,
+    chat
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
