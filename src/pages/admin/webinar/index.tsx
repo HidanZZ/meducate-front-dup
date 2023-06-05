@@ -57,7 +57,6 @@ const WebinarList = () => {
         try {
           const response = await axios.get('http://localhost:8000/webinar/getAll');
           const webinarsData = response.data.data.webinars;
-          console.log(webinarsData);
           setWebinars(webinarsData);
         } catch (error) {
           console.error(error);

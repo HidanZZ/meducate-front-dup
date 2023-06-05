@@ -14,10 +14,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios';
 
 type FormData = {
   title: string;
-  date: Date | null;
+  date: Date ;
   startTime: string;
   endTime: string;
   webinarDescription: string;
@@ -33,7 +34,7 @@ type FormData = {
 
 const defaultValues: FormData = {
   title: '',
-  date: null,
+  date: new Date(),
   startTime: '',
   endTime: '',
   webinarDescription: '',
@@ -66,8 +67,31 @@ const NewEventForm: React.FC<NewEventFormProps> = ({ open, onClose, onSubmit }) 
     formState: { errors },
   } = useForm<FormData>({ defaultValues });
 
-  const handleFormSubmit = (data: FormData) => {
-    onSubmit(data);
+  async function handleFormSubmit (data: FormData) {
+    try {
+      const response = await axios.post('http://localhost:8000/webinar/new', {
+        title: data.title,
+        date: data.date.toISOString().split('T')[0] || '',
+        start_time: data.startTime,
+        end_time: data.endTime,
+        speaker: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          //picture: data.picture,
+          company: data.company,
+          jobTitle: data.jobTitle,
+          description: data.speakerDescription
+        }
+      });
+  
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+  }
+  
+
+
+    
     onClose(false);
   };
 
