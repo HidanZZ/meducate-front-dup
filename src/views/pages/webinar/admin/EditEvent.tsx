@@ -80,39 +80,33 @@ const CustomInput = forwardRef<HTMLInputElement, any>(({ ...props }, ref) => {
 
 const EditEventDialog: React.FC<EditEventFormProps> = ({ open, webinar, onClose, onSubmit }) => {
     const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormData>({ defaultValues });
+        control,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<FormData>({ defaultValues });
 
-  useEffect(() => {
-    const webinarData = { ...webinar }; // Create a copy of the webinar object
+    useEffect(() => {
+        const webinarData = { ...webinar }; // Create a copy of the webinar object
+        const newDefaultValues: FormData = {
+        ...defaultValues,
+        ...webinarData,
+        date: parseISO(webinar.date),
+        };
+        reset(newDefaultValues);
+    }, [webinar, reset]);
+  
 
-
-    const newDefaultValues: FormData = {
-      ...defaultValues,
-      ...webinarData,
-      date: parseISO(webinar.date),
+    const handleFormSubmit = (data: FormData) => {
+        const updatedWebinar: Webinar = {
+            ...webinar,
+            ...data,
+            date: parseISO(webinar.date).toISOString().split('T')[0],
+        };
+    
+        onSubmit(updatedWebinar);
+        onClose(false);
     };
-    reset(newDefaultValues);
-}, [webinar, reset]);
-
-  // Rest of the code...
-
-  
-  
-
-  const handleFormSubmit = (data: FormData) => {
-    const updatedWebinar: Webinar = {
-      ...webinar,
-      ...data,
-      date: parseISO(webinar.date).toISOString().split('T')[0],
-    };
-  
-    onSubmit(updatedWebinar);
-    onClose(false);
-  };
   
 
     return (

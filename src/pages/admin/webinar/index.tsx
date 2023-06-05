@@ -247,19 +247,17 @@ const WebinarList = () => {
                     
                     <AdminEventCard webinar={webinar} onEdit={() => handleEdit(webinar.id)} onDelete={() => handleDelete(webinar.id)} />
                     {webinarToEdit === webinar.id && (
-              <EditEvent
-                webinar={webinar}
-                open={editDialogOpen}
-                onClose={() => setEditDialogOpen(false)}
-                onSubmit={editWebinar}
-              />
-            )}
+                        <EditEvent
+                            webinar={webinar}
+                            open={editDialogOpen}
+                            onClose={() => setEditDialogOpen(false)}
+                            onSubmit={editWebinar}
+                        />
+                        )}
                 </Grid>
                 ))}
             </Grid>
             <NewEventForm open={addDialogOpen} onClose={() => setAddDialogOpen(false)} onSubmit={addWebinar} />
-            
-
         </Box>
         
       
