@@ -7,40 +7,56 @@ import { parseISO, format } from 'date-fns';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Icon from 'src/@core/components/icon'
+import axios from 'axios';
 
 
 
-type Webinar = {
-    id: number;
+interface Speaker {
+    firstName: string;
+    lastName: string;
+    picture: string;
+    company: string;
+    jobTitle: string;
+    description: string;
+  }
+  
+  interface Webinar {
+    speaker: Speaker;
+    _id: string;
     title: string;
     date: string;
     start_time: string;
     end_time: string;
-    speaker: {
-      id: number;
-      firstName: string;
-      lastName: string;
-      picture: string;
-      company: string;
-      jobTitle: string;
-      description: string;
-    };
-  };
+    createdAt: string;
+    updatedAt: string;
+  }
+  
   
   type ReducedEventCardProps = {
     webinar: Webinar;
-    onDelete: (webinarId: number) => void;
-    onEdit: (webinarId: number) => void;
+    onEdit: (webinarId: string) => void;
   };
 
-const ReducedEventCard = ({webinar, onDelete, onEdit}:ReducedEventCardProps) => {
+const ReducedEventCard = ({webinar,  onEdit}:ReducedEventCardProps) => {
 
-    const onDeleteClick = () => {
-        onDelete(webinar.id);
-    };
-    
+    const onDeleteClick = async () => {
+        try {
+            console.log('deleting :    '+webinar._id);
+          await axios.delete('http://localhost:8000/webinar/delete', {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            data: {
+              id: webinar._id,
+            },
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      
     const handleEdit = () => {
-        onEdit(webinar.id);
+        onEdit(webinar._id);
     };
 
     return (

@@ -17,23 +17,25 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { parseISO } from 'date-fns';
 
 interface Speaker {
-    id: number;
-    firstName: string;
-    lastName: string;
-    picture: string;
-    company: string;
-    jobTitle: string;
-    description: string;
+  firstName: string;
+  lastName: string;
+  picture: string;
+  company: string;
+  jobTitle: string;
+  description: string;
 }
-  
+
 interface Webinar {
-    id: number;
-    title: string;
-    date: string;
-    start_time: string;
-    end_time: string;
-    speaker: Speaker;
+  speaker: Speaker;
+  _id: string;
+  title: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  createdAt: string;
+  updatedAt: string;
 }
+
 
 type FormData = {
   title: string;
