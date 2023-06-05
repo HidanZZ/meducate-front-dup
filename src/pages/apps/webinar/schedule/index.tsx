@@ -4,8 +4,25 @@ import { parseISO } from 'date-fns';
 import ReducedEventCard from 'src/views/pages/webinar/cards/ReducedEventCard';
 import axios from 'axios';
 
+type Webinar = {
+    id: string;
+    title: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+    speaker: {
+      id: number;
+      firstName: string;
+      lastName: string;
+      picture: string;
+      company: string;
+      jobTitle: string;
+      description: string;
+    };
+};
+
 const WebinarList = () => {
-    const [webinars, setWebinars] = useState([]);
+    const [webinars, setWebinars] = useState<Webinar[]>([]);
 
     async function fetchData() {
         try {
@@ -34,7 +51,7 @@ const WebinarList = () => {
     return (
         <Grid container spacing={5} sx={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center' }}>
         {sortedWebinars.map((webinar) => (
-          <Grid key={webinar._id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
+          <Grid key={webinar.id} item xs={12} sm={6} md={4} lg={4} xl={3} sx={{ justifyContent: 'center', maxWidth: '240px', flex: '1 0 auto' }}>
             <ReducedEventCard webinar={webinar} />
           </Grid>
         ))}

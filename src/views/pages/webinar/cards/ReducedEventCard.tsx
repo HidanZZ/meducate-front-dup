@@ -8,7 +8,7 @@ import { parseISO, format } from 'date-fns';
 
 
 type Webinar = {
-    id: number;
+    id: string;
     title: string;
     date: string;
     start_time: string;
