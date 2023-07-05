@@ -1,43 +1,47 @@
-// ** MUI Imports
-import Grid from '@mui/material/Grid'
+import { Grid } from "@mui/material";
 
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
+import AutocompleteComponent from "src/views/pages/dashboard/AutoComplete";
+import DistributionOfPediatricians from "src/views/pages/dashboard/DistributionOfPediatricians";
+import Maps from "src/views/pages/dashboard/Maps";
+import TableOfPediatricians from "src/views/pages/dashboard/TableOfPediatricians";
+import Statistics from "src/views/pages/dashboard/Statistics";
 
-// ** Custom Components Imports
-import CardStatisticsVerticalComponent from 'src/@core/components/card-statistics/card-stats-vertical'
 
-// ** Styled Component Import
-import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
-// ** Demo Components Imports
-import AnalyticsTable from 'src/views/pages/dashboard/TableOfPediatricians'
 
-import DistributionOfPediatricians from 'src/views/pages/dashboard/DistributionOfPediatricians'
-import AnalyticsTransactionsCard from 'src/views/pages/dashboard/Statistics'
-import TopNamesBySentimentChart from 'src/views/pages/dashboard/Maps'
 
 const AnalyticsDashboard = () => {
-  return (
-    <ApexChartWrapper>
-      <Grid container spacing={6}>
-        
-        <Grid item xs={12} md={6} lg={6}>
-          <DistributionOfPediatricians />
-        </Grid>
-        
-        <Grid item xs={12} md={6} lg={6}>
-          <AnalyticsTransactionsCard />
-        </Grid>
-        <Grid item xs={12} md={12} lg={6}>
-          <AnalyticsTable />
-        </Grid>
-        <Grid item xs={12} md={12} lg={6}>
-          <TopNamesBySentimentChart />
-        </Grid>
-      </Grid>
-    </ApexChartWrapper>
-  )
-}
+   
 
-export default AnalyticsDashboard
+    return(
+        <ApexChartWrapper>
+            {/* speace between search and the first component */}
+            <Grid container spacing={6}>
+                {/* the search's componenet */}
+                <Grid item xs={12}  >
+                    <AutocompleteComponent hidden={false}/>
+                </Grid>
+                <Grid item xs={12} md={6} >
+                    <TableOfPediatricians />
+                </Grid>
+                {/* wight:md */}
+                <Grid item xs={12} md={6} >
+                    {/* topPositiveNames */}
+                    <Maps />
+                </Grid>
+                <Grid item xs={12}  >
+                    <Statistics />
+                </Grid>
+                <Grid item xs={12}  >
+                    <DistributionOfPediatricians />
+                </Grid>
+                            
+            </Grid>
+        </ApexChartWrapper>
+    )
+
+};
+
+
+export default AnalyticsDashboard;
