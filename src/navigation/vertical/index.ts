@@ -15,7 +15,7 @@ const navigation = (): VerticalNavItemsType => {
     },
 
     {
-      title: 'Analytics Dashboard',
+      title: 'MeducateBoard',
       path: '/analytics-dashboard',
       icon: 'mdi:view-dashboard-outline'
     },

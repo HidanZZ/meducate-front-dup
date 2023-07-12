@@ -21,7 +21,7 @@ const radialBarColors = {
   series5: '#FFA1A1'
 }
 
-const ApexRadialBarChart = () => {
+const DistributionOfPediatricians = () => {
   // ** Hook
   const theme = useTheme()
 
@@ -90,7 +90,7 @@ const ApexRadialBarChart = () => {
 
   return (
     <Card>
-      <CardHeader title='Distribution of paediatricians in Morocco' />
+      <CardHeader title="Top pediatricians's cities" />
       <CardContent>
         <ReactApexcharts type='radialBar' height={400} options={options} series={[80, 50, 35]} />
       </CardContent>
@@ -98,4 +98,4 @@ const ApexRadialBarChart = () => {
   )
 }
 
-export default ApexRadialBarChart
+export default DistributionOfPediatricians

@@ -2,6 +2,7 @@
 import { ReactElement } from 'react'
 
 // ** MUI Imports
+import { GridRowId } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
@@ -30,7 +31,7 @@ interface TableBodyRowType {
   adress: string
   username: string
   avatarSrc?: string
-  comments: 'positif' | 'neutre' | 'negatif'
+  avis: 'positif' | 'neutre' | 'negatif'
   reviews_count: number, 
   reviews_average: number,
   phone: number
@@ -57,7 +58,7 @@ const rows: TableBodyRowType[] = [
   {
     id: 1,
     phone: 611223345,
-    comments: 'positif',
+    avis: 'positif',
     reviews_count: 5, 
     reviews_average: 5,
     username: 'webSite',
@@ -67,7 +68,7 @@ const rows: TableBodyRowType[] = [
   },
   {
     id: 2,
-    comments: 'negatif',
+    avis: 'negatif',
     name: 'May Lloyd',
     phone: 612345689,
     reviews_count: 5, 
@@ -78,7 +79,7 @@ const rows: TableBodyRowType[] = [
   },
   {
     id: 3,
-    comments: 'positif',
+    avis: 'positif',
     phone: 677635674,
     username: '@msicely2',
     name: 'William Mckinney',
@@ -89,7 +90,7 @@ const rows: TableBodyRowType[] = [
   {
     id: 4,
     phone: 613243563,
-    comments: 'positif',
+    avis: 'positif',
     name: 'Warren Clarke',
     username: '@mhurran4',
     reviews_count: 5, 
@@ -100,7 +101,7 @@ const rows: TableBodyRowType[] = [
   {
     id: 5,
     phone: 616287487,
-    comments: 'negatif',
+    avis: 'negatif',
     username: '@crisby3',
     reviews_count: 5, 
     reviews_average: 5,
@@ -110,7 +111,7 @@ const rows: TableBodyRowType[] = [
   {
     id: 6,
     phone: 682743874,
-    comments: 'neutre',
+    avis: 'neutre',
     adress: 'boz@peh.co.uk',
     name: 'Adeline Bennett',
     reviews_count: 5, 
@@ -121,7 +122,7 @@ const rows: TableBodyRowType[] = [
   {
     id: 7,
     phone: 687136823,
-    comments: 'positif',
+    avis: 'positif',
     name: 'Lora Simpson',
     adress: 'dude@oco.nl',
     reviews_count: 5, 
@@ -152,8 +153,8 @@ const roleObj: RoleObj = {
 
 const commentsObj: commentsObj = {
   positif: { color: 'success' },
-  neutre: { color: 'warning' },
-  negatif: { color: 'secondary' }
+  negatif: { color: 'warning' },
+  neutre: { color: 'secondary' }
 }
 
 const renderUserAvatar = (row: TableBodyRowType) => {
@@ -220,38 +221,18 @@ const columns: GridColDef[] = [
       </Typography>
     )
   },
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'reviews average',
-    headerName: 'reviews average',
-    renderCell: ({ row }: CellType) => (
-      <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-        {row.reviews_average}
-      </Typography>
-    )
-  },
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'reviews count',
-    headerName: 'reviews count',
-    renderCell: ({ row }: CellType) => (
-      <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-        {row.reviews_count}
-      </Typography>
-    )
-  },
+  
+ 
   {
     flex: 0.2,
     minWidth: 120,
-    field: 'comments',
-    headerName: 'comments',
+    field: 'avis',
+    headerName: 'avis',
     renderCell: ({ row }: CellType) => (
       <CustomChip
         skin='light'
-        label={row.comments}
-        color={commentsObj[row.comments].color}
+        label={row.avis}
+        color={commentsObj[row.avis].color}
         sx={{
           height: 24,
           fontSize: '0.75rem',
@@ -262,27 +243,22 @@ const columns: GridColDef[] = [
     )
   }
 ]
-
-const AnalyticsTable = () => {
+interface TableHeaderProps {
+  value: string
+  handleFilter: (val: string) => void
+}
+const AnalyticsTable = (props: TableHeaderProps) => {
+  // ** Props
+  const { value,  handleFilter } = props
   return (
 
     <Card>
-  <CardHeader
-    title='Table Of Pediatricians'
-    action={
-      <OptionsMenu
-        options={['Last 28 Days', 'Last Month', 'Last Year']}
-        iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
-      />
-    }
+  {/* <CardHeader
+    title='Pediatricians'
+   
 
-  />
-  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-  <Typography variant='body2' component='span' sx={{ marginTop: '0.7rem', marginLeft: '0.5rem' , color: 'text.primary', marginRight: '0.5rem' }}>
-      The pediatricians in
-    </Typography>
-    <Optionsville iconButtonProps={{ size: 'small', sx: { color: 'text.primary',marginBottom: '0.2rem' } }} />
-  </Box>
+  /> */}
+
   <DataGrid sx={{ marginTop: '0.5rem'  }} autoHeight hideFooter rows={rows} columns={columns} disableSelectionOnClick pagination={undefined} />
 </Card>
 

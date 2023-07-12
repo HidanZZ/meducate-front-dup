@@ -76,7 +76,7 @@ const renderStats = () => {
 const AnalyticsTransactionsCard = () => {
   return (
     <Card>
-      <CardHeader
+      {/* <CardHeader
         title='Statistics'
         action={
           <OptionsMenu
@@ -99,7 +99,7 @@ const AnalyticsTransactionsCard = () => {
             letterSpacing: '0.15px !important'
           }
         }}
-      />
+      /> */}
       <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
         <Grid container spacing={[5, 0]}>
           {renderStats()}
