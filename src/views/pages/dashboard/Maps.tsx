@@ -36,8 +36,10 @@ const MoroccoMap = ({ regionsData, pediatriciansData }: { regionsData: RegionDat
     scale: 4, // Taille du marqueur
   };
 
+  
+  const apiKey = process.env.KEY_GOOGLE_MAPS ?? '';
   return (
-    <LoadScript googleMapsApiKey="AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0">
+    <LoadScript googleMapsApiKey={apiKey} >
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={6}>
         {/* {regionsData.map((region) => (
           <RegionPolygon
@@ -159,17 +161,6 @@ const Maps = () => {
 
     fetchPediatricians();
   }, []);
-  // const pediatriciansData: PediatricianData[] = [
-  //   {
-  //     name: 'Pediatrician 1',
-  //     coordinates: { lat: 31.7, lng: -8.0 },
-  //   },
-  //   {
-  //     name: 'Pediatrician 2',
-  //     coordinates: { lat: 32.0, lng: -8.5 },
-  //   },
-  //   // Add more pediatricians as needed
-  // ];
 
 
 
