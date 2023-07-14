@@ -1,6 +1,6 @@
 // ** React Import
 import { ReactElement } from 'react'
-
+import { useEffect,  useState} from 'react'
 // ** MUI Imports
 import { GridRowId } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
@@ -26,15 +26,13 @@ import { getInitials } from 'src/@core/utils/get-initials'
 import { CardActions, CardContent } from '@mui/material'
 
 interface TableBodyRowType {
-  id: number
+  _id: number
   name: string
-  adress: string
-  username: string
+  address: string
   avatarSrc?: string
-  avis: 'positif' | 'neutre' | 'negatif'
   reviews_count: number, 
   reviews_average: number,
-  phone: number
+  phone_number: number
 }
 
 interface CellType {
@@ -54,83 +52,83 @@ interface commentsObj {
   }
 }
 
-const rows: TableBodyRowType[] = [
-  {
-    id: 1,
-    phone: 611223345,
-    avis: 'positif',
-    reviews_count: 5, 
-    reviews_average: 5,
-    username: 'webSite',
-    name: 'Joseph Wheeler',
-    adress: 'nuroani@icpair.com',
-    avatarSrc: '/images/avatars/1.png'
-  },
-  {
-    id: 2,
-    avis: 'negatif',
-    name: 'May Lloyd',
-    phone: 612345689,
-    reviews_count: 5, 
-    reviews_average: 5,
-    adress: 'jeju@ma.co.uk',
-    username: '@hredmore1',
-    avatarSrc: '/images/avatars/2.png'
-  },
-  {
-    id: 3,
-    avis: 'positif',
-    phone: 677635674,
-    username: '@msicely2',
-    name: 'William Mckinney',
-    reviews_count: 5, 
-    reviews_average: 5,
-    adress: 'cidagehe@nonalbo.com'
-  },
-  {
-    id: 4,
-    phone: 613243563,
-    avis: 'positif',
-    name: 'Warren Clarke',
-    username: '@mhurran4',
-    reviews_count: 5, 
-    reviews_average: 5,
-    adress: 'hirasles@zozzetkuv.edu',
-    avatarSrc: '/images/avatars/5.png'
-  },
-  {
-    id: 5,
-    phone: 616287487,
-    avis: 'negatif',
-    username: '@crisby3',
-    reviews_count: 5, 
-    reviews_average: 5,
-    name: 'Isabel Briggs',
-    adress: 'temiwiho@ohacma.gov'
-  },
-  {
-    id: 6,
-    phone: 682743874,
-    avis: 'neutre',
-    adress: 'boz@peh.co.uk',
-    name: 'Adeline Bennett',
-    reviews_count: 5, 
-    reviews_average: 5,
-    username: '@shalstead5',
-    avatarSrc: '/images/avatars/4.png'
-  },
-  {
-    id: 7,
-    phone: 687136823,
-    avis: 'positif',
-    name: 'Lora Simpson',
-    adress: 'dude@oco.nl',
-    reviews_count: 5, 
-    reviews_average: 5,
-    username: '@bkildayr',
-    avatarSrc: '/images/avatars/8.png'
-  }
-]
+// const rows: TableBodyRowType[] = [
+//   {
+//     id: 1,
+//     phone: 611223345,
+//     avis: 'positif',
+//     reviews_count: 5, 
+//     reviews_average: 5,
+//     username: 'webSite',
+//     name: 'Joseph Wheeler',
+//     adress: 'nuroani@icpair.com',
+//     avatarSrc: '/images/avatars/1.png'
+//   },
+//   {
+//     id: 2,
+//     avis: 'negatif',
+//     name: 'May Lloyd',
+//     phone: 612345689,
+//     reviews_count: 5, 
+//     reviews_average: 5,
+//     adress: 'jeju@ma.co.uk',
+//     username: '@hredmore1',
+//     avatarSrc: '/images/avatars/2.png'
+//   },
+//   {
+//     id: 3,
+//     avis: 'positif',
+//     phone: 677635674,
+//     username: '@msicely2',
+//     name: 'William Mckinney',
+//     reviews_count: 5, 
+//     reviews_average: 5,
+//     adress: 'cidagehe@nonalbo.com'
+//   },
+//   {
+//     id: 4,
+//     phone: 613243563,
+//     avis: 'positif',
+//     name: 'Warren Clarke',
+//     username: '@mhurran4',
+//     reviews_count: 5, 
+//     reviews_average: 5,
+//     adress: 'hirasles@zozzetkuv.edu',
+//     avatarSrc: '/images/avatars/5.png'
+//   },
+//   {
+//     id: 5,
+//     phone: 616287487,
+//     avis: 'negatif',
+//     username: '@crisby3',
+//     reviews_count: 5, 
+//     reviews_average: 5,
+//     name: 'Isabel Briggs',
+//     adress: 'temiwiho@ohacma.gov'
+//   },
+//   {
+//     id: 6,
+//     phone: 682743874,
+//     avis: 'neutre',
+//     adress: 'boz@peh.co.uk',
+//     name: 'Adeline Bennett',
+//     reviews_count: 5, 
+//     reviews_average: 5,
+//     username: '@shalstead5',
+//     avatarSrc: '/images/avatars/4.png'
+//   },
+//   {
+//     id: 7,
+//     phone: 687136823,
+//     avis: 'positif',
+//     name: 'Lora Simpson',
+//     adress: 'dude@oco.nl',
+//     reviews_count: 5, 
+//     reviews_average: 5,
+//     username: '@bkildayr',
+//     avatarSrc: '/images/avatars/8.png'
+//   }
+// ]
 
 const roleObj: RoleObj = {
   author: {
@@ -191,9 +189,6 @@ const columns: GridColDef[] = [
             >
               {row.name}
             </Typography>
-            <Typography variant='body2' sx={{ fontSize: '0.75rem', letterSpacing: '0.4px' }}>
-              {row.username}
-            </Typography>
           </Box>
         </Box>
       )
@@ -206,7 +201,7 @@ const columns: GridColDef[] = [
     headerName: 'adress',
     renderCell: ({ row }: CellType) => (
       <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-        {row.adress}
+        {row.address}
       </Typography>
     )
   },
@@ -217,37 +212,46 @@ const columns: GridColDef[] = [
     headerName: 'phone',
     renderCell: ({ row }: CellType) => (
       <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-        {row.phone}
+        {row.phone_number}
       </Typography>
     )
   },
   
- 
-  {
-    flex: 0.2,
-    minWidth: 120,
-    field: 'avis',
-    headerName: 'avis',
-    renderCell: ({ row }: CellType) => (
-      <CustomChip
-        skin='light'
-        label={row.avis}
-        color={commentsObj[row.avis].color}
-        sx={{
-          height: 24,
-          fontSize: '0.75rem',
-          textTransform: 'capitalize',
-          '& .MuiChip-label': { fontWeight: 600, lineHeight: 1.4 }
-        }}
-      />
-    )
-  }
+
 ]
 interface TableHeaderProps {
   value: string
   handleFilter: (val: string) => void
 }
 const AnalyticsTable = (props: TableHeaderProps) => {
+
+
+  const [pediatriciansData, setPediatriciansData] = useState<TableBodyRowType[]>([]);
+
+  useEffect(() => {
+    const fetchPediatricians = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/pediatre'); 
+        const data = await response.json();
+        const limitedData = data.slice(0, 7); // Limiter les données aux 10 premiers éléments
+        setPediatriciansData(limitedData);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données des pédiatres :', error);
+      }
+    };
+  
+    fetchPediatricians();
+  }, []);
+  
+
+  
+  const rows = pediatriciansData.map((pediatrician) => ({
+    id: pediatrician._id,
+    name: pediatrician.name,
+    address: pediatrician.address,
+    phone_number: pediatrician.phone_number,
+  }))
+
   // ** Props
   const { value,  handleFilter } = props
   return (
