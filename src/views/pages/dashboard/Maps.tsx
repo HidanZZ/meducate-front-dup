@@ -41,8 +41,10 @@ const MoroccoMap = ({ regionsData, pediatriciansData }: { regionsData: RegionDat
     scale: 4, // Taille du marqueur
   };
 
+  
+  const apiKey = process.env.KEY_GOOGLE_MAPS ?? '';
   return (
-    <LoadScript googleMapsApiKey="AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0">
+    <LoadScript googleMapsApiKey={apiKey} >
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={6}>
         {/* {regionsData.map((region) => (
           <RegionPolygon
@@ -165,13 +167,6 @@ const Maps =  (props: Maps): ReactElement => {
 
     fetchPediatricians();
   }, []);
-
-  const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<PediatricianData[]>([])
-  
-  useEffect(() => {
-    const filteredData = pediatriciansData.filter(pediatrician => pediatrician.ville === cityValue)
-    setFilteredPediatriciansData(filteredData)
-  }, [cityValue, pediatriciansData])
   // const pediatriciansData: PediatricianData[] = [
   //   {
   //     name: 'Pediatrician 1',
