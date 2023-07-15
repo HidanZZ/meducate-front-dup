@@ -107,13 +107,16 @@ const Maps =  (props: Maps): ReactElement => {
   useEffect(() => {
     const fetchPediatricians = async () => {
       try {
-        const response = await fetch('http://localhost:8000/pediatres'); 
+        const response = await fetch('http://localhost:8000/pediatres');
         const data = await response.json();
-        setPediatriciansData(data);
+        if (Array.isArray(data)) {
+          setPediatriciansData(data);
+        }
       } catch (error) {
         console.error('Erreur lors de la récupération des données des pédiatres :', error);
       }
     };
+    
 
     fetchPediatricians();
   }, []);
