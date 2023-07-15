@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { ReactElement,useEffect, useState, useRef } from 'react';
 import { GoogleMap, LoadScript, Polygon, Marker, InfoWindow } from '@react-google-maps/api';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -10,13 +10,18 @@ interface RegionData {
   coordinates: Array<{ lat: number; lng: number }>;
   pediatricianCount: number;
 }
+interface Maps {
+
+  cityValue: string
+}
 
 interface PediatricianData {
   name: string;
   address: string;
   phone_number: number;
   latitude: number;
-  longitude: number;
+  longitude: number 
+  ville:string
 }
 
 
@@ -87,12 +92,14 @@ const getColorByPediatricians = (pediatricianCount: number) => {
   return color;
 };
 
-const Maps = () => {
+const Maps =  (props: Maps): ReactElement => {
+  const { cityValue } = props
   const regionsData: RegionData[] = [
     // ...
   ];
 
   const [pediatriciansData, setPediatriciansData] = useState<PediatricianData[]>([]);
+  const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<PediatricianData[]>([])
   const [selectedPediatrician, setSelectedPediatrician] = useState<PediatricianData | undefined>();
   const [mapZoom, setMapZoom] = useState<number>(6);
  
@@ -100,7 +107,7 @@ const Maps = () => {
   useEffect(() => {
     const fetchPediatricians = async () => {
       try {
-        const response = await fetch('http://localhost:8000/pediatre');
+        const response = await fetch('http://localhost:8000/pediatres'); 
         const data = await response.json();
         setPediatriciansData(data);
       } catch (error) {
@@ -110,7 +117,12 @@ const Maps = () => {
 
     fetchPediatricians();
   }, []);
+  
 
+  useEffect(() => {
+    const filteredData = pediatriciansData.filter(pediatrician => pediatrician.ville === cityValue)
+    setFilteredPediatriciansData(filteredData)
+  }, [cityValue, pediatriciansData])
   const handleMarkerClick = (pediatrician: PediatricianData) => {
     setSelectedPediatrician(pediatrician);
 
@@ -121,11 +133,11 @@ const Maps = () => {
 
  
   return (
-    <Card>
-      {/* <CardHeader title="Maps" /> */}
-      <MoroccoMap
+      <Card>
+        {/* <CardHeader title="Maps" /> */}
+        <MoroccoMap
         regionsData={regionsData}
-        pediatriciansData={pediatriciansData}
+        pediatriciansData={filteredPediatriciansData}
         onMarkerClick={handleMarkerClick}
         mapRef={mapRef}
       />
@@ -140,8 +152,8 @@ const Maps = () => {
           </CardContent>
         </Card>
       )}
-    </Card>
+      </Card>
   );
-};
+};  
 
 export default Maps;
