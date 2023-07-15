@@ -1,38 +1,65 @@
-// ** React Imports
-import { forwardRef, useState } from 'react'
-
-// ** MUI Imports
+import { useState, useEffect } from 'react'
+import AnalyticsDashboard from 'src/services/analyticsDashboard'
 import Card from '@mui/material/Card'
-import TextField from '@mui/material/TextField'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
-
-// ** Third Party Imports
-import format from 'date-fns/format'
 import { Bar } from 'react-chartjs-2'
-import DatePicker from 'react-datepicker'
 import { ChartData, ChartOptions } from 'chart.js'
-
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
-
-// ** Types
-import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 interface BarProp {
   yellow: string
   labelColor: string
   borderColor: string
+  cityValue: string 
 }
 
 const ChartjsBarChart = (props: BarProp) => {
-  // ** Props
-  const { yellow, labelColor, borderColor } = props
+  const { yellow, labelColor, borderColor, cityValue } = props // Destructure cityValue from props
 
-  // ** States
-  const [endDate, setEndDate] = useState<DateType>(null)
-  const [startDate, setStartDate] = useState<DateType>(null)
+  const [chartData, setChartData] = useState<ChartData<'bar'>>({
+    labels: [],
+    datasets: []
+  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await AnalyticsDashboard.getPediatriciansCountByCity()
+        let filteredData = data
+
+        if (cityValue !== '') {
+          filteredData = data.filter((item: { _id: string }) => item._id === cityValue) // Filtrage par ville
+        }
+
+        const labels = filteredData.map((item: { _id: string }) => item._id)
+        const counts = filteredData.map((item: { count: number }) => item.count)
+        const updatedData: ChartData<'bar'> = {
+          labels: labels,
+          datasets: [
+            {
+              maxBarThickness: 15,
+              backgroundColor: yellow,
+              borderColor: 'transparent',
+              borderRadius: { topRight: 15, topLeft: 15 },
+              data: counts
+            }
+          ]
+        }
+        setChartData(updatedData)
+      } catch (error) {
+        console.error('Error while fetching pediatricians count by city:', error)
+      }
+    }
+
+    fetchData()
+  }, [cityValue])
+  const filteredChartData: ChartData<'bar'> = {
+    labels: chartData.labels,
+    datasets: chartData.datasets.map((dataset) => ({
+      ...dataset,
+      data: dataset.data.slice(0, 7)
+    }))
+  }
 
   const options: ChartOptions<'bar'> = {
     responsive: true,
@@ -66,45 +93,11 @@ const ChartjsBarChart = (props: BarProp) => {
     }
   }
 
-  const data: ChartData<'bar'> = {
-    labels: [
-      'Marrakech',
-      'Asfi',
-      'Aït Ourir',
-      'Amizmiz',
-      'Assahrij',
-      'Ben Guerir',
-      'Bouchane',
-      'Bouguedra',
-      'Chichaoua',
-      'Echemmaia',
-      'El Hanchane',
-      'El Kelaâ des Sraghna',
-      'Essaouira'
-            
-    ],
-    datasets: [
-      {
-        maxBarThickness: 15,
-        backgroundColor: yellow,
-        borderColor: 'transparent',
-        borderRadius: { topRight: 15, topLeft: 15 },
-        data: [275, 90, 190, 205, 125, 100, 55, 90, 127, 150, 230, 280, 190]
-      }
-    ]
-  }
-
- 
-
-  
-
   return (
     <Card>
-      <CardHeader
-        title='Number of pediatrician by city'
-      />
+      <CardHeader title='Number of pediatrician by city' />
       <CardContent>
-        <Bar data={data} height={400} options={options} />
+        <Bar data={filteredChartData} height={400} options={options} />
       </CardContent>
     </Card>
   )

@@ -15,7 +15,7 @@ export interface TableBodyRowType {
   reviews_count: number
   reviews_average: number
   phone_number: number
-  ville: string
+  city: string
 }
 
 interface CellType {
@@ -44,9 +44,14 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
   }, [])
 
   useEffect(() => {
-    const filteredData = pediatriciansData.filter(pediatrician => pediatrician.ville === cityValue)
-    setFilteredPediatriciansData(filteredData)
-  }, [cityValue, pediatriciansData])
+    
+    if (cityValue === '') {
+      setFilteredPediatriciansData(pediatriciansData);
+    } else {
+      const filteredData = pediatriciansData.filter(pediatrician => pediatrician.city === cityValue);
+      setFilteredPediatriciansData(filteredData);
+    }
+  }, [cityValue, pediatriciansData]);
 
   const renderUserAvatar = (row: TableBodyRowType) => {
     if (row.avatarSrc) {
@@ -59,6 +64,10 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
       )
     }
   }
+
+ 
+
+ 
 
   const columns: GridColDef[] = [
     {
