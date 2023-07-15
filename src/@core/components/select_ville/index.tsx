@@ -11,7 +11,7 @@ const SelectControlledUncontrolled = () => {
   // ** State
   const [value, setValue] = useState<string>('')
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleCityValue = (event: SelectChangeEvent) => {
     setValue(event.target.value as string)
   }
 
@@ -23,7 +23,7 @@ const SelectControlledUncontrolled = () => {
           value={value}
           label='Controlled'
           id='controlled-select'
-          onChange={handleChange}
+          onChange={handleCityValue}
           labelId='controlled-select-label'
         >
           <MenuItem value={10}>Tanger</MenuItem>

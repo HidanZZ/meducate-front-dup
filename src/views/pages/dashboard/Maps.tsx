@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect,  useState} from 'react'
+import { ReactElement,useEffect,  useState} from 'react'
 import { GoogleMap, LoadScript, Polygon, Marker } from '@react-google-maps/api';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -9,11 +9,16 @@ interface RegionData {
   coordinates: Array<{ lat: number; lng: number }>;
   pediatricianCount: number;
 }
+interface Maps {
+
+  cityValue: string
+}
 
 interface PediatricianData {
   name: string;
   latitude: number;
-  longitude: number 
+  longitude: number ;
+  ville:string
 }
 
 
@@ -90,7 +95,8 @@ const getColorByPediatricians = (pediatricianCount: number) => {
   return color;
 };
 
-const Maps = () => {
+const Maps =  (props: Maps): ReactElement => {
+  const { cityValue } = props
   const regionsData: RegionData[] = [
     {
       name: 'Region Marrakeh-Safi',
@@ -149,7 +155,7 @@ const Maps = () => {
   useEffect(() => {
     const fetchPediatricians = async () => {
       try {
-        const response = await fetch('http://localhost:8000/pediatre'); 
+        const response = await fetch('http://localhost:8000/pediatres'); 
         const data = await response.json();
         setPediatriciansData(data);
       } catch (error) {
@@ -159,6 +165,13 @@ const Maps = () => {
 
     fetchPediatricians();
   }, []);
+
+  const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<PediatricianData[]>([])
+  
+  useEffect(() => {
+    const filteredData = pediatriciansData.filter(pediatrician => pediatrician.ville === cityValue)
+    setFilteredPediatriciansData(filteredData)
+  }, [cityValue, pediatriciansData])
   // const pediatriciansData: PediatricianData[] = [
   //   {
   //     name: 'Pediatrician 1',
@@ -176,9 +189,9 @@ const Maps = () => {
   return (
       <Card>
         {/* <CardHeader title="Maps" /> */}
-        <MoroccoMap regionsData={regionsData} pediatriciansData={pediatriciansData} />
+        <MoroccoMap regionsData={regionsData} pediatriciansData={filteredPediatriciansData} />
       </Card>
   );
-};
+};  
 
 export default Maps;
