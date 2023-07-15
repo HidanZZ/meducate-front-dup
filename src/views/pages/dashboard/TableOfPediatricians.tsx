@@ -233,7 +233,7 @@ const AnalyticsTable = (props: TableHeaderProps) => {
       try {
         const response = await fetch('http://localhost:8000/pediatre'); 
         const data = await response.json();
-        const limitedData = data.slice(0, 7); // Limiter les données aux 10 premiers éléments
+        const limitedData = data.slice(0, 9); // Limiter les données aux 10 premiers éléments
         setPediatriciansData(limitedData);
       } catch (error) {
         console.error('Erreur lors de la récupération des données des pédiatres :', error);
