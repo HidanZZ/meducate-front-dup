@@ -1,101 +1,140 @@
-// ** MUI Imports
-import Card from '@mui/material/Card'
-import { useTheme } from '@mui/material/styles'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
+import { useEffect, useState } from 'react';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import { ApexOptions } from 'apexcharts';
+import ReactApexcharts from 'src/@core/components/react-apexcharts';
+import AnalyticsDashboard from 'src/services/analyticsDashboard';
+import { it } from 'node:test';
 
-// ** Third Party Imports
-import { ApexOptions } from 'apexcharts'
+interface CityData {
+  _id: string;
+  totalReviews: number;
+  pediatriciansCount: number;
+  total:number;
+}
 
-// ** Component Import
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
-
-// ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-
-const radialBarColors = {
-  series1: '#fdd835',
-  series2: '#32baff',
-  series3: '#00d4bd',
-  series4: '#7367f0',
-  series5: '#FFA1A1'
+interface PediatricianData {
+  _id: string;
+  count: number;
 }
 
 const DistributionOfPediatricians = () => {
-  // ** Hook
-  const theme = useTheme()
+  const [reviewsData, setReviewsData] = useState<CityData[]>([]);
+  const [pediatriciansData, setPediatriciansData] = useState<PediatricianData[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const reviewsCountData: CityData[] = await AnalyticsDashboard.getReviewsCountByCity();
+        const pediatriciansCountData: PediatricianData[] = await AnalyticsDashboard.getPediatriciansCountByCity();
+        const total = calculateTotalPediatriciansCount(pediatriciansCountData);
+       
+        
+
+        // Find the top 3 cities based on totalReviews
+        const sortedReviewsData = reviewsCountData.sort((a: CityData, b: CityData) => b.totalReviews - a.totalReviews);
+        const topThreeCities = sortedReviewsData.slice(0, 3);
+
+        // Find the total pediatricians count for each city
+        const pediatriciansData = topThreeCities.map((city: CityData) => {
+          const pediatrist = pediatriciansCountData.find((item: PediatricianData) => item._id === city._id);
+          return {
+            _id: city._id,
+            totalReviews: city.totalReviews,
+            pediatriciansCount: pediatrist?.count || 0,
+            total,
+          };
+        });
+
+        setReviewsData(pediatriciansData);
+      } catch (error) {
+        console.error('Error while fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  
+ 
+
+  const calculateTotalPediatriciansCount = (data: PediatricianData[]) => {
+    const totalPediatriciansCount = data.reduce((total: number, item: PediatricianData) => total + item.count, 0);
+    return totalPediatriciansCount;
+  };
+  
+  const getPercentageByCity = () => {
+    const totalPediatriciansCount = calculateTotalPediatriciansCount(pediatriciansData);
+    return reviewsData.map((item: CityData) => Math.round((item.pediatriciansCount / item.total) * 100));
+  };
+  
 
   const options: ApexOptions = {
     stroke: { lineCap: 'round' },
-    labels: ['Casablanca', 'Marrakech', 'tanger'],
+    labels: reviewsData.map((item: CityData) => item._id),
     legend: {
       show: true,
       position: 'bottom',
-      labels: {
-        colors: theme.palette.text.secondary
-      },
+      labels: {},
       markers: {
-        offsetX: -3
+        offsetX: -3,
       },
       itemMargin: {
         vertical: 3,
-        horizontal: 10
-      }
+        horizontal: 10,
+      },
     },
-    colors: [radialBarColors.series1, radialBarColors.series2, radialBarColors.series4],
+    colors: ['#fdd835', '#32baff', '#7367f0'],
     plotOptions: {
       radialBar: {
         hollow: { size: '30%' },
         track: {
           margin: 15,
-          background: hexToRGBA(theme.palette.customColors.trackBg, 1)
+          background: '#f5f5f5',
         },
         dataLabels: {
           name: {
-            fontSize: '2rem'
+            fontSize: '2rem',
           },
           value: {
             fontSize: '1rem',
-            color: theme.palette.text.secondary
+            color: '#888ea8',
           },
           total: {
             show: true,
             fontWeight: 400,
-            label: 'statistics',
+            label: 'All cities',
             fontSize: '1.125rem',
-            color: theme.palette.text.primary,
-            formatter: function (w) {
-              const totalValue =
-                w.globals.seriesTotals.reduce((a: any, b: any) => {
-                  return a + b
-                }, 0) / w.globals.series.length
-
-              if (totalValue % 1 === 0) {
-                return totalValue + '%'
-              } else {
-                return totalValue.toFixed(2) + '%'
-              }
-            }
-          }
-        }
-      }
+            color: '#888ea8',
+            formatter: (w: any) => {
+              return '100%';
+            },
+          },
+        },
+      },
     },
     grid: {
       padding: {
         top: -35,
-        bottom: -30
-      }
-    }
-  }
+        bottom: -30,
+      },
+    },
+  };
 
   return (
     <Card>
-      <CardHeader title="Top pediatricians's cities" />
+      <CardHeader title="Top pediatricians' cities" />
       <CardContent>
-        <ReactApexcharts type='radialBar' height={400} options={options} series={[80, 50, 35]} />
+        <ReactApexcharts
+          type="radialBar"
+          height={400}
+          options={options}
+          series={getPercentageByCity()}
+        />
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default DistributionOfPediatricians
+export default DistributionOfPediatricians;
