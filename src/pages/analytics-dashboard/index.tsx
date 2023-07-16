@@ -69,12 +69,12 @@ const AnalyticsDashboard = () => {
                       labelId='pediatre-city-select'
                     >
                       <MenuItem value=''>All Cities</MenuItem>
-                      <MenuItem value='Marrakech'>Marrakech</MenuItem>
-                      <MenuItem value='Asfi'>Asfi</MenuItem>
-                      <MenuItem value='Casablanca'>Casablanca</MenuItem>
-                      <MenuItem value='Fes'>Fes</MenuItem>
-                      <MenuItem value='Meknes'>Meknes</MenuItem>
-                      <MenuItem value='Tanger'>Tanger</MenuItem>
+                      <MenuItem value='marrakech'>Marrakech</MenuItem>
+                      <MenuItem value='asfi'>Asfi</MenuItem>
+                      <MenuItem value='casablanca'>Casablanca</MenuItem>
+                      <MenuItem value='fes'>Fes</MenuItem>
+                      <MenuItem value='meknes'>Meknes</MenuItem>
+                      <MenuItem value='tanger'>Tanger</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -102,7 +102,7 @@ const AnalyticsDashboard = () => {
 
         {/* Statistics */}
         <Grid item xs={12}>
-          <Statistics />
+          <Statistics cityValue={cityValue}/>
         </Grid>
 
         {/* TableOfPediatricians */}
