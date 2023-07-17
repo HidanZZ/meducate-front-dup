@@ -53,7 +53,7 @@ const MoroccoMap = ({
   const apiKey = process.env.KEY_GOOGLE_MAPS ?? '';
 
   return (
-    <LoadScript googleMapsApiKey=''>
+    <LoadScript googleMapsApiKey='AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0'>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
