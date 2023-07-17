@@ -11,12 +11,16 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import DatePicker from 'react-datepicker'
 
+import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
+
 import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
 import AutocompleteComponent from "src/views/pages/dashboard/AutoComplete";
 import DistributionOfPediatricians from "src/views/pages/dashboard/DistributionOfPediatricians";
 import Maps from "src/views/pages/dashboard/Maps";
 import TableOfPediatricians, { TableBodyRowType } from "src/views/pages/dashboard/TableOfPediatricians";
 import Statistics from "src/views/pages/dashboard/Statistics";
+import PageHeader from 'src/@core/components/page-header';
 import ChartjsBarChart from 'src/views/charts/ChartjsBarChart'
 
 import { DateType } from 'src/types/forms/reactDatepickerTypes'
@@ -70,10 +74,9 @@ const AnalyticsDashboard = () => {
                     >
                       <MenuItem value=''>All Cities</MenuItem>
                       <MenuItem value='marrakech'>Marrakech</MenuItem>
-                      <MenuItem value='asfi'>Asfi</MenuItem>
+                      <MenuItem value='rabat'>Asfi</MenuItem>
                       <MenuItem value='casablanca'>Casablanca</MenuItem>
-                      <MenuItem value='fes'>Fes</MenuItem>
-                      <MenuItem value='meknes'>Meknes</MenuItem>
+                      <MenuItem value='agadir'>Agadir</MenuItem>
                       <MenuItem value='tanger'>Tanger</MenuItem>
                     </Select>
                   </FormControl>
@@ -115,6 +118,19 @@ const AnalyticsDashboard = () => {
           <Maps cityValue={cityValue}/>
         </Grid>
 
+        <Grid item xs={12} md={12}>
+        <PageHeader
+            title={
+              <Typography variant='h5'>
+                <Link  target='_blank'>
+                General statistics
+                </Link>
+              </Typography>
+            }
+            subtitle={<Typography variant='body2'>Pediatrician Stats</Typography>}
+          />
+        </Grid>
+
         {/* DistributionOfPediatricians */}
         <Grid item xs={12} md={6}>
           <DistributionOfPediatricians />
@@ -122,7 +138,7 @@ const AnalyticsDashboard = () => {
 
         {/* ChartjsBarChart */}
         <Grid item xs={12} md={6}>
-          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor}  cityValue={cityValue} />
+          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
       </Grid>
     </ApexChartWrapper>

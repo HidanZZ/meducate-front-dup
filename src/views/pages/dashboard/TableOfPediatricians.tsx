@@ -33,7 +33,6 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
       try {
         const response = await fetch('http://localhost:8000/pediatres')
         const data = await response.json()
-        const limitedData = data.slice(0, 7)
         setPediatriciansData(data)
       } catch (error) {
         console.error('Erreur lors de la récupération des données des pédiatres :', error)
@@ -44,7 +43,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
   }, [])
 
   useEffect(() => {
-    
+
     if (cityValue === '') {
       setFilteredPediatriciansData(pediatriciansData);
     } else {
@@ -108,7 +107,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
   const getRowId = (row: TableBodyRowType) => row._id;
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ height: 500, width: '100%' }}>
       <DataGrid
         rows={filteredPediatriciansData}
         columns={columns}

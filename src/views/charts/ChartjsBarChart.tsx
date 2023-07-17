@@ -10,11 +10,10 @@ interface BarProp {
   yellow: string
   labelColor: string
   borderColor: string
-  cityValue: string 
 }
 
 const ChartjsBarChart = (props: BarProp) => {
-  const { yellow, labelColor, borderColor, cityValue } = props // Destructure cityValue from props
+  const { yellow, labelColor, borderColor } = props // Destructure cityValue from props
 
   const [chartData, setChartData] = useState<ChartData<'bar'>>({
     labels: [],
@@ -25,14 +24,10 @@ const ChartjsBarChart = (props: BarProp) => {
     const fetchData = async () => {
       try {
         const data = await AnalyticsDashboard.getPediatriciansCountByCity()
-        let filteredData = data
 
-        if (cityValue !== '') {
-          filteredData = data.filter((item: { _id: string }) => item._id === cityValue) // Filtrage par ville
-        }
 
-        const labels = filteredData.map((item: { _id: string }) => item._id)
-        const counts = filteredData.map((item: { count: number }) => item.count)
+        const labels = data.map((item: { _id: string }) => item._id)
+        const counts = data.map((item: { count: number }) => item.count)
         const updatedData: ChartData<'bar'> = {
           labels: labels,
           datasets: [
@@ -52,14 +47,8 @@ const ChartjsBarChart = (props: BarProp) => {
     }
 
     fetchData()
-  }, [cityValue])
-  const filteredChartData: ChartData<'bar'> = {
-    labels: chartData.labels,
-    datasets: chartData.datasets.map((dataset) => ({
-      ...dataset,
-      data: dataset.data.slice(0, 7)
-    }))
-  }
+  })
+
 
   const options: ChartOptions<'bar'> = {
     responsive: true,
@@ -97,7 +86,7 @@ const ChartjsBarChart = (props: BarProp) => {
     <Card>
       <CardHeader title='Number of pediatrician by city' />
       <CardContent>
-        <Bar data={filteredChartData} height={400} options={options} />
+        <Bar data={chartData} height={400} options={options} />
       </CardContent>
     </Card>
   )
