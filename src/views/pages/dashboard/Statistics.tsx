@@ -7,6 +7,7 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import ServiceAnalyticsDashboard from 'src/services/analyticsDashboard';
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -36,13 +37,11 @@ const AnalyticsTransactionsCard = (props: StatisticsProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response1 = await fetch('http://localhost:8000/NumberOfpediatre');
-        const data1 = await response1.json();
-
-        const response2 = await fetch(`http://localhost:8000/NumberOfpediatreByCity/${cityValue}`);
-        const data2 = await response2.json();
-
+      try { 
+        const data1=await ServiceAnalyticsDashboard.getNumberOfPediatricians();
+        const data2=await ServiceAnalyticsDashboard.getNumberOfpediatreByCity(cityValue);
+        const data3=await ServiceAnalyticsDashboard.getNumberOfPositiveCommentsByCity(cityValue);
+        const data4=await ServiceAnalyticsDashboard.getNumberOfNegativeCommentsByCity(cityValue);
         const updatedSalesData: DataType[] = [
           {
             stats: data1.numberOfPediatres,
@@ -57,13 +56,13 @@ const AnalyticsTransactionsCard = (props: StatisticsProps) => {
             icon: <Icon icon='mdi:view-dashboard' />
           },
           {
-            stats: 0,
+            stats: data3,
             title: 'positive comments',
             color: 'warning',
             icon: <Icon icon='mdi:plus' />
           },
           {
-            stats: 0,
+            stats: data4,
             title: 'negative comments',
             color: 'info',
             icon: <Icon icon='mdi:minus' />

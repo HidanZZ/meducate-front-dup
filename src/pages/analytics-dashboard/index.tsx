@@ -74,9 +74,9 @@ const AnalyticsDashboard = () => {
                     >
                       <MenuItem value=''>All Cities</MenuItem>
                       <MenuItem value='marrakech'>Marrakech</MenuItem>
-                      <MenuItem value='rabat'>Asfi</MenuItem>
                       <MenuItem value='casablanca'>Casablanca</MenuItem>
                       <MenuItem value='agadir'>Agadir</MenuItem>
+                      <MenuItem value='rabat'>Rabat</MenuItem>
                       <MenuItem value='tanger'>Tanger</MenuItem>
                     </Select>
                   </FormControl>
