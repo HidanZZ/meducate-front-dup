@@ -36,13 +36,13 @@ static async getPediatriciansCountByCity() {
 
 
 
-  static async getReviewsCountByCity() {
+  static async getAveragePositiveScoreByCity() {
     try {
-      const response = await fetch('http://localhost:8000/pediatres/reviewsCountByCity');
+      const response = await fetch('http://localhost:8000/pediatres/getAveragePositiveScoreByCity');
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Erreur lors de la récupération de la somme de reviews par ville :', error);
+      console.error('Erreur lors de la récupération :', error);
       throw new Error('Erreur serveur');
     }
   }

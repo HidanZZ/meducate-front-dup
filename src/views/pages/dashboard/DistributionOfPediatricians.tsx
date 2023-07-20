@@ -8,8 +8,8 @@ import AnalyticsDashboard from 'src/services/analyticsDashboard';
 import { it } from 'node:test';
 
 interface CityData {
-  _id: string;
-  totalReviews: number;
+  city: string;
+  averageScore: number;
   pediatriciansCount: number;
   total:number;
 }
@@ -20,34 +20,34 @@ interface PediatricianData {
 }
 
 const DistributionOfPediatricians = () => {
-  const [reviewsData, setReviewsData] = useState<CityData[]>([]);
+  const [averageScoreData, setAverageScoreData] = useState<CityData[]>([]);
   const [pediatriciansData, setPediatriciansData] = useState<PediatricianData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const reviewsCountData: CityData[] = await AnalyticsDashboard.getReviewsCountByCity();
+        const reviewsCountData: CityData[] = await AnalyticsDashboard.getAveragePositiveScoreByCity();
         const pediatriciansCountData: PediatricianData[] = await AnalyticsDashboard.getPediatriciansCountByCity();
         const total = calculateTotalPediatriciansCount(pediatriciansCountData);
        
         
 
         // Find the top 3 cities based on totalReviews
-        const sortedReviewsData = reviewsCountData.sort((a: CityData, b: CityData) => b.totalReviews - a.totalReviews);
+        const sortedReviewsData = reviewsCountData.sort((a: CityData, b: CityData) => b.averageScore- a.averageScore);
         const topThreeCities = sortedReviewsData.slice(0, 3);
 
         // Find the total pediatricians count for each city
         const pediatriciansData = topThreeCities.map((city: CityData) => {
-          const pediatrist = pediatriciansCountData.find((item: PediatricianData) => item._id === city._id);
+          const pediatrist = pediatriciansCountData.find((item: PediatricianData) => item._id === city.city);
           return {
-            _id: city._id,
-            totalReviews: city.totalReviews,
+            city: city.city,
+            averageScore: city.averageScore,
             pediatriciansCount: pediatrist?.count || 0,
             total,
           };
         });
 
-        setReviewsData(pediatriciansData);
+        setAverageScoreData(pediatriciansData);
       } catch (error) {
         console.error('Error while fetching data:', error);
       }
@@ -66,13 +66,13 @@ const DistributionOfPediatricians = () => {
   
   const getPercentageByCity = () => {
     const totalPediatriciansCount = calculateTotalPediatriciansCount(pediatriciansData);
-    return reviewsData.map((item: CityData) => Math.round((item.pediatriciansCount / item.total) * 100));
+    return averageScoreData.map((item: CityData) => Math.round((item.pediatriciansCount / item.total) * 100));
   };
   
 
   const options: ApexOptions = {
     stroke: { lineCap: 'round' },
-    labels: reviewsData.map((item: CityData) => item._id),
+    labels: averageScoreData.map((item: CityData) => item.city),
     legend: {
       show: true,
       position: 'bottom',

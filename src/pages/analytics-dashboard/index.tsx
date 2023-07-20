@@ -36,7 +36,7 @@ const AnalyticsDashboard = () => {
   const borderColor = theme.palette.divider
   const labelColor = theme.palette.text.disabled
 
-  const [cityValue, setCityValue] = useState<string>('')
+  const [cityValue, setCityValue] = useState<string>('All')
   const [regionValue, setRegionValue] = useState<string>('')
   const [value, setValue] = useState<string>('')
 
@@ -51,6 +51,13 @@ const AnalyticsDashboard = () => {
   const handleRegionValue = (e: SelectChangeEvent) => {
     setRegionValue(e.target.value)
   }
+
+
+
+  // State to keep track of the selected row in the TableOfPediatricians component
+  const [selectedPediatrician, setSelectedPediatrician] = useState<TableBodyRowType | null>(null);
+
+
 
   return (
     <ApexChartWrapper>
@@ -72,7 +79,7 @@ const AnalyticsDashboard = () => {
                       onChange={handleCityValue}
                       labelId='pediatre-city-select'
                     >
-                      <MenuItem value=''>All Cities</MenuItem>
+                      <MenuItem value='All'>All</MenuItem>
                       <MenuItem value='marrakech'>Marrakech</MenuItem>
                       <MenuItem value='casablanca'>Casablanca</MenuItem>
                       <MenuItem value='agadir'>Agadir</MenuItem>
@@ -81,23 +88,7 @@ const AnalyticsDashboard = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel id='pediatre-region-select'>Region</InputLabel>
-                    <Select
-                      fullWidth
-                      value={regionValue}
-                      sx={{ mr: 4, mb: 2 }}
-                      label='Region'
-                      onChange={handleRegionValue}
-                      labelId='pediatre-region-select'
-                    >
-                      <MenuItem value=''>All Regions</MenuItem>
-                      <MenuItem value='marrakechSafi'>Marrakech-Safi</MenuItem>
-                      <MenuItem value='casablancaSettat'>Casablanca-settat</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
+             
               </Grid>
             </CardContent>
           </Card>
@@ -110,12 +101,13 @@ const AnalyticsDashboard = () => {
 
         {/* TableOfPediatricians */}
         <Grid item xs={12} md={6}>
-          <TableOfPediatricians value={value} handleFilter={handleFilter} cityValue={cityValue} />
+          <TableOfPediatricians value={value} handleFilter={handleFilter} cityValue={cityValue} setSelectedPediatrician={setSelectedPediatrician} />
+          
         </Grid>
 
         {/* Maps */}
         <Grid item xs={12} md={6}>
-          <Maps cityValue={cityValue}/>
+          <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
         </Grid>
 
         <Grid item xs={12} md={12}>

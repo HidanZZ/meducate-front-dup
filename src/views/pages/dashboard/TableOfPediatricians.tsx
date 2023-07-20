@@ -5,6 +5,8 @@ interface TableOfPediatriciansProps {
   value: string
   handleFilter: (val: string) => void
   cityValue: string
+  setSelectedPediatrician: (pediatrician: TableBodyRowType | null) => void; // Updated prop type
+
 }
 
 interface Sentiments {
@@ -21,6 +23,8 @@ export interface TableBodyRowType {
   reviews_count: number
   reviews_average: number
   phone_number: number
+  latitude: number;
+  longitude: number;
   city: string
   sentiments:Sentiments[]
 }
@@ -30,7 +34,12 @@ interface CellType {
 }
 
 const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement => {
-  const { value, handleFilter, cityValue } = props
+  const { value, handleFilter, cityValue,setSelectedPediatrician } = props
+
+  // Handle row click event
+  const handleRowClick = (params: any) => {
+    setSelectedPediatrician(params.row); 
+  };
 
   const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<TableBodyRowType[]>([])
   const [pediatriciansData, setPediatriciansData] = useState<TableBodyRowType[]>([])
@@ -51,7 +60,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
 
   useEffect(() => {
 
-    if (cityValue === '') {
+    if (cityValue === 'All') {
       setFilteredPediatriciansData(pediatriciansData);
     } else {
       const filteredData = pediatriciansData.filter(pediatrician => pediatrician.city === cityValue);
@@ -90,6 +99,13 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
     ;
   };
 
+  // const renderSentimentCircle = (label: string, score: number) => {
+  //   const circleSize = 20;
+  //   const color = getColorFromScore(score, label);
+  //   return (
+  //     <div style={{ width: circleSize, height: circleSize, borderRadius: '50%', backgroundColor: color, marginRight: 3 }} />
+  //   );
+  // };
   
 
   const columns: GridColDef[] = [
@@ -135,15 +151,30 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
       field: 'Avis',
       headerName: 'Avis',
       renderCell: ({ row }: CellType) => (
-        <span style={{ fontSize: '0.875rem', color: getColorFromScore(row.sentiments[0].score,row.sentiments[0].label) }}>
-          {row.sentiments[0].label}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.875rem', color: getColorFromScore(row.sentiments[0].score, row.sentiments[0].label) }}>
+            {row.sentiments[0].label}
+          </span>
+        </div>
       ),
     },
   ];
   const getRowId = (row: TableBodyRowType) => row._id;
 
   return (
+    // <div>
+    //   {/* Cercle avec la couleur pour les sentiments positifs */}
+    //   <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
+    //     <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: getColorFromScore(1, 'POSITIVE'), marginRight: '8px' }} />
+    //     <span>Positif Avis</span>
+    //   </div>
+
+    //   {/* Cercle avec la couleur pour les sentiments négatifs */}
+    //   <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
+    //     <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: getColorFromScore(1, 'NEGATIVE'), marginRight: '8px' }} />
+    //     <span>Negatif Avis</span>
+    //   </div>
+
     <div style={{ height: 500, width: '100%' }}>
       <DataGrid
         rows={filteredPediatriciansData}
@@ -151,9 +182,11 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
         autoPageSize
         disableSelectionOnClick
         getRowId={getRowId}
+        onRowClick={handleRowClick} // onRowClick event handler
       />
         
     </div>
+    // </div>
   )
 }
 
