@@ -67,7 +67,8 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
 
   const [pediatriciansData, setPediatriciansData] = useState<PediatricianData[]>([]);
   const [selectedPediatrician, setSelectedPediatrician] = useState<PediatricianData | null>(null); 
-
+  const [pediatricianTable, setPediatricianTable] = useState<TableBodyRowType| null>(null);
+  
   useEffect(() => {
     const fetchPediatricians = async () => {
       try {
@@ -101,7 +102,17 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
     setZoom(20);
   };
 
+
+ 
   
+  useEffect(() => {
+    if (selectedPediatricianTable) {
+      setCenter({ lat: selectedPediatricianTable.latitude, lng: selectedPediatricianTable.longitude });
+      setZoom(20);
+      setSelectedPediatrician(selectedPediatricianTable); 
+    }
+  }, [selectedPediatricianTable, pediatricianTable]);
+    
   return (
     <Card>
       <MoroccoMap
@@ -123,17 +134,7 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
         </Card>
       )}
 
-      {selectedPediatricianTable && (
-        <Card>
-          <CardContent>
-            <Typography variant="h5" component="div">
-              {selectedPediatricianTable.name}
-            </Typography>
-            <Typography color="text.secondary">Address: {selectedPediatricianTable.address}</Typography>
-            <Typography color="text.secondary">Phone: {selectedPediatricianTable.phone_number}</Typography>
-          </CardContent>
-        </Card>
-      )}
+ 
 
     </Card>
   );
