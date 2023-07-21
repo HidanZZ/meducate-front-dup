@@ -65,7 +65,7 @@ const ChartjsBarChart = (props: BarProp) => {
       },
       y: {
         min: 0,
-        max: 400,
+        max: 300,
         grid: {
           borderColor,
           drawBorder: false,

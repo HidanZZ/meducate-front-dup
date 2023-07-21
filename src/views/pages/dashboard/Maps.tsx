@@ -4,6 +4,8 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
+import { TableBodyRowType } from "src/views/pages/dashboard/TableOfPediatricians";
+
 interface RegionData {
   name: string;
   coordinates: Array<{ lat: number; lng: number }>;
@@ -31,7 +33,7 @@ const MoroccoMap = ({
   onMarkerClick,
   center,
   zoom,
-}: MoroccoMapProps) => {
+}: MoroccoMapProps): ReactElement => {
   const mapContainerStyle = {
     width: '100%',
     height: '400px',
@@ -40,7 +42,7 @@ const MoroccoMap = ({
   const handleMarkerClick = (pediatrician: PediatricianData) => {
     onMarkerClick(pediatrician);
   };
-const apiKey = process.env.KEY_GOOGLE_MAPS ?? '';
+  
   return (
     <LoadScript googleMapsApiKey={'AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0'}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
@@ -56,7 +58,7 @@ const apiKey = process.env.KEY_GOOGLE_MAPS ?? '';
   );
 };
 
-const Maps = ({ cityValue }: { cityValue: string }): ReactElement => {
+const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; selectedPediatricianTable: TableBodyRowType | null;}): ReactElement => {
   // Définir le state pour le centre initial de la carte
   const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 31.7917, lng: -7.0926 });
   // Définir le state pour le niveau de zoom initial de la carte
@@ -64,8 +66,9 @@ const Maps = ({ cityValue }: { cityValue: string }): ReactElement => {
   
 
   const [pediatriciansData, setPediatriciansData] = useState<PediatricianData[]>([]);
-  const [selectedPediatrician, setSelectedPediatrician] = useState<PediatricianData | undefined>();
-
+  const [selectedPediatrician, setSelectedPediatrician] = useState<PediatricianData | null>(null); 
+  const [pediatricianTable, setPediatricianTable] = useState<TableBodyRowType| null>(null);
+  
   useEffect(() => {
     const fetchPediatricians = async () => {
       try {
@@ -84,7 +87,7 @@ const Maps = ({ cityValue }: { cityValue: string }): ReactElement => {
 
   const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<PediatricianData[]>([]);
   useEffect(() => {
-    if (cityValue === '') {
+    if (cityValue === 'All') {
       setFilteredPediatriciansData(pediatriciansData);
     } else {
       const filteredData = pediatriciansData.filter((pediatrician) => pediatrician.city === cityValue);
@@ -99,6 +102,17 @@ const Maps = ({ cityValue }: { cityValue: string }): ReactElement => {
     setZoom(20);
   };
 
+
+ 
+  
+  useEffect(() => {
+    if (selectedPediatricianTable) {
+      setCenter({ lat: selectedPediatricianTable.latitude, lng: selectedPediatricianTable.longitude });
+      setZoom(20);
+      setSelectedPediatrician(selectedPediatricianTable); 
+    }
+  }, [selectedPediatricianTable, pediatricianTable]);
+    
   return (
     <Card>
       <MoroccoMap
@@ -106,6 +120,7 @@ const Maps = ({ cityValue }: { cityValue: string }): ReactElement => {
         onMarkerClick={handleMarkerClick}
         center={center}
         zoom={zoom}
+        
       />
       {selectedPediatrician && (
         <Card>
@@ -118,6 +133,9 @@ const Maps = ({ cityValue }: { cityValue: string }): ReactElement => {
           </CardContent>
         </Card>
       )}
+
+ 
+
     </Card>
   );
 };
