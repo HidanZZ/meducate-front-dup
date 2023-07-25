@@ -40,6 +40,10 @@ const AnalyticsDashboard = () => {
   const [regionValue, setRegionValue] = useState<string>('')
   const [value, setValue] = useState<string>('')
 
+  const [mapLatitude, setMapLatitude] = useState<number>(31.7917); // Initial latitude value for the map
+  const [mapLongitude, setMapLongitude] = useState<number>(-7.0926); // Initial longitude value for the map
+  const [centerFiltred, setCenterFiltred] = useState<{ lat: number; lng: number }>({ lat: 31.7917, lng: -7.0926 });
+
   const handleCityValue = (e: SelectChangeEvent) => {
     setCityValue(e.target.value)
   }
