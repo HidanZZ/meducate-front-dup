@@ -1,15 +1,46 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, Polygon  } from '@react-google-maps/api';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
 import { TableBodyRowType } from "src/views/pages/dashboard/TableOfPediatricians";
 
+
+// Interface for a single coordinate point in the GeoJSON data
+interface CoordinatePoint {
+  lat: number;
+  lng: number;
+}
+
+// Interface for the GeoJSON polygon geometry
+interface PolygonGeometry {
+  coordinates: CoordinatePoint[][];
+  type: "Polygon";
+}
+
+// Interface for the GeoJSON feature properties (if you have any)
+interface FeatureProperties {
+  [key: string]: any;
+}
+
+// Interface for a single feature in the GeoJSON data
+interface GeoJSONFeature {
+  type: "Feature";
+  properties: FeatureProperties;
+  geometry: PolygonGeometry;
+}
+
+// Interface for the FeatureCollection in the GeoJSON data
+interface GeoJSONFeatureCollection {
+  type: "FeatureCollection";
+  features: GeoJSONFeature[];
+}
+
+// Interface for the RegionData
 interface RegionData {
-  name: string;
-  coordinates: Array<{ lat: number; lng: number }>;
-  pediatricianCount: number;
+  type: "FeatureCollection";
+  features: GeoJSONFeature[];
 }
 
 interface PediatricianData {
@@ -26,6 +57,8 @@ interface MoroccoMapProps {
   onMarkerClick: (pediatrician: PediatricianData) => void;
   center: { lat: number; lng: number };
   zoom: number;
+  selectedPediatrician: PediatricianData | null; 
+
 }
 
 const MoroccoMap = ({
@@ -33,6 +66,8 @@ const MoroccoMap = ({
   onMarkerClick,
   center,
   zoom,
+  selectedPediatrician
+
 }: MoroccoMapProps): ReactElement => {
   const mapContainerStyle = {
     width: '100%',
@@ -42,7 +77,25 @@ const MoroccoMap = ({
   const handleMarkerClick = (pediatrician: PediatricianData) => {
     onMarkerClick(pediatrician);
   };
-  
+
+
+  const [geoJsonData, setGeoJsonData] = useState<RegionData | null>(null);
+
+  useEffect(() => {
+    const fetchGeoJsonData = async () => {
+      try {
+        const response = await fetch('/geojson/marrakech_safi.geojson');
+        const data = await response.json();
+        console.log(data);
+        setGeoJsonData(data);
+      } catch (error) {
+        console.error('Error fetching GeoJSON data:', error);
+      }
+    };
+
+    fetchGeoJsonData();
+  }, []);
+
   return (
     <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
@@ -53,6 +106,33 @@ const MoroccoMap = ({
             onClick={() => handleMarkerClick(pediatrician)}
           />
         ))}
+
+                {/* Afficher le cercle rouge autour du marqueur du pédiatre sélectionné */}
+                {selectedPediatrician && (
+          <Marker
+            position={{ lat: selectedPediatrician.latitude, lng: selectedPediatrician.longitude }}
+            icon={{
+              path: window.google.maps.SymbolPath.CIRCLE,
+              fillColor: 'red',
+              fillOpacity: 0.2,
+              scale: 13,
+              strokeColor: 'red',
+              strokeOpacity: 0.5,
+            }}
+          />
+        )}
+     {geoJsonData && geoJsonData.features.map((feature, index) => (
+          <Polygon
+            key={index}
+            paths={feature.geometry.coordinates[0].map((coord) => ({ lat: coord.lat, lng: coord.lng }))}
+            options={{
+              strokeColor: "#FF0000", // Red stroke color
+              strokeOpacity: 0.5, // Red stroke opacity
+              fillColor: "#FF0000", // Red fill color
+              fillOpacity: 0.1, // Red fill opacity
+            }}
+          />
+          ))}
       </GoogleMap>
     </LoadScript>
   );
@@ -97,7 +177,8 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
 
   const handleMarkerClick = (pediatrician: PediatricianData) => {
     setSelectedPediatrician(pediatrician);
-    // Vous pouvez définir d'autres actions ici si nécessaire lorsque le marqueur est cliqué.
+
+
     setCenter({ lat: pediatrician.latitude, lng: pediatrician.longitude });
     setZoom(20);
   };
@@ -112,6 +193,9 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
       setSelectedPediatrician(selectedPediatricianTable); 
     }
   }, [selectedPediatricianTable, pediatricianTable]);
+
+
+
     
   return (
     <Card>
@@ -120,7 +204,7 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
         onMarkerClick={handleMarkerClick}
         center={center}
         zoom={zoom}
-        
+        selectedPediatrician={selectedPediatrician}
       />
       {selectedPediatrician && (
         <Card>

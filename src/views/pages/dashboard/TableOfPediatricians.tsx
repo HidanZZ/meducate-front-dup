@@ -148,8 +148,8 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): ReactElement =>
     {
       flex: 0.2,
       minWidth: 300,
-      field: 'Avis',
-      headerName: 'Avis',
+      field: 'Comment',
+      headerName: 'Comment',
       renderCell: ({ row }: CellType) => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <span style={{ fontSize: '0.875rem', color: getColorFromScore(row.sentiments[0].score, row.sentiments[0].label) }}>
