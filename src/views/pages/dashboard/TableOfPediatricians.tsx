@@ -30,6 +30,7 @@ export interface TableBodyRowType {
   longitude: number;
   city: string;
   sentiments: Sentiments[];
+  category:string
 }
 
 const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElement => {

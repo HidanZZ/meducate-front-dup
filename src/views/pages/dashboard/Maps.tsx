@@ -43,13 +43,20 @@ interface RegionData {
   features: GeoJSONFeature[];
 }
 
+interface Sentiments {
+  label: string;
+  score: number;
+}
+
 interface PediatricianData {
   name: string;
   address: string;
-  phone_number: number;
+  phone_number: string;
   latitude: number;
   longitude: number;
   city: string;
+  category:string;
+
 }
 
 interface MoroccoMapProps {
@@ -96,16 +103,40 @@ const MoroccoMap = ({
     fetchGeoJsonData();
   }, []);
 
+
+// Custom marker icons for each category
+
+const createCustomMarkerIcon = (color: string) => {
+  const defaultMarkerUrl = `https://maps.google.com/mapfiles/ms/icons/${color}-dot.png`;
+  const markerIcon = {
+    url: defaultMarkerUrl,
+  };
+  return markerIcon;
+};
+
+
   return (
     <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
-        {pediatriciansData.map((pediatrician) => (
-          <Marker
-            key={pediatrician.name}
-            position={{ lat: pediatrician.latitude, lng: pediatrician.longitude }}
-            onClick={() => handleMarkerClick(pediatrician)}
-          />
-        ))}
+      {pediatriciansData.map((pediatrician) => {
+        // Get the category of the pediatrician (e.g., hospital, clinic, pharmacy)
+        // const category = pediatrician.category.toLowerCase();
+
+        // // Define the desired color based on the category (you can use any color logic here)
+        // const markerColor = category === 'hospital' ? 'yellow' : category === 'clinical' ? 'red' :category==='doctor'?'green':category==='pharmacy'?'blue': 'red';
+
+        // // Create the custom marker icon based on the desired color
+        // const icon = createCustomMarkerIcon('markerColor');
+         
+          return (
+            <Marker
+              key={pediatrician.name}
+              position={{ lat: pediatrician.latitude, lng: pediatrician.longitude }}
+              onClick={() => handleMarkerClick(pediatrician)}
+              // icon={icon} // Use the custom marker icon based on the category
+            />
+          );
+        })}
 
                 {/* Afficher le cercle rouge autour du marqueur du pédiatre sélectionné */}
                 {selectedPediatrician && (

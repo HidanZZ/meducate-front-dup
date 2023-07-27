@@ -124,7 +124,7 @@ const DistributionOfPediatricians = () => {
 
   return (
     <Card>
-      <CardHeader title="Top pediatricians' cities" />
+      <CardHeader title="Top cities" />
       <CardContent>
         <ReactApexcharts
           type="radialBar"

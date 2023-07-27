@@ -84,7 +84,7 @@ const ChartjsBarChart = (props: BarProp) => {
 
   return (
     <Card>
-      <CardHeader title='Number of pediatrician by city' />
+      <CardHeader title='Distribution by city' />
       <CardContent>
         <Bar data={chartData} height={400} options={options} />
       </CardContent>

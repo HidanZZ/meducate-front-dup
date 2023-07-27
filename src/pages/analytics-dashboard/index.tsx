@@ -11,6 +11,9 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import DatePicker from 'react-datepicker'
 
+// ** Next Import
+import dynamic from 'next/dynamic'
+
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
@@ -22,6 +25,9 @@ import TableOfPediatricians, { TableBodyRowType } from "src/views/pages/dashboar
 import Statistics from "src/views/pages/dashboard/Statistics";
 import PageHeader from 'src/@core/components/page-header';
 import ChartjsBarChart from 'src/views/charts/ChartjsBarChart'
+import ApexColumnChart from 'src/views/charts/ApexColumnChart'
+
+const RechartsPieChart = dynamic(() => import('src/views/charts/ApexDonutChart'), { ssr: false })
 
 import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
@@ -37,6 +43,7 @@ const AnalyticsDashboard = () => {
   const labelColor = theme.palette.text.disabled
 
   const [cityValue, setCityValue] = useState<string>('All')
+  const [categoryValue, setCategoryValue] = useState<string>('All')
   const [regionValue, setRegionValue] = useState<string>('')
   const [value, setValue] = useState<string>('')
 
@@ -51,6 +58,11 @@ const AnalyticsDashboard = () => {
   const handleFilter = (val: string) => {
     setValue(val)
   }
+
+  const handleCategoryValue = (e: SelectChangeEvent) => {
+    setCategoryValue(e.target.value)
+  }
+
 
   const handleRegionValue = (e: SelectChangeEvent) => {
     setRegionValue(e.target.value)
@@ -93,15 +105,19 @@ const AnalyticsDashboard = () => {
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
                   <FormControl fullWidth>
-                    <InputLabel id='speciality-select'>speciality</InputLabel>
+                    <InputLabel id='category-select'>category</InputLabel>
                     <Select
                       fullWidth
-                      value={"null"}
-                      label='speciality'
-                      labelId='speciality-select'
+                      value={categoryValue}
+                      label='Category'
+                      onChange={handleCategoryValue}
+                      labelId='category-select'
                     >
-                      <MenuItem value='pediatre'>Pediatre</MenuItem>
-                      <MenuItem value='cardiologue'>Cardiologue</MenuItem>
+                      <MenuItem value='All'>All</MenuItem>
+                      <MenuItem value='hopital'>Hopital</MenuItem>
+                      <MenuItem value='clinique'>Clinique</MenuItem>
+                      <MenuItem value='pharmacie'>Pharmacie</MenuItem>
+                      <MenuItem value='doctor'>Doctor</MenuItem>
                     </Select>
                   </FormControl>
                </Grid>
@@ -113,21 +129,30 @@ const AnalyticsDashboard = () => {
         </Grid>
 
         {/* Statistics */}
+        {categoryValue !== 'All' ? (
         <Grid item xs={12}>
           <Statistics cityValue={cityValue}/>
-        </Grid>
+        </Grid>):null}
 
         {/* TableOfPediatricians */}
+        {categoryValue !== 'All' ? (
         <Grid item xs={12} md={6}>
           <TableOfPediatricians value={value} handleFilter={handleFilter} cityValue={cityValue} setSelectedPediatrician={setSelectedPediatrician} />
-          
+        
         </Grid>
+        ):null}
 
+        {categoryValue === 'All' ? (
+          <Grid item xs={12} md={6}>
+            <RechartsPieChart />
+          </Grid>
+        ) : null}
+        
         {/* Maps */}
         <Grid item xs={12} md={6}>
           <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
         </Grid>
-
+        {categoryValue !== 'All' ? (
         <Grid item xs={12} md={12}>
         <PageHeader
             title={
@@ -137,19 +162,31 @@ const AnalyticsDashboard = () => {
                 </Link>
               </Typography>
             }
-            subtitle={<Typography variant='body2'>Pediatrician Stats</Typography>}
+            // subtitle={<Typography variant='body2'>Pediatrician Stats</Typography>}
           />
-        </Grid>
+        </Grid>):null}
 
         {/* DistributionOfPediatricians */}
         <Grid item xs={12} md={6}>
           <DistributionOfPediatricians />
         </Grid>
-
+ 
         {/* ChartjsBarChart */}
+
+        {categoryValue === 'All' ? (
+
+          <Grid item xs={12} md={6}>
+          <ApexColumnChart />
+          </Grid>
+
+          ):null}
+
+        {categoryValue !== 'All' ? (
         <Grid item xs={12} md={6}>
           <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
+        
+        ):null}
       </Grid>
     </ApexChartWrapper>
   )
