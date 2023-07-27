@@ -67,18 +67,17 @@ const AnalyticsDashboard = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         {/* Filter By */}
-        <Grid item xs={12}>
+        <Grid item xs={12} >
           <Card>
             <CardHeader title='Filter By' />
             <CardContent>
               <Grid container spacing={6}>
-                <Grid item xs={12} sm={6}>
+               <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
                   <FormControl fullWidth>
                     <InputLabel id='pediatre-city-select'>City</InputLabel>
                     <Select
                       fullWidth
                       value={cityValue}
-                      sx={{ mr: 4, mb: 2 }}
                       label='City'
                       onChange={handleCityValue}
                       labelId='pediatre-city-select'
@@ -92,9 +91,24 @@ const AnalyticsDashboard = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-             
+                <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id='speciality-select'>speciality</InputLabel>
+                    <Select
+                      fullWidth
+                      value={"null"}
+                      label='speciality'
+                      labelId='speciality-select'
+                    >
+                      <MenuItem value='pediatre'>Pediatre</MenuItem>
+                      <MenuItem value='cardiologue'>Cardiologue</MenuItem>
+                    </Select>
+                  </FormControl>
+               </Grid>
               </Grid>
+              
             </CardContent>
+            
           </Card>
         </Grid>
 

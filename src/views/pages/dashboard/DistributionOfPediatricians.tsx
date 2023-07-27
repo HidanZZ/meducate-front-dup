@@ -34,7 +34,7 @@ const DistributionOfPediatricians = () => {
 
         // Find the top 3 cities based on totalReviews
         const sortedReviewsData = reviewsCountData.sort((a: CityData, b: CityData) => b.averageScore- a.averageScore);
-        const topThreeCities = sortedReviewsData.slice(0, 3);
+        const topThreeCities = sortedReviewsData.slice(0, 5);
 
         // Find the total pediatricians count for each city
         const pediatriciansData = topThreeCities.map((city: CityData) => {
@@ -85,7 +85,7 @@ const DistributionOfPediatricians = () => {
         horizontal: 10,
       },
     },
-    colors: ['#fdd835', '#32baff', '#7367f0'],
+    colors: ['#fdd835', '#32baff', '#7367f0', '#2FFFFF', '#100000'],
     plotOptions: {
       radialBar: {
         hollow: { size: '30%' },

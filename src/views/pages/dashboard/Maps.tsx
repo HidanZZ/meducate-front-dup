@@ -97,7 +97,7 @@ const MoroccoMap = ({
   }, []);
 
   return (
-    <LoadScript googleMapsApiKey={'AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0'}>
+    <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
         {pediatriciansData.map((pediatrician) => (
           <Marker
