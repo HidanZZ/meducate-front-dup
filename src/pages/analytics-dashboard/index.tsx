@@ -44,6 +44,7 @@ const AnalyticsDashboard = () => {
 
   const [cityValue, setCityValue] = useState<string>('All')
   const [categoryValue, setCategoryValue] = useState<string>('All')
+  const [specialityValue, setSpecialityValue] = useState<string>('All')
   const [regionValue, setRegionValue] = useState<string>('')
   const [value, setValue] = useState<string>('')
 
@@ -63,11 +64,14 @@ const AnalyticsDashboard = () => {
     setCategoryValue(e.target.value)
   }
 
+  const handleSpecialityValue = (e: SelectChangeEvent) => {
+    setSpecialityValue(e.target.value)
+  }
 
   const handleRegionValue = (e: SelectChangeEvent) => {
     setRegionValue(e.target.value)
   }
-
+ 
 
 
   // State to keep track of the selected row in the TableOfPediatricians component
@@ -120,6 +124,23 @@ const AnalyticsDashboard = () => {
                       <MenuItem value='doctor'>Doctor</MenuItem>
                     </Select>
                   </FormControl>
+                  {categoryValue === 'doctor' && (
+                <FormControl fullWidth sx={{ marginLeft: '16px' }}>
+                <InputLabel id='specialty-select'>Specialty</InputLabel>
+                <Select
+                  fullWidth
+                  value={specialityValue}
+                  label='Specialty'
+                  onChange={handleSpecialityValue}
+                  labelId='specialty-select'
+                >
+                  <MenuItem value='All'>All</MenuItem>
+                  <MenuItem value='pediatre'>Pediatre</MenuItem>
+                  <MenuItem value='cardiologue'>Cardiologue</MenuItem>
+                  {/* Add more specialties as needed */}
+                </Select>
+                </FormControl>
+)}
                </Grid>
               </Grid>
               
