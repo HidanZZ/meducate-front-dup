@@ -119,14 +119,15 @@ const createCustomMarkerIcon = (color: string) => {
     <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
       {pediatriciansData.map((pediatrician) => {
-        // Get the category of the pediatrician (e.g., hospital, clinic, pharmacy)
+
+        // //Get the category of the pediatrician (e.g., hospital, clinic, pharmacy)
         // const category = pediatrician.category.toLowerCase();
 
         // // Define the desired color based on the category (you can use any color logic here)
         // const markerColor = category === 'hospital' ? 'yellow' : category === 'clinical' ? 'red' :category==='doctor'?'green':category==='pharmacy'?'blue': 'red';
 
         // // Create the custom marker icon based on the desired color
-        // const icon = createCustomMarkerIcon('markerColor');
+        // const icon = createCustomMarkerIcon(markerColor);
          
           return (
             <Marker
@@ -197,12 +198,16 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
   }, []);
 
   const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<PediatricianData[]>([]);
+  
+
   useEffect(() => {
     if (cityValue === 'All') {
       setFilteredPediatriciansData(pediatriciansData);
+   
     } else {
       const filteredData = pediatriciansData.filter((pediatrician) => pediatrician.city === cityValue);
       setFilteredPediatriciansData(filteredData);
+ 
     }
   }, [cityValue, pediatriciansData]);
 

@@ -10,6 +10,7 @@ import { ApexOptions } from 'apexcharts'
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
+
 const donutColors = {
   series1: '#fdd835',
   series2: '#00d4bd',
@@ -103,16 +104,9 @@ const ApexDonutChart = () => {
   }
 
   return (
-    <Card>
-      <CardHeader
-        // title='Expense Ratio'
-        subheader='Distribution of categories'
-        subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
-      />
-      <CardContent>
+
         <ReactApexcharts type='donut' height={400} options={options} series={[125, 126, 70, 102]} />
-      </CardContent>
-    </Card>
+     
   )
 }
 

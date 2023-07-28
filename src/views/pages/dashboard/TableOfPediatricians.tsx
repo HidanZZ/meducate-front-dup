@@ -100,26 +100,34 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
       fontSize: '12px',
       fontWeight: 'bold',
     };
-
+  
     let backgroundColor = '#FFFFFF'; // Default background color
-    if (sentiment.label =='POSITIVE' ) {
-      backgroundColor = '#4CAF50'; // Green color for positive sentiments
-    } else if (sentiment.label =='NEGATIVE') {
-      backgroundColor = '#FF5733'; // Red color for negative sentiments
+  
+    const redNeg = Math.round(sentiment.score * 255);
+    const greenNeg = Math.round((1 - sentiment.score) * 255);
+    const redPos = Math.round((1 - sentiment.score) * 255);
+    const greenPos = Math.round(sentiment.score * 255);
+  
+    if (sentiment.label === 'POSITIVE') {
+      backgroundColor = `rgb(${redPos}, ${greenPos}, 0)`; // Green color for positive sentiments
+    } else if (sentiment.label === 'NEGATIVE') {
+      backgroundColor = `rgb(${redNeg}, ${greenNeg}, 0)`; // Red color for negative sentiments
     }
-
+  
     const labelContainerStyle = {
       ...labelStyle,
       backgroundColor,
     };
-
+  
     return (
       <span style={labelContainerStyle}>
         {sentiment.label}
       </span>
     );
   };
-  const getRowId = (row: TableBodyRowType) => row._id;
+  
+
+
 
 
  // Calculate the total number of pages
@@ -141,8 +149,8 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
       <table style={{ width: '100%', tableLayout: 'fixed' }}>
         <thead>
           <tr>
-            <th style={{borderRadius: '100px', boxShadow: '0px 4px 8px -4px rgba(58, 53, 65, 0.42)', backgroundImage: 'linear-gradient(98deg, #C6A7FE, #014BAC 94%)'  , color: 'white' }}>Name</th>
-            <th style={{borderRadius: '100px',  boxShadow: '0px 4px 8px -4px rgba(58, 53, 65, 0.42)', backgroundImage: 'linear-gradient(98deg, #C6A7FE, #014BAC 94%)', color: 'white' }}>Phone</th>
+            <th style={{ boxShadow: '0px 4px 8px -4px rgba(58, 53, 65, 0.42)' }}>Name</th>
+            <th style={{ boxShadow: '0px 4px 8px -4px rgba(58, 53, 65, 0.42)' }}>Phone</th>
 
           </tr>
         </thead>
@@ -159,7 +167,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span style={{ fontSize: '0.875rem' }}>{row.phone_number}</span>
+                  <span style={{ fontSize: '0.875rem', display: 'flex', justifyContent: 'center'}}>{row.phone_number}</span>
                 </TableCell>
               </TableRow>
               {selectedRow === row && (
@@ -169,7 +177,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
               <p>Address: {row.address}</p>
               <div>
                 <div>
-                Sentiments:
+                Comments:
                   {row.sentiments.map((sentiment) => (
                     renderSentimentsLabel(sentiment)
                   ))}

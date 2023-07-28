@@ -51,7 +51,7 @@ const AnalyticsTransactionsCard = (props: StatisticsProps) => {
           },
           {
             stats: data2.numberOfPediatres,
-            title: 'Precise Data',
+            title: 'Filtred Data',
             color: 'success',
             icon: <Icon icon='mdi:view-dashboard' />
           },
