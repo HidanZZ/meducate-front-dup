@@ -5,18 +5,27 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import { Icon } from '@iconify/react';
+import AnalyticsDashboard from 'src/services/analyticsDashboard';
 
 interface TableOfPediatriciansProps {
   value: string;
   handleFilter: (val: string) => void;
   cityValue: string;
-  setSelectedPediatrician: (pediatrician: TableBodyRowType | null) => void;
+  category: string;
+  speciality: string;
+  setSelectedMedical: (pediatrician: TableBodyRowType | null) => void;
 }
 
 interface Sentiments {
   label: string;
   score: number;
 }
+
+interface ICategory {
+  libelle: string;
+  speciality: string;
+}
+
 
 export interface TableBodyRowType {
   _id: string;
@@ -30,13 +39,12 @@ export interface TableBodyRowType {
   longitude: number;
   city: string;
   sentiments: Sentiments[];
-  category:string
+  category:ICategory[];
 }
 
 const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElement => {
-  const { value, handleFilter, cityValue, setSelectedPediatrician } = props;
-  const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<TableBodyRowType[]>([]);
-  const [pediatriciansData, setPediatriciansData] = useState<TableBodyRowType[]>([]);
+  const { value, handleFilter, cityValue, category,speciality,setSelectedMedical } = props;
+  const [medicalsData, setMedicalsData] = useState<TableBodyRowType[]>([]);
   const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
   const [selectedRow, setSelectedRow] = useState<TableBodyRowType | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -44,31 +52,26 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
 
   const handleRowClick = (row: TableBodyRowType) => {
     setSelectedRow(row === selectedRow ? null : row);
-    setSelectedPediatrician(row === selectedRow ? null : row);
+    setSelectedMedical(row === selectedRow ? null : row);
   };
 
   useEffect(() => {
-    const fetchPediatricians = async () => {
+    const fetchMedicals = async () => {
       try {
-        const response = await fetch('http://localhost:8000/pediatres');
-        const data = await response.json();
-        setPediatriciansData(data);
+        // Call the service function to fetch medical data
+        const data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
+        console.log(data);
+        if (Array.isArray(data)) {
+          setMedicalsData(data);
+        }
       } catch (error) {
-        console.error('Erreur lors de la récupération des données des pédiatres :', error);
+        console.error('Erreur lors de la récupération des données :', error);
       }
     };
 
-    fetchPediatricians();
-  }, []);
+    fetchMedicals();
+  }, [cityValue, category, speciality]);
 
-  useEffect(() => {
-    if (cityValue === 'All') {
-      setFilteredPediatriciansData(pediatriciansData);
-    } else {
-      const filteredData = pediatriciansData.filter((pediatrician) => pediatrician.city === cityValue);
-      setFilteredPediatriciansData(filteredData);
-    }
-  }, [cityValue, pediatriciansData]);
 
   const renderUserAvatar = (row: TableBodyRowType) => {
     if (row.avatarSrc) {
@@ -131,7 +134,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
 
 
  // Calculate the total number of pages
- const totalPages = Math.ceil(filteredPediatriciansData.length / rowsPerPage);
+ const totalPages = Math.ceil(medicalsData.length / rowsPerPage);
 
  // Function to handle pagination button clicks
  const handlePageChange = (event: unknown, newPage: number) => {
@@ -141,7 +144,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
   // Calculate the index of the first row on the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
   // Slice the filtered data to display only the rows for the current page
-  const displayedRows = filteredPediatriciansData.slice(startIndex, startIndex + rowsPerPage);
+  const displayedRows = medicalsData.slice(startIndex, startIndex + rowsPerPage);
 
   return (
     <div style={{ height: 500, width: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -194,7 +197,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
       </div>
       <TablePagination
        component="div"
-       count={filteredPediatriciansData.length}
+       count={medicalsData.length}
        page={currentPage - 1}
        onPageChange={handlePageChange}
        rowsPerPage={rowsPerPage}

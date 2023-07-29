@@ -27,30 +27,32 @@ interface DataType {
 
 }
 interface StatisticsProps {
-  cityValue: string
+  cityValue: string;
+  category:string;
+  speciality:string
 }
 
 const AnalyticsTransactionsCard = (props: StatisticsProps) => {
-  const { cityValue } = props
+  const { cityValue,category,speciality } = props
 
   const [statsData, setStatsData] = useState<DataType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try { 
-        const data1=await ServiceAnalyticsDashboard.getNumberOfPediatricians();
-        const data2=await ServiceAnalyticsDashboard.getNumberOfpediatreByCity(cityValue);
+        const data1=await ServiceAnalyticsDashboard.getMedicalDataByFilters('All','All','All');
+        const data2=await ServiceAnalyticsDashboard.getMedicalDataByFilters(cityValue,category,speciality);
         const data3=await ServiceAnalyticsDashboard.getNumberOfPositiveCommentsByCity(cityValue);
         const data4=await ServiceAnalyticsDashboard.getNumberOfNegativeCommentsByCity(cityValue);
         const updatedSalesData: DataType[] = [
           {
-            stats: data1.numberOfPediatres,
+            stats: data1.length,
             title: 'General Data',
             color: 'primary',
             icon: <Icon icon='mdi:view-module' />
           },
           {
-            stats: data2.numberOfPediatres,
+            stats: data2.length,
             title: 'Filtred Data',
             color: 'success',
             icon: <Icon icon='mdi:view-dashboard' />
@@ -76,7 +78,7 @@ const AnalyticsTransactionsCard = (props: StatisticsProps) => {
     };
 
     fetchData();
-  }, [cityValue]);
+  }, [cityValue,category,speciality]);
 
   const renderStats = () => {
     return statsData.map((item: DataType, index: number) => {
