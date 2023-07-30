@@ -234,7 +234,7 @@ const AnalyticsDashboard = () => {
 
         {categoryValue !== 'All' ? (
         <Grid item xs={12} md={12}>
-          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
+          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} category={categoryValue} />
         </Grid>
         
         ):null}
