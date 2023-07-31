@@ -24,9 +24,10 @@ interface StatisticsProps {
 
 const ApexDonutChart = (props:StatisticsProps) => {
   const { cityValue } = props
-
+  
   // ** State
-const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any[] | null>(null); // Initialize data to null
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -166,14 +167,19 @@ function getAllMyDataLabelsAndColors(allMyData: MedicalData[] | null) {
  // ** Séries pour le graphique
 // ** Séries pour le graphique
 let series = [];
-if (cityValue === 'All') {
-  // Calculate 'series' when clicking on "All"
-  series = data ? data.map((item) => item.count) : [];
-} else {
-  // Calculate 'series' when clicking on a specific city
-  const cityData = data && data[0] ? data[0][cityValue] : null;
-  series = cityData ? Object.values(cityData) : [];
-}
+  if (cityValue === 'All') {
+    // Calculate 'series' when clicking on "All"
+    series = data ? data.map((item) => item.count) : [];
+  } else {
+    // Calculate 'series' when clicking on a specific city
+    const cityData = data && data[0] ? data[0][cityValue] : null;
+    series = cityData ? Object.values(cityData) : [];
+  }
+
+  // Check if data is not yet fetched or if there is no data available
+  if (data === null || data.length === 0) {
+    return <Alert severity="warning">Fetching data...</Alert>;
+  }
  console.log('***', data); // Affichez le contenu de data dans la console
  console.log("Options:", options);
 
