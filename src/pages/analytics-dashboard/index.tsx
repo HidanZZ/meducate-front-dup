@@ -152,13 +152,13 @@ const AnalyticsDashboard = () => {
         {/* Statistics */}
         {categoryValue !== 'All' ? (
         <Grid item xs={12}>
-          <Statistics cityValue={cityValue}/>
+          <Statistics cityValue={cityValue} category={categoryValue} speciality={specialityValue} />
         </Grid>):null}
 
         {/* TableOfPediatricians */}
         {categoryValue !== 'All' ? (
         <Grid item xs={12} md={6}>
-          <TableOfPediatricians value={value} handleFilter={handleFilter} cityValue={cityValue} setSelectedPediatrician={setSelectedPediatrician} />
+          <TableOfPediatricians value={value} handleFilter={handleFilter} cityValue={cityValue} category={categoryValue} speciality={specialityValue} setSelectedMedical={setSelectedPediatrician} />
         
         </Grid>
         ):null}
@@ -182,7 +182,7 @@ const AnalyticsDashboard = () => {
 
               {/* Maps */}
               <Grid item xs={12} md={6}>
-                <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
+                <Maps cityValue={cityValue} category={categoryValue} speciality={specialityValue} selectedMedicalTable={selectedPediatrician}/>
               </Grid>
             </Grid>
           </CardContent>
@@ -192,7 +192,7 @@ const AnalyticsDashboard = () => {
 
           {categoryValue !== 'All' ? (
    <Grid item xs={12} md={6}>
-   <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
+   <Maps cityValue={cityValue} category={categoryValue} speciality={specialityValue} selectedMedicalTable={selectedPediatrician}/>
  </Grid>
 
           ):null}
@@ -234,7 +234,7 @@ const AnalyticsDashboard = () => {
 
         {categoryValue !== 'All' ? (
         <Grid item xs={12} md={12}>
-          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
+          <ChartjsBarChart category={categoryValue} yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         
         ):null}
