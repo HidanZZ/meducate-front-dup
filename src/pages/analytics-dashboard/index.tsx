@@ -75,7 +75,7 @@ const AnalyticsDashboard = () => {
 
 
   // State to keep track of the selected row in the TableOfPediatricians component
-  const [selectedMedicalTable, setSelectedMedicalTable] = useState<TableBodyRowType | null>(null);
+  const [selectedPediatrician, setSelectedPediatrician] = useState<TableBodyRowType | null>(null);
 
 
 
@@ -118,9 +118,9 @@ const AnalyticsDashboard = () => {
                       labelId='category-select'
                     >
                       <MenuItem value='All'>All</MenuItem>
-                      <MenuItem value='hospital'>Hopital</MenuItem>
-                      <MenuItem value='clinical'>Clinique</MenuItem>
-                      <MenuItem value='pharmacy'>Pharmacie</MenuItem>
+                      <MenuItem value='hopital'>Hopital</MenuItem>
+                      <MenuItem value='clinique'>Clinique</MenuItem>
+                      <MenuItem value='pharmacie'>Pharmacie</MenuItem>
                       <MenuItem value='doctor'>Doctor</MenuItem>
                     </Select>
                   </FormControl>
@@ -152,37 +152,37 @@ const AnalyticsDashboard = () => {
         {/* Statistics */}
         {categoryValue !== 'All' ? (
         <Grid item xs={12}>
-          <Statistics cityValue={cityValue} category={categoryValue} speciality={specialityValue} />
+          <Statistics cityValue={cityValue}/>
         </Grid>):null}
 
         {/* TableOfPediatricians */}
         {categoryValue !== 'All' ? (
         <Grid item xs={12} md={6}>
-          <TableOfPediatricians value={value} handleFilter={handleFilter} cityValue={cityValue} category={categoryValue} speciality={specialityValue} setSelectedMedical={setSelectedMedicalTable} />
+          <TableOfPediatricians value={value} handleFilter={handleFilter} cityValue={cityValue} setSelectedPediatrician={setSelectedPediatrician} />
         
         </Grid>
         ):null}
 
 
 {categoryValue === 'All' ? (
-          <Grid item xs={12} >
-        <Card sx={{ marginBottom: '20px' }}>
+          <Grid item xs={15} >
+        <Card >
           <CardHeader
             subheader='Distribution of categories'
             subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
           />
-          <CardContent>
+          <CardContent sx={{ marginBottom: '40px' }}>
             <Grid container spacing={2}>
               {/* Premier composant à gauche */}
               {categoryValue === 'All' && (
                 <Grid item xs={12} md={6}>
-                  <RechartsPieChart />
+                  <RechartsPieChart cityValue={cityValue}/>
                 </Grid>
               )}
 
               {/* Maps */}
               <Grid item xs={12} md={6}>
-                <Maps cityValue={cityValue} category={categoryValue} speciality={specialityValue} selectedMedicalTable={selectedMedicalTable}/>
+                <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
               </Grid>
             </Grid>
           </CardContent>
@@ -192,7 +192,7 @@ const AnalyticsDashboard = () => {
 
           {categoryValue !== 'All' ? (
    <Grid item xs={12} md={6}>
-   <Maps  cityValue={cityValue} category={categoryValue} speciality={specialityValue} selectedMedicalTable={selectedMedicalTable}/>
+   <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
  </Grid>
 
           ):null}
@@ -220,8 +220,8 @@ const AnalyticsDashboard = () => {
         {/* {categoryValue !== 'All' ? (
          <Grid item xs={12} md={6}>
           <DistributionOfPediatricians />
-        </Grid> ):null}
-  */}
+        </Grid> ):null} */}
+ 
         {/* ChartjsBarChart */}
 
         {categoryValue === 'All' ? (
@@ -234,7 +234,7 @@ const AnalyticsDashboard = () => {
 
         {categoryValue !== 'All' ? (
         <Grid item xs={12} md={12}>
-          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} category={categoryValue} />
+          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         
         ):null}

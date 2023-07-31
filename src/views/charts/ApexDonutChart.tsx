@@ -3,34 +3,95 @@ import Card from '@mui/material/Card'
 import { useTheme } from '@mui/material/styles'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
+// ** React Imports
+import { useEffect, useState } from 'react';
+
 
 // ** Third Party Imports
 import { ApexOptions } from 'apexcharts'
 
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import { Alert } from '@mui/material';
 
+// Fonction pour générer une couleur aléatoire
+const generateRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
-const donutColors = {
-  series1: '#fdd835',
-  series2: '#00d4bd',
-  series3: '#826bf8',
-  series4: '#32baff',
-  series5: '#ffa1a1'
+interface StatisticsProps {
+  cityValue: string
+}
+// ** Effect to fetch data from the API
+
+const ApexDonutChart = (props:StatisticsProps) => {
+  const { cityValue } = props
+
+  // ** State
+const [data, setData] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+          let apiUrl = 'http://localhost:8000/getMedicalDataCountByCategory';
+          if (cityValue !== 'All') {
+            apiUrl = 'http://localhost:8000/getMedicalDataCountsByCity';
+          }
+        const response = await fetch(apiUrl);
+        const jsonData = await response.json();
+        if (cityValue !== 'All') {
+          setData([{ [cityValue]: jsonData[cityValue] }]);
+        } else {
+          setData(jsonData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+
+  }, [cityValue]);
+ 
+interface MedicalData {
+  _id: { libelle: string; speciality: string }[];
+  count: number;
 }
 
-const ApexDonutChart = () => {
+function getMyDataLabelsAndColors(cityData: { [key: string]: { [key: string]: number } } | null) {
+  if (!cityData || Object.keys(cityData).length === 0 || Object.keys(cityData[Object.keys(cityData)[0]]).length === 0) {
+    // Handle the case where cityData is null, an empty object, or the first property is an empty object
+    return { labels: [], colors: [] };
+  }
+
+  const labels = Object.keys(cityData[Object.keys(cityData)[0]]);
+  const colors = labels.map(() => generateRandomColor());
+  console.log("Labels:", labels);
+  console.log("Colors:", colors);
+  return { labels, colors };
+}
+function getAllMyDataLabelsAndColors(allMyData: MedicalData[] | null) {
+  if (!Array.isArray(allMyData) || allMyData.length === 0 || !allMyData[0]?._id?.length) {
+    // Handle the case where allMyData is not an array, is empty, or the first item has no _id array
+    return { labels: [], colors: [] };
+  }
+
+  const labels = allMyData.map((item) => item._id[0].libelle || '');
+  const colors = allMyData.map(() => generateRandomColor());
+  console.log("Labels:", labels);
+  console.log("Colors:", colors);
+  return { labels, colors };
+}
+
+
   // ** Hook
   const theme = useTheme()
+  const { labels, colors } = cityValue === 'All'
+  ? getAllMyDataLabelsAndColors(data)
+  : getMyDataLabelsAndColors(data && data[0] ? data[0] : null);
 
   const options: ApexOptions = {
     stroke: { width: 0 },
-    labels: ['Hopital', 'Clinical', 'Pharmacy', 'Doctor'],
-    colors: [donutColors.series1, donutColors.series5, donutColors.series3, donutColors.series2],
-    dataLabels: {
-      enabled: true,
-      formatter: (val: string) => `${parseInt(val, 10)}%`
-    },
+    labels: labels, // Utilisez les libellés définis en fonction de cityValue
+    colors: colors,
     legend: {
       position: 'bottom',
       markers: { offsetX: -3 },
@@ -102,11 +163,32 @@ const ApexDonutChart = () => {
       }
     ]
   }
+ // ** Séries pour le graphique
+// ** Séries pour le graphique
+let series = [];
+if (cityValue === 'All') {
+  // Calculate 'series' when clicking on "All"
+  series = data ? data.map((item) => item.count) : [];
+} else {
+  // Calculate 'series' when clicking on a specific city
+  const cityData = data && data[0] ? data[0][cityValue] : null;
+  series = cityData ? Object.values(cityData) : [];
+}
+ console.log('***', data); // Affichez le contenu de data dans la console
+ console.log("Options:", options);
+
 
   return (
-
-        <ReactApexcharts type='donut' height={400} options={options} series={[125, 126, 70, 102]} />
-     
+    <Card>
+      <CardHeader
+        // title='Expense Ratio'
+        subheader='Distribution of categories'
+        subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
+      />
+      <CardContent>
+        <ReactApexcharts type='donut' height={400} options={options} series={series} />
+      </CardContent>
+    </Card>
   )
 }
 
