@@ -154,6 +154,10 @@ const AnalyticsDashboard = () => {
         <Grid item xs={12}>
           <Statistics cityValue={cityValue}/>
         </Grid>):null}
+        {categoryValue !== 'All' ? (
+        <Grid item xs={12}>
+          <Statistics cityValue={cityValue}/>
+        </Grid>):null}
 
         {/* TableOfPediatricians */}
         {categoryValue !== 'All' ? (
@@ -165,7 +169,7 @@ const AnalyticsDashboard = () => {
 
         {categoryValue === 'All' ? (
           <Grid item xs={12} md={6}>
-            <RechartsPieChart />
+            <RechartsPieChart cityValue={cityValue}/>
           </Grid>
         ) : null}
         
@@ -188,15 +192,17 @@ const AnalyticsDashboard = () => {
         </Grid>):null}
 
         {/* DistributionOfPediatricians */}
-        <Grid item xs={12} md={6}>
-          <DistributionOfPediatricians />
-        </Grid>
- 
+        {categoryValue !== 'All' ? (
+
+          <Grid item xs={12} md={6}>
+            <DistributionOfPediatricians />
+          </Grid>
+        ):null}
         {/* ChartjsBarChart */}
 
         {categoryValue === 'All' ? (
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={6} md={12}>
           <ApexColumnChart />
           </Grid>
 
