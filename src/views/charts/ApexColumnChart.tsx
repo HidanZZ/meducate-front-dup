@@ -19,11 +19,27 @@ const ApexColumnChart = () => {
   const theme = useTheme()
   const [medicalData, setMedicalData] = useState([]);
 
+  // Définir le type pour categoryNames
+  const [categoryNames, setCategoryNames] = useState<string[]>([]);
+
   useEffect(() => {
     const fetchMedicalData = async () => {
       try {
         const data = await AnalyticsDashboard.getMedicalDataCountsByCity();
         setMedicalData(data);
+
+        // Extraire tous les noms de catégories disponibles dans toutes les villes
+        const categoryNames = Object.keys(data).reduce((acc: string[], cityName: string) => {
+          const cityData = data[cityName];
+          const cityCategoryNames = Object.keys(cityData);
+          return [...acc, ...cityCategoryNames];
+        }, []);
+
+        // Filtrer les noms de catégories pour qu'il n'y ait pas de doublons
+        const uniqueCategoryNames = Array.from(new Set(categoryNames));
+
+        setCategoryNames(uniqueCategoryNames);
+
       } catch (error) {
         console.error('Error while fetching medical data:', error);
       }
@@ -31,7 +47,7 @@ const ApexColumnChart = () => {
 
     fetchMedicalData();
   }, []);
-
+  
   // ** Options and Series
   const options: ApexOptions = {
     chart: {
@@ -106,26 +122,11 @@ const ApexColumnChart = () => {
   };
 
 
-  const series = [
-    // Replace the static series data with dynamic data from the medical data
-    {
-      name: 'Hospital',
-      data: Object.values(medicalData).map((data) => data['hospital'] || 0),
-    },
-    {
-      name: 'Clinical',
-      data: Object.values(medicalData).map((data) => data['clinical'] || 0),
-    },
-    {
-      name: 'Pharmacy',
-      data: Object.values(medicalData).map((data) => data['pharmacy'] || 0),
-    },
-    {
-      name: 'Doctor',
-      data: Object.values(medicalData).map((data) => data['doctor'] || 0),
-    },
-  ];
-
+  const series = categoryNames.map((categoryName) => ({
+    name: categoryName,
+    data: Object.values(medicalData).map((data) => data[categoryName] || 0),
+  }));
+  
   return (
     <div>
       {/* Your JSX code here */}

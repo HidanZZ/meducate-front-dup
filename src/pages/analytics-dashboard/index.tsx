@@ -153,6 +153,7 @@ const AnalyticsDashboard = () => {
         {categoryValue !== 'All' ? (
         <Grid item xs={12}>
           <Statistics cityValue={cityValue} category={categoryValue} speciality={specialityValue} />
+          <Statistics cityValue={cityValue} category={categoryValue} speciality={specialityValue} />
         </Grid>):null}
 
         {/* TableOfPediatricians */}
@@ -234,7 +235,7 @@ const AnalyticsDashboard = () => {
 
         {categoryValue !== 'All' ? (
         <Grid item xs={12} md={12}>
-          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} category={categoryValue} />
+          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         
         ):null}
