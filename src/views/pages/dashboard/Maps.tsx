@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
 import { TableBodyRowType } from "src/views/pages/dashboard/TableOfPediatricians";
+import AnalyticsDashboard from 'src/services/analyticsDashboard';
 
 
 // Interface for a single coordinate point in the GeoJSON data
@@ -43,37 +44,42 @@ interface RegionData {
   features: GeoJSONFeature[];
 }
 
+interface ICategory {
+  libelle: string;
+  speciality: string;
+}
+
 interface Sentiments {
   label: string;
   score: number;
 }
 
-interface PediatricianData {
+interface MedicalData {
   name: string;
   address: string;
   phone_number: string;
   latitude: number;
   longitude: number;
   city: string;
-  category:string;
+  category:ICategory[];
 
 }
 
 interface MoroccoMapProps {
-  pediatriciansData: PediatricianData[];
-  onMarkerClick: (pediatrician: PediatricianData) => void;
+  medicalsData: MedicalData[];
+  onMarkerClick: (medical: MedicalData) => void;
   center: { lat: number; lng: number };
   zoom: number;
-  selectedPediatrician: PediatricianData | null; 
+  selectedMedical: MedicalData | null; 
 
 }
 
 const MoroccoMap = ({
-  pediatriciansData,
+  medicalsData,
   onMarkerClick,
   center,
   zoom,
-  selectedPediatrician
+  selectedMedical
 
 }: MoroccoMapProps): ReactElement => {
   const mapContainerStyle = {
@@ -81,8 +87,8 @@ const MoroccoMap = ({
     height: '400px',
   };
 
-  const handleMarkerClick = (pediatrician: PediatricianData) => {
-    onMarkerClick(pediatrician);
+  const handleMarkerClick = (medical: MedicalData) => {
+    onMarkerClick(medical);
   };
 
 
@@ -118,30 +124,31 @@ const createCustomMarkerIcon = (color: string) => {
   return (
     <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
-      {pediatriciansData.map((pediatrician) => {
-        // Get the category of the pediatrician (e.g., hospital, clinic, pharmacy)
-        // const category = pediatrician.category.toLowerCase();
+      {medicalsData.map((medical) => {
 
-        // // Define the desired color based on the category (you can use any color logic here)
-        // const markerColor = category === 'hospital' ? 'yellow' : category === 'clinical' ? 'red' :category==='doctor'?'green':category==='pharmacy'?'blue': 'red';
+        //Get the category of the pediatrician (e.g., hospital, clinic, pharmacy)
+        const category = medical.category[0].libelle.toLowerCase();
 
-        // // Create the custom marker icon based on the desired color
-        // const icon = createCustomMarkerIcon('markerColor');
+        // Define the desired color based on the category (you can use any color logic here)
+        const markerColor = category === 'hospital' ? 'yellow' : category === 'clinical' ? 'red' :category==='doctor'?'green':category==='pharmacy'?'blue': 'red';
+
+        // Create the custom marker icon based on the desired color
+        const icon = createCustomMarkerIcon(markerColor);
          
           return (
             <Marker
-              key={pediatrician.name}
-              position={{ lat: pediatrician.latitude, lng: pediatrician.longitude }}
-              onClick={() => handleMarkerClick(pediatrician)}
-              // icon={icon} // Use the custom marker icon based on the category
+              key={medical.name}
+              position={{ lat: medical.latitude, lng: medical.longitude }}
+              onClick={() => handleMarkerClick(medical)}
+              icon={icon} // Use the custom marker icon based on the category
             />
           );
         })}
 
                 {/* Afficher le cercle rouge autour du marqueur du pédiatre sélectionné */}
-                {selectedPediatrician && (
+                {selectedMedical && (
           <Marker
-            position={{ lat: selectedPediatrician.latitude, lng: selectedPediatrician.longitude }}
+            position={{ lat: selectedMedical.latitude, lng: selectedMedical.longitude }}
             icon={{
               path: window.google.maps.SymbolPath.CIRCLE,
               fillColor: 'red',
@@ -169,45 +176,36 @@ const createCustomMarkerIcon = (color: string) => {
   );
 };
 
-const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; selectedPediatricianTable: TableBodyRowType | null;}): ReactElement => {
+const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValue: string ; category: string ;speciality: string ;  selectedMedicalTable: TableBodyRowType | null;}): ReactElement => {
   // Définir le state pour le centre initial de la carte
   const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 31.7917, lng: -7.0926 });
   // Définir le state pour le niveau de zoom initial de la carte
   const [zoom, setZoom] = useState<number>(6);
   
 
-  const [pediatriciansData, setPediatriciansData] = useState<PediatricianData[]>([]);
-  const [selectedPediatrician, setSelectedPediatrician] = useState<PediatricianData | null>(null); 
-  const [pediatricianTable, setPediatricianTable] = useState<TableBodyRowType| null>(null);
+  const [medicalsData, setMedicalsData] = useState<MedicalData[]>([]);
+  const [selectedMedical, setSelectedMedical] = useState<MedicalData | null>(null); 
+  const [medicalTable, setMedicalTable] = useState<TableBodyRowType| null>(null);
   
   useEffect(() => {
-    const fetchPediatricians = async () => {
+    const fetchMedicals = async () => {
       try {
-        const response = await fetch('http://localhost:8000/pediatres');
-        const data = await response.json();
+        // Call the service function to fetch medical data
+        const data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
+        console.log(data);
         if (Array.isArray(data)) {
-          setPediatriciansData(data);
+          setMedicalsData(data);
         }
       } catch (error) {
-        console.error('Erreur lors de la récupération des données des pédiatres :', error);
+        console.error('Erreur lors de la récupération des données :', error);
       }
     };
 
-    fetchPediatricians();
-  }, []);
+    fetchMedicals();
+  }, [cityValue, category, speciality]);
 
-  const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<PediatricianData[]>([]);
-  useEffect(() => {
-    if (cityValue === 'All') {
-      setFilteredPediatriciansData(pediatriciansData);
-    } else {
-      const filteredData = pediatriciansData.filter((pediatrician) => pediatrician.city === cityValue);
-      setFilteredPediatriciansData(filteredData);
-    }
-  }, [cityValue, pediatriciansData]);
-
-  const handleMarkerClick = (pediatrician: PediatricianData) => {
-    setSelectedPediatrician(pediatrician);
+  const handleMarkerClick = (pediatrician: MedicalData) => {
+    setSelectedMedical(pediatrician);
 
 
     setCenter({ lat: pediatrician.latitude, lng: pediatrician.longitude });
@@ -218,12 +216,12 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
  
   
   useEffect(() => {
-    if (selectedPediatricianTable) {
-      setCenter({ lat: selectedPediatricianTable.latitude, lng: selectedPediatricianTable.longitude });
+    if (selectedMedicalTable) {
+      setCenter({ lat: selectedMedicalTable.latitude, lng: selectedMedicalTable.longitude });
       setZoom(20);
-      setSelectedPediatrician(selectedPediatricianTable); 
+      setSelectedMedical(selectedMedicalTable); 
     }
-  }, [selectedPediatricianTable, pediatricianTable]);
+  }, [selectedMedicalTable, medicalTable]);
 
 
 
@@ -231,20 +229,20 @@ const Maps = ({ cityValue, selectedPediatricianTable }: { cityValue: string ; se
   return (
     <Card>
       <MoroccoMap
-        pediatriciansData={filteredPediatriciansData}
+        medicalsData={medicalsData}
         onMarkerClick={handleMarkerClick}
         center={center}
         zoom={zoom}
-        selectedPediatrician={selectedPediatrician}
+        selectedMedical={selectedMedical}
       />
-      {selectedPediatrician && (
+      {selectedMedical && (
         <Card>
           <CardContent>
             <Typography variant="h5" component="div">
-              {selectedPediatrician.name}
+              {selectedMedical.name}
             </Typography>
-            <Typography color="text.secondary">Address: {selectedPediatrician.address}</Typography>
-            <Typography color="text.secondary">Phone: {selectedPediatrician.phone_number}</Typography>
+            <Typography color="text.secondary">Address: {selectedMedical.address}</Typography>
+            <Typography color="text.secondary">Phone: {selectedMedical.phone_number}</Typography>
           </CardContent>
         </Card>
       )}

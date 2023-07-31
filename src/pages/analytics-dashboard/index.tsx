@@ -154,10 +154,6 @@ const AnalyticsDashboard = () => {
         <Grid item xs={12}>
           <Statistics cityValue={cityValue}/>
         </Grid>):null}
-        {categoryValue !== 'All' ? (
-        <Grid item xs={12}>
-          <Statistics cityValue={cityValue}/>
-        </Grid>):null}
 
         {/* TableOfPediatricians */}
         {categoryValue !== 'All' ? (
@@ -167,17 +163,46 @@ const AnalyticsDashboard = () => {
         </Grid>
         ):null}
 
-        {categoryValue === 'All' ? (
-          <Grid item xs={12} md={6}>
-            <RechartsPieChart cityValue={cityValue}/>
-          </Grid>
-        ) : null}
-        
-        {/* Maps */}
-        <Grid item xs={12} md={6}>
-          <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
-        </Grid>
-        {categoryValue !== 'All' ? (
+
+{categoryValue === 'All' ? (
+          <Grid item xs={15} >
+        <Card >
+          <CardHeader
+            subheader='Distribution of categories'
+            subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
+          />
+          <CardContent sx={{ marginBottom: '40px' }}>
+            <Grid container spacing={2}>
+              {/* Premier composant à gauche */}
+              {categoryValue === 'All' && (
+                <Grid item xs={12} md={6}>
+                  <RechartsPieChart cityValue={cityValue}/>
+                </Grid>
+              )}
+
+              {/* Maps */}
+              <Grid item xs={12} md={6}>
+                <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+          </Grid>):null}
+
+
+          {categoryValue !== 'All' ? (
+   <Grid item xs={12} md={6}>
+   <Maps cityValue={cityValue} selectedPediatricianTable={selectedPediatrician}/>
+ </Grid>
+
+          ):null}
+
+
+
+
+
+
+       
         <Grid item xs={12} md={12}>
         <PageHeader
             title={
@@ -189,27 +214,26 @@ const AnalyticsDashboard = () => {
             }
             // subtitle={<Typography variant='body2'>Pediatrician Stats</Typography>}
           />
-        </Grid>):null}
+        </Grid>
 
         {/* DistributionOfPediatricians */}
-        {categoryValue !== 'All' ? (
-
-          <Grid item xs={12} md={6}>
-            <DistributionOfPediatricians />
-          </Grid>
-        ):null}
+        {/* {categoryValue !== 'All' ? (
+         <Grid item xs={12} md={6}>
+          <DistributionOfPediatricians />
+        </Grid> ):null} */}
+ 
         {/* ChartjsBarChart */}
 
         {categoryValue === 'All' ? (
 
-          <Grid item xs={6} md={12}>
+          <Grid item xs={12} md={12}>
           <ApexColumnChart />
           </Grid>
 
           ):null}
 
         {categoryValue !== 'All' ? (
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         

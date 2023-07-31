@@ -10,24 +10,28 @@ interface BarProp {
   yellow: string
   labelColor: string
   borderColor: string
+  category: string
 }
 
 const ChartjsBarChart = (props: BarProp) => {
-  const { yellow, labelColor, borderColor } = props // Destructure cityValue from props
+  const { yellow, labelColor, borderColor, category } = props // Destructure cityValue from props
 
   const [chartData, setChartData] = useState<ChartData<'bar'>>({
     labels: [],
-    datasets: []
+    datasets: [],
   })
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await AnalyticsDashboard.getPediatriciansCountByCity()
+        // Appeler le service getCategoryCountsByCity pour récupérer les données
+        const data = await AnalyticsDashboard.getCategoryCountsByCity(category)
 
+        // Extraire les noms de ville et les comptes de la réponse du service
+        const labels = Object.keys(data)
+        const counts = Object.values(data)
 
-        const labels = data.map((item: { _id: string }) => item._id)
-        const counts = data.map((item: { count: number }) => item.count)
+        // Mettre à jour les données du graphique
         const updatedData: ChartData<'bar'> = {
           labels: labels,
           datasets: [
@@ -36,19 +40,18 @@ const ChartjsBarChart = (props: BarProp) => {
               backgroundColor: yellow,
               borderColor: 'transparent',
               borderRadius: { topRight: 15, topLeft: 15 },
-              data: counts
-            }
-          ]
+              data: counts as number[], // Assurer que counts est de type number[]
+            },
+          ],
         }
         setChartData(updatedData)
       } catch (error) {
-        console.error('Error while fetching pediatricians count by city:', error)
+        console.error('Error while fetching category counts by city:', error)
       }
     }
 
     fetchData()
-  })
-
+  }, [yellow, category])
 
   const options: ChartOptions<'bar'> = {
     responsive: true,
@@ -59,9 +62,9 @@ const ChartjsBarChart = (props: BarProp) => {
         grid: {
           borderColor,
           drawBorder: false,
-          color: borderColor
+          color: borderColor,
         },
-        ticks: { color: labelColor }
+        ticks: { color: labelColor },
       },
       y: {
         min: 0,
@@ -69,22 +72,22 @@ const ChartjsBarChart = (props: BarProp) => {
         grid: {
           borderColor,
           drawBorder: false,
-          color: borderColor
+          color: borderColor,
         },
         ticks: {
           stepSize: 100,
-          color: labelColor
-        }
-      }
+          color: labelColor,
+        },
+      },
     },
     plugins: {
-      legend: { display: false }
-    }
+      legend: { display: false },
+    },
   }
 
   return (
     <Card>
-      <CardHeader title='Distribution by city' />
+      <CardHeader title={`Distribution of ${category} by city`} />
       <CardContent>
         <Bar data={chartData} height={400} options={options} />
       </CardContent>

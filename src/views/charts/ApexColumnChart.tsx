@@ -1,65 +1,38 @@
-// ** React Imports
-import { forwardRef, useState } from 'react'
+import { useEffect, useState } from 'react';
+import { ApexOptions } from 'apexcharts';
+import ReactApexcharts from 'src/@core/components/react-apexcharts';
+import AnalyticsDashboard from 'src/services/analyticsDashboard';
 
-// ** MUI Imports
-import Card from '@mui/material/Card'
-import TextField from '@mui/material/TextField'
-import { useTheme } from '@mui/material/styles'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
 
-// ** Third Party Imports
-import format from 'date-fns/format'
-import { ApexOptions } from 'apexcharts'
-import DatePicker from 'react-datepicker'
-
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
-
-// ** Types
-import { DateType } from 'src/types/forms/reactDatepickerTypes'
-
-// ** Component Import
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
-
+import { useTheme } from '@mui/material/styles'; 
 const columnColors = {
   bg: '#FFF0C9',
   series1: '#ffcf5c', // Yellow color for Hospital
   series2: '#ffd09a', // Light yellow color for Clinical
   series3: '#ffc08b', // Lighter yellow color for Pharmacy
   series4: '#ffc77c', // Lightest yellow color for Doctor
-}
-
-
-
-const series = [
-  {
-    name: 'Hospital',
-    data: [90, 120, 55, 100, 80]
-  },
-  {
-    name: 'Clinical',
-    data: [85, 100, 30, 40, 95]
-  },
-  {
-    name: 'Pharmacy',
-    data: [15, 40, 15, 20, 35]
-  },
-  {
-    name: 'Doctor',
-    data: [85, 110, 36, 46, 105]
-  }
-]
+};
 
 const ApexColumnChart = () => {
+  
   // ** Hook
   const theme = useTheme()
+  const [medicalData, setMedicalData] = useState([]);
 
-  // ** States
-  const [endDate, setEndDate] = useState<DateType>(null)
-  const [startDate, setStartDate] = useState<DateType>(null)
+  useEffect(() => {
+    const fetchMedicalData = async () => {
+      try {
+        const data = await AnalyticsDashboard.getMedicalDataCountsByCity();
+        setMedicalData(data);
+      } catch (error) {
+        console.error('Error while fetching medical data:', error);
+      }
+    };
 
+    fetchMedicalData();
+  }, []);
+
+  // ** Options and Series
   const options: ApexOptions = {
     chart: {
       offsetX: -10,
@@ -110,7 +83,7 @@ const ApexColumnChart = () => {
     xaxis: {
       axisBorder: { show: false },
       axisTicks: { color: theme.palette.divider },
-      categories: ['Marrakech', 'Casablanca', 'Rabat', 'Agadir', 'Tanger'],
+      categories: Object.keys(medicalData),
       crosshairs: {
         stroke: { color: theme.palette.divider }
       },
@@ -130,33 +103,35 @@ const ApexColumnChart = () => {
         }
       }
     ]
-  }
+  };
 
 
-
-  const handleOnChange = (dates: any) => {
-    const [start, end] = dates
-    setStartDate(start)
-    setEndDate(end)
-  }
+  const series = [
+    // Replace the static series data with dynamic data from the medical data
+    {
+      name: 'Hospital',
+      data: Object.values(medicalData).map((data) => data['hospital'] || 0),
+    },
+    {
+      name: 'Clinical',
+      data: Object.values(medicalData).map((data) => data['clinical'] || 0),
+    },
+    {
+      name: 'Pharmacy',
+      data: Object.values(medicalData).map((data) => data['pharmacy'] || 0),
+    },
+    {
+      name: 'Doctor',
+      data: Object.values(medicalData).map((data) => data['doctor'] || 0),
+    },
+  ];
 
   return (
-    <Card>
-      <CardHeader
-        title='Distribution of Categories by City'
-        sx={{
-          flexDirection: ['column', 'row'],
-          alignItems: ['flex-start', 'center'],
-          '& .MuiCardHeader-action': { mb: 0 },
-          '& .MuiCardHeader-content': { mb: [2, 0] }
-        }}
-    
-      />
-      <CardContent>
-        <ReactApexcharts type='bar' height={400} options={options} series={series} />
-      </CardContent>
-    </Card>
-  )
-}
+    <div>
+      {/* Your JSX code here */}
+      <ReactApexcharts type="bar" height={400} options={options} series={series} />
+    </div>
+  );
+};
 
-export default ApexColumnChart
+export default ApexColumnChart;

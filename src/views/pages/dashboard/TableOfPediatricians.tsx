@@ -5,18 +5,27 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import { Icon } from '@iconify/react';
+import AnalyticsDashboard from 'src/services/analyticsDashboard';
 
 interface TableOfPediatriciansProps {
   value: string;
   handleFilter: (val: string) => void;
   cityValue: string;
-  setSelectedPediatrician: (pediatrician: TableBodyRowType | null) => void;
+  category: string;
+  speciality: string;
+  setSelectedMedical: (pediatrician: TableBodyRowType | null) => void;
 }
 
 interface Sentiments {
   label: string;
   score: number;
 }
+
+interface ICategory {
+  libelle: string;
+  speciality: string;
+}
+
 
 export interface TableBodyRowType {
   _id: string;
@@ -30,13 +39,12 @@ export interface TableBodyRowType {
   longitude: number;
   city: string;
   sentiments: Sentiments[];
-  category:string
+  category:ICategory[];
 }
 
 const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElement => {
-  const { value, handleFilter, cityValue, setSelectedPediatrician } = props;
-  const [filteredPediatriciansData, setFilteredPediatriciansData] = useState<TableBodyRowType[]>([]);
-  const [pediatriciansData, setPediatriciansData] = useState<TableBodyRowType[]>([]);
+  const { value, handleFilter, cityValue, category,speciality,setSelectedMedical } = props;
+  const [medicalsData, setMedicalsData] = useState<TableBodyRowType[]>([]);
   const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
   const [selectedRow, setSelectedRow] = useState<TableBodyRowType | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -44,31 +52,26 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
 
   const handleRowClick = (row: TableBodyRowType) => {
     setSelectedRow(row === selectedRow ? null : row);
-    setSelectedPediatrician(row === selectedRow ? null : row);
+    setSelectedMedical(row === selectedRow ? null : row);
   };
 
   useEffect(() => {
-    const fetchPediatricians = async () => {
+    const fetchMedicals = async () => {
       try {
-        const response = await fetch('http://localhost:8000/pediatres');
-        const data = await response.json();
-        setPediatriciansData(data);
+        // Call the service function to fetch medical data
+        const data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
+        console.log(data);
+        if (Array.isArray(data)) {
+          setMedicalsData(data);
+        }
       } catch (error) {
-        console.error('Erreur lors de la récupération des données des pédiatres :', error);
+        console.error('Erreur lors de la récupération des données :', error);
       }
     };
 
-    fetchPediatricians();
-  }, []);
+    fetchMedicals();
+  }, [cityValue, category, speciality]);
 
-  useEffect(() => {
-    if (cityValue === 'All') {
-      setFilteredPediatriciansData(pediatriciansData);
-    } else {
-      const filteredData = pediatriciansData.filter((pediatrician) => pediatrician.city === cityValue);
-      setFilteredPediatriciansData(filteredData);
-    }
-  }, [cityValue, pediatriciansData]);
 
   const renderUserAvatar = (row: TableBodyRowType) => {
     if (row.avatarSrc) {
@@ -100,30 +103,38 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
       fontSize: '12px',
       fontWeight: 'bold',
     };
-
+  
     let backgroundColor = '#FFFFFF'; // Default background color
-    if (sentiment.label =='POSITIVE' ) {
-      backgroundColor = '#4CAF50'; // Green color for positive sentiments
-    } else if (sentiment.label =='NEGATIVE') {
-      backgroundColor = '#FF5733'; // Red color for negative sentiments
+  
+    const redNeg = Math.round(sentiment.score * 255);
+    const greenNeg = Math.round((1 - sentiment.score) * 255);
+    const redPos = Math.round((1 - sentiment.score) * 255);
+    const greenPos = Math.round(sentiment.score * 255);
+  
+    if (sentiment.label === 'POSITIVE') {
+      backgroundColor = `rgb(${redPos}, ${greenPos}, 0)`; // Green color for positive sentiments
+    } else if (sentiment.label === 'NEGATIVE') {
+      backgroundColor = `rgb(${redNeg}, ${greenNeg}, 0)`; // Red color for negative sentiments
     }
-
+  
     const labelContainerStyle = {
       ...labelStyle,
       backgroundColor,
     };
-
+  
     return (
       <span style={labelContainerStyle}>
         {sentiment.label}
       </span>
     );
   };
-  const getRowId = (row: TableBodyRowType) => row._id;
+  
+
+
 
 
  // Calculate the total number of pages
- const totalPages = Math.ceil(filteredPediatriciansData.length / rowsPerPage);
+ const totalPages = Math.ceil(medicalsData.length / rowsPerPage);
 
  // Function to handle pagination button clicks
  const handlePageChange = (event: unknown, newPage: number) => {
@@ -133,7 +144,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
   // Calculate the index of the first row on the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
   // Slice the filtered data to display only the rows for the current page
-  const displayedRows = filteredPediatriciansData.slice(startIndex, startIndex + rowsPerPage);
+  const displayedRows = medicalsData.slice(startIndex, startIndex + rowsPerPage);
 
   return (
     <div style={{ height: 500, width: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -141,8 +152,8 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
       <table style={{ width: '100%', tableLayout: 'fixed' }}>
         <thead>
           <tr>
-            <th style={{borderRadius: '100px', boxShadow: '0px 4px 8px -4px rgba(58, 53, 65, 0.42)', backgroundImage: 'linear-gradient(98deg, #C6A7FE, #014BAC 94%)'  , color: 'white' }}>Name</th>
-            <th style={{borderRadius: '100px',  boxShadow: '0px 4px 8px -4px rgba(58, 53, 65, 0.42)', backgroundImage: 'linear-gradient(98deg, #C6A7FE, #014BAC 94%)', color: 'white' }}>Phone</th>
+            <th style={{ boxShadow: '0px 4px 8px -4px rgba(58, 53, 65, 0.42)' }}>Name</th>
+            <th style={{ boxShadow: '0px 4px 8px -4px rgba(58, 53, 65, 0.42)' }}>Phone</th>
 
           </tr>
         </thead>
@@ -159,7 +170,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span style={{ fontSize: '0.875rem' }}>{row.phone_number}</span>
+                  <span style={{ fontSize: '0.875rem', display: 'flex', justifyContent: 'center'}}>{row.phone_number}</span>
                 </TableCell>
               </TableRow>
               {selectedRow === row && (
@@ -169,7 +180,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
               <p>Address: {row.address}</p>
               <div>
                 <div>
-                Sentiments:
+                Comments:
                   {row.sentiments.map((sentiment) => (
                     renderSentimentsLabel(sentiment)
                   ))}
@@ -186,7 +197,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
       </div>
       <TablePagination
        component="div"
-       count={filteredPediatriciansData.length}
+       count={medicalsData.length}
        page={currentPage - 1}
        onPageChange={handlePageChange}
        rowsPerPage={rowsPerPage}
