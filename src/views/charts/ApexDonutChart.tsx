@@ -140,12 +140,12 @@ const RechartsPieChart = (props: StatisticsProps) => {
   )
 }  ;
 const avatarColors: { [key: string]: string } = {
-  hospital: 'rgb(21, 164, 183)',
-  clinical: 'rgb(236, 64, 122)',
-  doctor: 'rgb(255, 91, 98)',
+  hospital: 'red',
+  clinical: 'yellow',
+  doctor: 'blue',
   pharmacy: 'blue',
-  cabinet:'rgb(129, 89, 47)',
-  centre:'rgb(66, 133, 244)'
+  cabinet:'green',
+  centre:'orange'
   // You can add more categories and their respective colors here
   // For other categories, a default color will be used (you can set it below)
 };
