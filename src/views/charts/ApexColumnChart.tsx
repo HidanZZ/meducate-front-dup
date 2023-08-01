@@ -6,11 +6,12 @@ import AnalyticsDashboard from 'src/services/analyticsDashboard';
 
 import { useTheme } from '@mui/material/styles'; 
 const columnColors = {
-  bg: '#FFF0C9',
-  series1: '#ffcf5c', // Yellow color for Hospital
-  series2: '#ffd09a', // Light yellow color for Clinical
-  series3: '#ffc08b', // Lighter yellow color for Pharmacy
-  series4: '#ffc77c', // Lightest yellow color for Doctor
+   bg: '#FFE211',
+   series1: '#FFFF00', 
+   series2: '#FF7f00', 
+   series3: '#0000FF', 
+   series4:'#FF0000' , 
+   series5:'#008000'
 };
 
 const ApexColumnChart = () => {
@@ -50,15 +51,10 @@ const ApexColumnChart = () => {
   
   // ** Options and Series
   const options: ApexOptions = {
-    chart: {
-      offsetX: -10,
-      stacked: true,
-      parentHeightOffset: 0,
-      toolbar: { show: false }
-    },
+   
     fill: { opacity: 1 },
     dataLabels: { enabled: false },
-    colors: [columnColors.series1, columnColors.series2,columnColors.series3,columnColors.series4],
+    colors: [columnColors.series1, columnColors.series2,columnColors.series3,columnColors.series4,columnColors.series5],
     legend: {
       position: 'top',
       horizontalAlign: 'left',
@@ -76,15 +72,7 @@ const ApexColumnChart = () => {
       show: true,
       colors: ['transparent']
     },
-    plotOptions: {
-      bar: {
-        columnWidth: '15%',
-        colors: {
-          backgroundBarRadius: 10,
-          backgroundBarColors: [columnColors.bg, columnColors.bg, columnColors.bg, columnColors.bg, columnColors.bg]
-        }
-      }
-    },
+  
     grid: {
       borderColor: theme.palette.divider,
       xaxis: {
@@ -107,18 +95,7 @@ const ApexColumnChart = () => {
         style: { colors: theme.palette.text.disabled }
       }
     },
-    responsive: [
-      {
-        breakpoint: 600,
-        options: {
-          plotOptions: {
-            bar: {
-              columnWidth: '35%'
-            }
-          }
-        }
-      }
-    ]
+    
   };
 
 

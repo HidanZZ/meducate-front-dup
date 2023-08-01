@@ -130,7 +130,7 @@ const createCustomMarkerIcon = (color: string) => {
         const category = medical.category[0].libelle.toLowerCase();
 
         // Define the desired color based on the category (you can use any color logic here)
-        const markerColor = category === 'hospital' ? 'yellow' : category === 'clinical' ? 'red' :category==='doctor'?'green':category==='pharmacy'?'blue': 'red';
+        const markerColor = category === 'hospital' ? 'yellow' : category === 'clinical' ? 'red' :category==='doctor'?'green':category==='centre'?'blue':category==='cabinet'?'orange': 'red';
 
         // Create the custom marker icon based on the desired color
         const icon = createCustomMarkerIcon(markerColor);
