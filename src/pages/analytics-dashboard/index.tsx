@@ -169,7 +169,7 @@ const AnalyticsDashboard = () => {
           <Grid item xs={12} >
         <Card sx={{ marginBottom: '20px' }}>
           <CardHeader
-            subheader='Distribution of categories'
+            subheader='Geographical Distribution of Medical Centers'
             subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
           />
           <CardContent>
@@ -235,7 +235,7 @@ const AnalyticsDashboard = () => {
 
         {categoryValue !== 'All' ? (
         <Grid item xs={12} md={12}>
-          <ChartjsBarChart yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
+          <ChartjsBarChart category={categoryValue} yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         
         ):null}

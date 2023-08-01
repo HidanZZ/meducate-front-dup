@@ -1,201 +1,153 @@
 // ** MUI Imports
+import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
-import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 // ** React Imports
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+// ** Types
+import { ThemeColor } from 'src/@core/layouts/types'
+// ** Custom Components Imports
+//import CustomAvatar from 'src/@core/components/mui/avatar'
+import OptionsMenu from 'src/@core/components/option-menu'
+import CustomAvatar from './Avatar';
 
-
-// ** Third Party Imports
-import { ApexOptions } from 'apexcharts'
-
-// ** Component Import
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
-import { Alert } from '@mui/material';
-
-// Fonction pour générer une couleur aléatoire
-const generateRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+interface DataType {
+  title: string
+  imgAlt: string
+  imgSrc: string
+  amount: string
+  subtitle: string
+  imgWidth: number
+  imgHeight: number
+  avatarColor: string
+}
 
 interface StatisticsProps {
   cityValue: string
 }
-// ** Effect to fetch data from the API
 
-const ApexDonutChart = (props:StatisticsProps) => {
+interface MedicalData {
+  _id: { libelle: string; speciality: string }[]
+  count: number
+}
+
+const RechartsPieChart = (props: StatisticsProps) => {
   const { cityValue } = props
-  
+
   // ** State
-  const [data, setData] = useState<any[] | null>(null); // Initialize data to null
+  const [datas, setDatas] = useState<MedicalData[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-          let apiUrl = 'http://localhost:8000/getMedicalDataCountByCategory';
-          if (cityValue !== 'All') {
-            apiUrl = 'http://localhost:8000/getMedicalDataCountsByCity';
-          }
-        const response = await fetch(apiUrl);
-        const jsonData = await response.json();
+        let apiUrl = 'http://localhost:8000/getMedicalDataCountByCategory'
         if (cityValue !== 'All') {
-          setData([{ [cityValue]: jsonData[cityValue] }]);
-        } else {
-          setData(jsonData);
+          apiUrl = 'http://localhost:8000/getMedicalDataCountsByCity'
+        }
+        const response = await fetch(apiUrl)
+        const jsonData = await response.json()
+        if (cityValue !== 'All') {
+          const cityData = jsonData[cityValue];
+          if (cityData) {
+            const categoryData: MedicalData[] = Object.keys(cityData).map((category) => ({
+              _id: [{ libelle: category, speciality: '' }],
+              count: cityData[category],
+            }));
+            setDatas(categoryData);
+          } else {
+            setDatas([]);
+          }
+        }else {
+          setDatas(jsonData)
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error)
       }
-    };
-  
-    fetchData();
+    }
 
-  }, [cityValue]);
- 
-interface MedicalData {
-  _id: { libelle: string; speciality: string }[];
-  count: number;
-}
-
-function getMyDataLabelsAndColors(cityData: { [key: string]: { [key: string]: number } } | null) {
-  if (!cityData || Object.keys(cityData).length === 0 || Object.keys(cityData[Object.keys(cityData)[0]]).length === 0) {
-    // Handle the case where cityData is null, an empty object, or the first property is an empty object
-    return { labels: [], colors: [] };
-  }
-
-  const labels = Object.keys(cityData[Object.keys(cityData)[0]]);
-  const colors = labels.map(() => generateRandomColor());
-  console.log("Labels:", labels);
-  console.log("Colors:", colors);
-  return { labels, colors };
-}
-function getAllMyDataLabelsAndColors(allMyData: MedicalData[] | null) {
-  if (!Array.isArray(allMyData) || allMyData.length === 0 || !allMyData[0]?._id?.length) {
-    // Handle the case where allMyData is not an array, is empty, or the first item has no _id array
-    return { labels: [], colors: [] };
-  }
-
-  const labels = allMyData.map((item) => item._id[0].libelle || '');
-  const colors = allMyData.map(() => generateRandomColor());
-  console.log("Labels:", labels);
-  console.log("Colors:", colors);
-  return { labels, colors };
-}
-
-
-  // ** Hook
-  const theme = useTheme()
-  const { labels, colors } = cityValue === 'All'
-  ? getAllMyDataLabelsAndColors(data)
-  : getMyDataLabelsAndColors(data && data[0] ? data[0] : null);
-
-  const options: ApexOptions = {
-    stroke: { width: 0 },
-    labels: labels, // Utilisez les libellés définis en fonction de cityValue
-    colors: colors,
-    legend: {
-      position: 'bottom',
-      markers: { offsetX: -3 },
-      labels: { colors: theme.palette.text.secondary },
-      itemMargin: {
-        vertical: 3,
-        horizontal: 10
-      }
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          labels: {
-            show: true,
-            name: {
-              fontSize: '1.2rem'
-            },
-            value: {
-              fontSize: '1.2rem',
-              color: theme.palette.text.secondary,
-              formatter: (val: string) => `${parseInt(val, 10)}`
-            },
-            total: {
-              show: true,
-              fontSize: '1.2rem',
-              color: theme.palette.text.primary
-            }
-          }
-        }
-      }
-    },
-    responsive: [
-      {
-        breakpoint: 992,
-        options: {
-          chart: {
-            height: 380
-          },
-          legend: {
-            position: 'bottom'
-          }
-        }
-      },
-      {
-        breakpoint: 576,
-        options: {
-          chart: {
-            height: 320
-          },
-          plotOptions: {
-            pie: {
-              donut: {
-                labels: {
-                  show: true,
-                  name: {
-                    fontSize: '1rem'
-                  },
-                  value: {
-                    fontSize: '1rem'
-                  },
-                  total: {
-                    fontSize: '1rem'
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    ]
-  }
- // ** Séries pour le graphique
-// ** Séries pour le graphique
-let series = [];
-  if (cityValue === 'All') {
-    // Calculate 'series' when clicking on "All"
-    series = data ? data.map((item) => item.count) : [];
-  } else {
-    // Calculate 'series' when clicking on a specific city
-    const cityData = data && data[0] ? data[0][cityValue] : null;
-    series = cityData ? Object.values(cityData) : [];
-  }
-
-  // Check if data is not yet fetched or if there is no data available
-  if (data === null || data.length === 0) {
-    return <Alert severity="warning">Fetching data...</Alert>;
-  }
- console.log('***', data); // Affichez le contenu de data dans la console
- console.log("Options:", options);
-
-
+    fetchData()
+  }, [cityValue])
+  const getCategoryColor = (category: string): string => {
+    return avatarColors[category] || 'red'; // Use the specified color, or 'red' as default
+  };
   return (
     <Card>
       <CardHeader
-        // title='Expense Ratio'
-        subheader='Distribution of categories'
-        subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
+        title={cityValue === 'All' ? 'In Morroco' : `In ${cityValue}`}
+        titleTypographyProps={{ sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' } }}
+       
       />
       <CardContent>
-        <ReactApexcharts type='donut' height={400} options={options} series={series} />
+        {datas.map((item: MedicalData, index: number) => {
+          const dataItem: DataType = {
+            imgWidth: 20,
+            imgHeight: 22,
+            title: item._id[0].libelle,
+            imgAlt: item._id[0].libelle,
+            amount: `${item.count}`,
+            avatarColor: getCategoryColor(item._id[0].libelle),
+            subtitle: 'Number of '+item._id[0].libelle,
+            imgSrc: `/images/cards/${item._id[0].libelle}.png`,
+          }
+          
+          return (
+            <Box
+              key={index}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                ...(index !== datas.length - 1 ? { mb: 6 } : {}),
+              }}
+            >
+             <CustomAvatar
+              sx={{ mr: 3 }}
+              variant="rounded"
+              backgroundColor={dataItem.avatarColor}
+            >     
+                       <img alt={dataItem.imgAlt} src={dataItem.imgSrc} width={dataItem.imgWidth} height={dataItem.imgHeight} />
+              </CustomAvatar>
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column',    marginLeft: '10px' }}>
+                  <Typography sx={{ mb: 0.25, fontWeight: 600, fontSize: '0.875rem' }}>{dataItem.title}</Typography>
+                  <Typography variant='caption'>{dataItem.subtitle}</Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography sx={{ mr: 1, fontWeight: 600 }}>{dataItem.amount}</Typography>
+                </Box>
+              </Box>
+            </Box>
+          )
+        })}
       </CardContent>
     </Card>
   )
-}
+}  ;
+const avatarColors: { [key: string]: string } = {
+  hospital: 'rgb(21, 164, 183)',
+  clinical: 'rgb(236, 64, 122)',
+  doctor: 'rgb(255, 91, 98)',
+  pharmacy: 'blue',
+  cabinet:'rgb(129, 89, 47)',
+  centre:'rgb(66, 133, 244)'
+  // You can add more categories and their respective colors here
+  // For other categories, a default color will be used (you can set it below)
+};
 
-export default ApexDonutChart
+export default RechartsPieChart

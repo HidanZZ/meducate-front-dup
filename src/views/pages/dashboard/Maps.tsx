@@ -73,6 +73,21 @@ interface MoroccoMapProps {
   selectedMedical: MedicalData | null; 
 
 }
+const getCategoryColor = (category: string): string => {
+  return category === 'hospital'
+    ? 'rgb(21, 164, 183)'
+    : category === 'clinical'
+    ? 'rgb(236, 64, 122)'
+    : category === 'doctor'
+    ? 'rgb(255, 91, 98)'
+    : category === 'centre'
+    ? 'rgb(66, 133, 244)'
+    : category === 'cabinet'
+    ? 'rgb(255, 91, 98)'
+    : category === 'pharmacy'
+    ? 'rgb(0, 0, 255)'
+    : 'red'; // Default color if no match
+};
 
 const MoroccoMap = ({
   medicalsData,
@@ -119,29 +134,36 @@ const createCustomMarkerIcon = (color: string) => {
   };
   return markerIcon;
 };
-
+    
 
   return (
     <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
       {medicalsData.map((medical) => {
-
         //Get the category of the pediatrician (e.g., hospital, clinic, pharmacy)
         const category = medical.category[0].libelle.toLowerCase();
 
-        // Define the desired color based on the category (you can use any color logic here)
-        const markerColor = category === 'hospital' ? 'yellow' : category === 'clinical' ? 'red' :category==='doctor'?'green':category==='pharmacy'?'blue': 'red';
+          // Define the desired color based on the category (you can use any color logic here)
+          const markerColor = getCategoryColor(category);
 
-        // Create the custom marker icon based on the desired color
-        const icon = createCustomMarkerIcon(markerColor);
-         
+          // Create the custom marker icon based on the desired color
+          const icon = createCustomMarkerIcon(markerColor);
+
+        // Define the desired color based on the category (you can use any color logic here)
+       
           return (
             <Marker
               key={medical.name}
               position={{ lat: medical.latitude, lng: medical.longitude }}
               onClick={() => handleMarkerClick(medical)}
-              icon={icon} // Use the custom marker icon based on the category
-            />
+              icon={{
+                path: window.google.maps.SymbolPath.CIRCLE,
+                fillColor: markerColor,
+                fillOpacity: 1,
+                scale: 10,
+                strokeColor: markerColor,
+                strokeOpacity: 1,
+              }}            />
           );
         })}
 
