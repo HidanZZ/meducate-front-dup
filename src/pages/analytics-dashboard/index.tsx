@@ -120,6 +120,7 @@ const AnalyticsDashboard = () => {
                       <MenuItem value='All'>All</MenuItem>
                       <MenuItem value='hospital'>Hopital</MenuItem>
                       <MenuItem value='clinical'>Clinique</MenuItem>
+                      <MenuItem value='cabinet'>Cabinet</MenuItem>
                       <MenuItem value='pharmacy'>Pharmacie</MenuItem>
                       <MenuItem value='doctor'>Doctor</MenuItem>
                     </Select>
@@ -152,7 +153,6 @@ const AnalyticsDashboard = () => {
         {/* Statistics */}
         {categoryValue !== 'All' ? (
         <Grid item xs={12}>
-          <Statistics cityValue={cityValue} category={categoryValue} speciality={specialityValue} />
           <Statistics cityValue={cityValue} category={categoryValue} speciality={specialityValue} />
         </Grid>):null}
 
