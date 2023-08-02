@@ -3,15 +3,19 @@ import { ApexOptions } from 'apexcharts';
 import ReactApexcharts from 'src/@core/components/react-apexcharts';
 import AnalyticsDashboard from 'src/services/analyticsDashboard';
 
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardContent from '@mui/material/CardContent'
+
 
 import { useTheme } from '@mui/material/styles'; 
 const columnColors = {
    bg: '#FFE211',
-   series1: '#FFFF00', 
+   series1: '#008000', 
    series2: '#FF7f00', 
-   series3: '#0000FF', 
-   series4:'#FF0000' , 
-   series5:'#008000'
+   series3: '#FFFF00', 
+   series4:'#0000FF' , 
+   series5:'#FF0000'
 };
 
 const ApexColumnChart = () => {
@@ -72,7 +76,7 @@ const ApexColumnChart = () => {
       show: true,
       colors: ['transparent']
     },
-  
+ 
     grid: {
       borderColor: theme.palette.divider,
       xaxis: {
@@ -105,10 +109,13 @@ const ApexColumnChart = () => {
   }));
   
   return (
-    <div>
+    <Card>
+    <CardHeader title={`Distribution of categories by city`} />
+    <CardContent>
       {/* Your JSX code here */}
       <ReactApexcharts type="bar" height={400} options={options} series={series} />
-    </div>
+    </CardContent>
+    </Card>
   );
 };
 
