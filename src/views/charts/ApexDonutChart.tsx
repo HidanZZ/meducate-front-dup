@@ -75,8 +75,13 @@ const RechartsPieChart = (props: StatisticsProps) => {
     return avatarColors[category] || 'red'; // Use the specified color, or 'red' as default
   };
   return (
-  
-    <div style={{ marginTop: '40px' }}>
+    <Card>
+      <CardHeader
+        title={cityValue === 'All' ? 'In Morroco' : `In ${cityValue}`}
+        titleTypographyProps={{ sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' } }}
+       
+      />
+      <CardContent>
         {datas.map((item: MedicalData, index: number) => {
           const dataItem: DataType = {
             imgWidth: 20,
@@ -130,8 +135,8 @@ const RechartsPieChart = (props: StatisticsProps) => {
             </Box>
           )
         })}
-      </div>
-   
+      </CardContent>
+    </Card>
   )
 }  ;
 const avatarColors: { [key: string]: string } = {
