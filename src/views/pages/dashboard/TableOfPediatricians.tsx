@@ -16,16 +16,10 @@ interface TableOfPediatriciansProps {
   setSelectedMedical: (pediatrician: TableBodyRowType | null) => void;
 }
 
-interface Sentiments {
-  label: string;
-  score: number;
-}
-
 interface ICategory {
   libelle: string;
   speciality: string;
 }
-
 
 export interface TableBodyRowType {
   _id: string;
@@ -38,8 +32,8 @@ export interface TableBodyRowType {
   latitude: number;
   longitude: number;
   city: string;
-  sentiments: Sentiments[];
-  category:ICategory[];
+  sentiments: string; // Now a string containing "Positive" or "Negative"
+  category: ICategory[];
 }
 
 const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElement => {
@@ -94,8 +88,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
         </div>
       );
     }
-  };
-  const renderSentimentsLabel = (sentiment: Sentiments) => {
+  }; const renderSentimentsLabel = (sentiment: string) => {
     const labelStyle = {
       padding: '2px 6px',
       borderRadius: '4px',
@@ -103,28 +96,23 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
       fontSize: '12px',
       fontWeight: 'bold',
     };
-  
+
     let backgroundColor = '#FFFFFF'; // Default background color
-  
-    const redNeg = Math.round(sentiment.score * 255);
-    const greenNeg = Math.round((1 - sentiment.score) * 255);
-    const redPos = Math.round((1 - sentiment.score) * 255);
-    const greenPos = Math.round(sentiment.score * 255);
-  
-    if (sentiment.label === 'POSITIVE') {
-      backgroundColor = `rgb(${redPos}, ${greenPos}, 0)`; // Green color for positive sentiments
-    } else if (sentiment.label === 'NEGATIVE') {
-      backgroundColor = `rgb(${redNeg}, ${greenNeg}, 0)`; // Red color for negative sentiments
+
+    if (sentiment === 'POSITIVE') {
+      backgroundColor = `rgb(0, 255, 0)`; // Green color for positive sentiments
+    } else if (sentiment === 'NEGATIVE') {
+      backgroundColor = `rgb(255, 0, 0)`; // Red color for negative sentiments
     }
-  
+
     const labelContainerStyle = {
       ...labelStyle,
       backgroundColor,
     };
-  
+
     return (
       <span style={labelContainerStyle}>
-        {sentiment.label}
+        {sentiment}
       </span>
     );
   };
@@ -180,10 +168,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
               <p>Address: {row.address}</p>
               <div>
                 <div>
-                Comments:
-                  {row.sentiments.map((sentiment) => (
-                    renderSentimentsLabel(sentiment)
-                  ))}
+                Comments: {renderSentimentsLabel(row.sentiments)}
                 </div>
               </div>
             </div>
