@@ -16,7 +16,6 @@ import Icon from 'src/@core/components/icon'
 import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Components Imports
-import OptionsMenu from 'src/@core/components/option-menu'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 
 interface DataType {
@@ -42,8 +41,9 @@ const AnalyticsTransactionsCard = (props: StatisticsProps) => {
       try { 
         const data1=await ServiceAnalyticsDashboard.getMedicalDataByFilters('All','All','All');
         const data2=await ServiceAnalyticsDashboard.getMedicalDataByFilters(cityValue,category,speciality);
-        const data3=await ServiceAnalyticsDashboard.getNumberOfPositiveCommentsByCity(cityValue);
-        const data4=await ServiceAnalyticsDashboard.getNumberOfNegativeCommentsByCity(cityValue);
+        const data3=await ServiceAnalyticsDashboard.getMedicalPositifDataByFilters(cityValue,category,speciality);
+        const data4=await ServiceAnalyticsDashboard.getMedicalNegatifDataByFilters(cityValue,category,speciality);
+        console.log("***",data3);
         const updatedSalesData: DataType[] = [
           {
             stats: data1.length,

@@ -77,7 +77,21 @@ const AnalyticsDashboard = () => {
   // State to keep track of the selected row in the TableOfPediatricians component
   const [selectedMedicalTable, setSelectedMedicalTable] = useState<TableBodyRowType | null>(null);
 
+  const [cities, setCities] = useState([]);
 
+  const fetchCities = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/getAllCities');
+      const data = await response.json();
+      setCities(data);
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCities();
+  }, []);
 
   return (
     <ApexChartWrapper>
@@ -97,13 +111,16 @@ const AnalyticsDashboard = () => {
                       label='City'
                       onChange={handleCityValue}
                       labelId='pediatre-city-select'
+                      MenuProps={{
+                        style: { maxHeight: '300px' },
+                      }}
                     >
                       <MenuItem value='All'>All</MenuItem>
-                      <MenuItem value='marrakech'>Marrakech</MenuItem>
-                      <MenuItem value='casablanca'>Casablanca</MenuItem>
-                      <MenuItem value='agadir'>Agadir</MenuItem>
-                      <MenuItem value='rabat'>Rabat</MenuItem>
-                      <MenuItem value='tanger'>Tanger</MenuItem>
+                      {cities.map((city) => (
+                        <MenuItem key={city} value={city}>
+                          {city}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>
