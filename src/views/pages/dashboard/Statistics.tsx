@@ -43,7 +43,6 @@ const AnalyticsTransactionsCard = (props: StatisticsProps) => {
         const data2=await ServiceAnalyticsDashboard.getMedicalDataByFilters(cityValue,category,speciality);
         const data3=await ServiceAnalyticsDashboard.getMedicalPositifDataByFilters(cityValue,category,speciality);
         const data4=await ServiceAnalyticsDashboard.getMedicalNegatifDataByFilters(cityValue,category,speciality);
-        console.log("***",data3);
         const updatedSalesData: DataType[] = [
           {
             stats: data1.length,

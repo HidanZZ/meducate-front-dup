@@ -1,7 +1,6 @@
-import { useState, useEffect, forwardRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { Grid } from "@mui/material";
-import { DataGrid, GridRowId } from '@mui/x-data-grid'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -9,7 +8,6 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import DatePicker from 'react-datepicker'
 
 // ** Next Import
 import dynamic from 'next/dynamic'
@@ -18,8 +16,6 @@ import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
 import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
-import AutocompleteComponent from "src/views/pages/dashboard/AutoComplete";
-import DistributionOfPediatricians from "src/views/pages/dashboard/DistributionOfPediatricians";
 import Maps from "src/views/pages/dashboard/Maps";
 import TableOfPediatricians, { TableBodyRowType } from "src/views/pages/dashboard/TableOfPediatricians";
 import Statistics from "src/views/pages/dashboard/Statistics";
@@ -29,7 +25,6 @@ import ApexColumnChart from 'src/views/charts/ApexColumnChart'
 
 const RechartsPieChart = dynamic(() => import('src/views/charts/ApexDonutChart'), { ssr: false })
 
-import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 // ** Third Party Styles Import
 import 'chart.js/auto'
@@ -182,7 +177,7 @@ const AnalyticsDashboard = () => {
         ):null}
 
 
-{categoryValue === 'All' ? (
+        {categoryValue === 'All' ? (
           <Grid item xs={12} >
         <Card sx={{ marginBottom: '20px' }}>
           <CardHeader
@@ -209,18 +204,12 @@ const AnalyticsDashboard = () => {
 
 
           {categoryValue !== 'All' ? (
-   <Grid item xs={12} md={6}>
-   <Maps  cityValue={cityValue} category={categoryValue} speciality={specialityValue} selectedMedicalTable={selectedMedicalTable}/>
- </Grid>
+          <Grid item xs={12} md={6}>
+            <Maps  cityValue={cityValue} category={categoryValue} speciality={specialityValue} selectedMedicalTable={selectedMedicalTable}/>
+          </Grid>
 
           ):null}
 
-
-
-
-
-
-       
         <Grid item xs={12} md={12}>
         <PageHeader
             title={
@@ -235,10 +224,10 @@ const AnalyticsDashboard = () => {
         </Grid>
 
         {/* DistributionOfPediatricians */}
-        {categoryValue !== 'All' ? (
+        {/* {categoryValue !== 'All' ? (
          <Grid item xs={12} md={6}>
           <DistributionOfPediatricians />
-        </Grid> ):null}
+        </Grid> ):null} */}
  
         {/* ChartjsBarChart */}
 
@@ -251,7 +240,7 @@ const AnalyticsDashboard = () => {
           ):null}
 
         {categoryValue !== 'All' ? (
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <ChartjsBarChart category={categoryValue} yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         
