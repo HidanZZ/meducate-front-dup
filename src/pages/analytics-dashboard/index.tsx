@@ -22,6 +22,7 @@ import Statistics from "src/views/pages/dashboard/Statistics";
 import PageHeader from 'src/@core/components/page-header';
 import ChartjsBarChart from 'src/views/charts/ChartjsBarChart'
 import ApexColumnChart from 'src/views/charts/ApexColumnChart'
+import DistributionOfPediatricians from 'src/views/pages/dashboard/DistributionOfPediatricians';
 
 const RechartsPieChart = dynamic(() => import('src/views/charts/ApexDonutChart'), { ssr: false })
 
@@ -226,11 +227,11 @@ const AnalyticsDashboard = () => {
         </Grid>
 
         {/* DistributionOfPediatricians */}
-        {/* {categoryValue !== 'All' ? (
+       {categoryValue !== 'All' ? (
          <Grid item xs={12} md={6}>
           <DistributionOfPediatricians category={categoryValue} />
         </Grid> ):null}
- 
+  
         {/* ChartjsBarChart */}
 
         {categoryValue === 'All' ? (
@@ -242,7 +243,7 @@ const AnalyticsDashboard = () => {
           ):null}
 
         {categoryValue !== 'All' ? (
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={6}>
           <ChartjsBarChart category={categoryValue} yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         
