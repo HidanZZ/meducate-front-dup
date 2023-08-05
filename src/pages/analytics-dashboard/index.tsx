@@ -227,10 +227,10 @@ const AnalyticsDashboard = () => {
         </Grid>
 
         {/* DistributionOfPediatricians */}
-       {categoryValue !== 'All' ? (
+       {/* {categoryValue !== 'All' ? (
          <Grid item xs={12} md={6}>
           <DistributionOfPediatricians category={categoryValue} />
-        </Grid> ):null}
+        </Grid> ):null} */}
   
         {/* ChartjsBarChart */}
 
@@ -243,7 +243,7 @@ const AnalyticsDashboard = () => {
           ):null}
 
         {categoryValue !== 'All' ? (
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <ChartjsBarChart category={categoryValue} yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         

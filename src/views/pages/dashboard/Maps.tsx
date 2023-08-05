@@ -1,5 +1,5 @@
-import React, { ReactElement, useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Marker, Polygon  } from '@react-google-maps/api';
+import React, { ReactElement, useEffect, useState,useRef } from 'react';
+import { GoogleMap, LoadScript, Marker, Polygon , InfoWindow  } from '@react-google-maps/api';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -103,7 +103,12 @@ const MoroccoMap = ({
   const [minCategory, setMinCategory] = useState(0);
   const [maxCategory, setMaxCategory] = useState(0);
 
+  const [categoryData, setCategoryData] = useState<{ [regionId: string]: number }>({});
+  const [infoWindowContent, setInfoWindowContent] = useState<JSX.Element | null>(null);
+  const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
+  const [selectedMarkerPosition, setSelectedMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
 
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGeoJsonData = async () => {
@@ -125,7 +130,8 @@ const MoroccoMap = ({
         maxCategory = count;
       }
     });
-    
+  
+
         // Define the colors for the gradient (replace these with your desired colors)
         const startColor =[222, 148, 148];// Red (RGB values)
         const endColor =  [166, 6, 6];  // White (RGB values)
@@ -142,9 +148,14 @@ const MoroccoMap = ({
           feature.properties.regionColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`; // Store the color as an "rgb(r, g, b)" string
       }});
 
+      const handleMarkerClick = (medical: MedicalData) => {
+        onMarkerClick(medical);
+      };
+
         setGeoJsonData(dataGeoJSON);
         setMinCategory(minCategory);
         setMaxCategory(maxCategory);
+        setCategoryData(categoryData);
       } catch (error) {
         console.error('Error fetching GeoJSON data:', error);
       }
@@ -165,13 +176,15 @@ const createCustomMarkerIcon = (color: string) => {
   return markerIcon;
 };
 
+const mapRef = useRef<GoogleMap | null>(null); // Add this line
+
 
   return (
     <div>
   
       
     <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"} onLoad={() => setMapsApiLoaded(true)}>
-      <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
+      <GoogleMap ref={mapRef} mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
       {medicalsData.map((medical) => {
 
         //Get the category of the pediatrician (e.g., hospital, clinic, pharmacy)
@@ -210,22 +223,61 @@ const createCustomMarkerIcon = (color: string) => {
             }}
           />
         )}
-        {geoJsonData && category !== 'All'&&
-          geoJsonData.features.map((feature, index) => (
-            <Polygon
-              key={index}
-              paths={feature.geometry.coordinates[0].map((coord: CoordinatePoint) => ({
-                lat: coord[1],
-                lng: coord[0],
-              }))}
-              options={{
-                strokeColor: feature.properties.regionColor, // Use the regionColor from the GeoJSON data
-                strokeOpacity: 0.2,
-                fillColor: feature.properties.regionColor, // Use the regionColor from the GeoJSON data
-                fillOpacity: 0.7, // Adjust the opacity as needed
-              }}
-            />
-          ))}
+{geoJsonData && category !== 'All' &&
+            geoJsonData.features.map((feature, index) => (
+              <Polygon
+                key={index}
+                paths={feature.geometry.coordinates[0].map((coord: CoordinatePoint) => ({
+                  lat: coord[1],
+                  lng: coord[0],
+                }))}
+                options={{
+                  strokeColor: feature.properties.regionColor,
+                  strokeOpacity: hoveredRegion === feature.properties.Indice.toString() ? 1 : 0.2, // Highlight if hovered
+                  strokeWeight: hoveredRegion === feature.properties.Indice.toString() ? 2 : 1, // Highlight if hovered
+                  fillColor: feature.properties.regionColor,
+                  fillOpacity: 0.7,
+                }}
+                onMouseOver={() => {
+                  const featureProperties = feature.properties;
+                  const regionName = featureProperties.nom_region; // Assurez-vous que "nom_region" est le bon nom de propriété
+                  
+                  const categoryCount = categoryData && categoryData[featureProperties.Indice.toString()] ? categoryData[featureProperties.Indice.toString()] : 0;
+                  const populationCount = featureProperties.Population; // Assurez-vous que "population" est le bon nom de propriété
+                  
+                  const medicalsPerPopulation = populationCount !== 0 ? categoryCount / populationCount : 0;
+                  
+                  const content  = (
+                    <div style={{ fontFamily: 'Arial, sans-serif' }}>
+                      <p style={{ fontWeight: 'bold' }}>{regionName}</p>
+                      <p>Number of {category}: {categoryCount !== undefined ? categoryCount : 0}</p>
+                      <p>Population: {populationCount}</p>
+                      <p>{category} per capita: {medicalsPerPopulation.toFixed(2)}</p>
+                    </div>
+                  );
+                  
+                  setInfoWindowContent(content);
+                  setHoveredRegion(featureProperties.Indice.toString());
+                  setSelectedMarkerPosition({
+                    lat: feature.geometry.coordinates[0][0][1],
+                    lng: feature.geometry.coordinates[0][0][0],
+                  });
+                  setIsInfoWindowOpen(true);
+                }}
+                onMouseOut={() => {
+                  setInfoWindowContent(null);
+                  setIsInfoWindowOpen(false);
+                }}
+              />
+            ))}
+          {isInfoWindowOpen && infoWindowContent && (
+            <InfoWindow
+              position={selectedMarkerPosition!}
+              onCloseClick={() => setIsInfoWindowOpen(false)}
+            >
+              <div>{infoWindowContent}</div>
+            </InfoWindow>
+          )}
       </GoogleMap>
     </LoadScript>
     {category!=='All' && (
