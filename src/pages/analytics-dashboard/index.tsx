@@ -1,7 +1,6 @@
-import { useState, useEffect, forwardRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { Grid } from "@mui/material";
-import { DataGrid, GridRowId } from '@mui/x-data-grid'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -9,7 +8,6 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import DatePicker from 'react-datepicker'
 
 // ** Next Import
 import dynamic from 'next/dynamic'
@@ -18,8 +16,6 @@ import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
 import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
-import AutocompleteComponent from "src/views/pages/dashboard/AutoComplete";
-import DistributionOfPediatricians from "src/views/pages/dashboard/DistributionOfPediatricians";
 import Maps from "src/views/pages/dashboard/Maps";
 import TableOfPediatricians, { TableBodyRowType } from "src/views/pages/dashboard/TableOfPediatricians";
 import Statistics from "src/views/pages/dashboard/Statistics";
@@ -29,7 +25,6 @@ import ApexColumnChart from 'src/views/charts/ApexColumnChart'
 
 const RechartsPieChart = dynamic(() => import('src/views/charts/ApexDonutChart'), { ssr: false })
 
-import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 // ** Third Party Styles Import
 import 'chart.js/auto'
@@ -77,7 +72,21 @@ const AnalyticsDashboard = () => {
   // State to keep track of the selected row in the TableOfPediatricians component
   const [selectedMedicalTable, setSelectedMedicalTable] = useState<TableBodyRowType | null>(null);
 
+  const [cities, setCities] = useState([]);
 
+  const fetchCities = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/getAllCities');
+      const data = await response.json();
+      setCities(data);
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCities();
+  }, []);
 
   return (
     <ApexChartWrapper>
@@ -97,13 +106,16 @@ const AnalyticsDashboard = () => {
                       label='City'
                       onChange={handleCityValue}
                       labelId='pediatre-city-select'
+                      MenuProps={{
+                        style: { maxHeight: '300px' },
+                      }}
                     >
                       <MenuItem value='All'>All</MenuItem>
-                      <MenuItem value='marrakech'>Marrakech</MenuItem>
-                      <MenuItem value='casablanca'>Casablanca</MenuItem>
-                      <MenuItem value='agadir'>Agadir</MenuItem>
-                      <MenuItem value='rabat'>Rabat</MenuItem>
-                      <MenuItem value='tanger'>Tanger</MenuItem>
+                      {cities.map((city) => (
+                        <MenuItem key={city} value={city}>
+                          {city}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -166,7 +178,7 @@ const AnalyticsDashboard = () => {
         ):null}
 
 
-{categoryValue === 'All' ? (
+        {categoryValue === 'All' ? (
           <Grid item xs={12} >
         <Card sx={{ marginBottom: '20px' }}>
           <CardHeader
@@ -194,18 +206,12 @@ const AnalyticsDashboard = () => {
 
 
           {categoryValue !== 'All' ? (
-   <Grid item xs={12} md={6}>
-   <Maps  cityValue={cityValue} category={categoryValue} speciality={specialityValue} selectedMedicalTable={selectedMedicalTable}/>
- </Grid>
+          <Grid item xs={12} md={6}>
+            <Maps  cityValue={cityValue} category={categoryValue} speciality={specialityValue} selectedMedicalTable={selectedMedicalTable}/>
+          </Grid>
 
           ):null}
 
-
-
-
-
-
-       
         <Grid item xs={12} md={12}>
         <PageHeader
             title={
@@ -220,7 +226,7 @@ const AnalyticsDashboard = () => {
         </Grid>
 
         {/* DistributionOfPediatricians */}
-        {categoryValue !== 'All' ? (
+        {/* {categoryValue !== 'All' ? (
          <Grid item xs={12} md={6}>
           <DistributionOfPediatricians category={categoryValue} />
         </Grid> ):null}
@@ -236,7 +242,7 @@ const AnalyticsDashboard = () => {
           ):null}
 
         {categoryValue !== 'All' ? (
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <ChartjsBarChart category={categoryValue} yellow={barChartYellow} labelColor={labelColor} borderColor={borderColor} />
         </Grid>
         
