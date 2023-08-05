@@ -10,63 +10,66 @@ import { it } from 'node:test';
 interface CityData {
   city: string;
   averageScore: number;
-  pediatriciansCount: number;
+  medicalsCount: number;
   total:number;
 }
 
-interface PediatricianData {
+interface MedicalData {
   _id: string;
   count: number;
 }
-
-const DistributionOfPediatricians = () => {
+interface Prop {
+  category: string
+ 
+}
+const DistributionOfPediatricians = (props: Prop) => {
+  const { category } = props
   const [averageScoreData, setAverageScoreData] = useState<CityData[]>([]);
-  const [pediatriciansData, setPediatriciansData] = useState<PediatricianData[]>([]);
+  const [medicalsData, setMedicalsData] = useState<MedicalData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const reviewsCountData: CityData[] = await AnalyticsDashboard.getAveragePositiveScoreByCity();
-        const pediatriciansCountData: PediatricianData[] = await AnalyticsDashboard.getPediatriciansCountByCity();
-        const total = calculateTotalPediatriciansCount(pediatriciansCountData);
+        const reviewsCountData: CityData[] = await AnalyticsDashboard.getAveragePositiveScoreByCity(category);
+        const totals = await AnalyticsDashboard.getMedicalDataByFilters('All',category,'All');
        
-        
+        const total=totals.length;
 
-        // Find the top 3 cities based on totalReviews
+        // Find the top 5 cities based on totalReviews
         const sortedReviewsData = reviewsCountData.sort((a: CityData, b: CityData) => b.averageScore- a.averageScore);
         const topThreeCities = sortedReviewsData.slice(0, 5);
 
         // Find the total pediatricians count for each city
-        const pediatriciansData = topThreeCities.map((city: CityData) => {
-          const pediatrist = pediatriciansCountData.find((item: PediatricianData) => item._id === city.city);
+        const medicalsData = await Promise.all (topThreeCities.map(async (city: CityData) => {
+          const categorie = await AnalyticsDashboard.getMedicalDataByFilters(city.city, category, 'All');
           return {
             city: city.city,
             averageScore: city.averageScore,
-            pediatriciansCount: pediatrist?.count || 0,
+            medicalsCount: categorie?.length || 0,
             total,
           };
-        });
+        }));
 
-        setAverageScoreData(pediatriciansData);
+        setAverageScoreData(medicalsData);
       } catch (error) {
         console.error('Error while fetching data:', error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [category]);
 
   
  
 
-  const calculateTotalPediatriciansCount = (data: PediatricianData[]) => {
-    const totalPediatriciansCount = data.reduce((total: number, item: PediatricianData) => total + item.count, 0);
-    return totalPediatriciansCount;
+  const calculateTotalMedicalsCount = (data: MedicalData[]) => {
+    const totalMedicalsCount = data.reduce((total: number, item: MedicalData) => total + item.count, 0);
+    return totalMedicalsCount;
   };
   
   const getPercentageByCity = () => {
-    const totalPediatriciansCount = calculateTotalPediatriciansCount(pediatriciansData);
-    return averageScoreData.map((item: CityData) => Math.round((item.pediatriciansCount / item.total) * 100));
+    const totalPediatriciansCount = calculateTotalMedicalsCount(medicalsData);
+    return averageScoreData.map((item: CityData) => Math.round((item.medicalsCount / item.total) * 100));
   };
   
 

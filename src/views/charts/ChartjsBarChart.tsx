@@ -39,7 +39,7 @@ const ChartjsBarChart = (props: BarProp) => {
               maxBarThickness: 15,
               backgroundColor: yellow,
               borderColor: 'transparent',
-              borderRadius: { topRight: 15, topLeft: 15 },
+              // borderRadius: { topRight: 15, topLeft: 15 },
               data: counts as number[], // Assurer que counts est de type number[]
             },
           ],

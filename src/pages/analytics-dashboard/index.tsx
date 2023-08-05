@@ -121,6 +121,7 @@ const AnalyticsDashboard = () => {
                       <MenuItem value='hospital'>Hopital</MenuItem>
                       <MenuItem value='clinical'>Clinique</MenuItem>
                       <MenuItem value='cabinet'>Cabinet</MenuItem>
+                      <MenuItem value='centre'>Centre</MenuItem>
                       <MenuItem value='pharmacy'>Pharmacie</MenuItem>
                       <MenuItem value='doctor'>Doctor</MenuItem>
                     </Select>
@@ -169,7 +170,8 @@ const AnalyticsDashboard = () => {
           <Grid item xs={12} >
         <Card sx={{ marginBottom: '20px' }}>
           <CardHeader
-            subheader={`Geographical Distribution of Medical Centers `}
+            title='Geographical Distribution of Medical Centers '
+            // subheader={`Geographical Distribution of Medical Centers `}
             subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
           />
           <CardContent>
@@ -220,7 +222,7 @@ const AnalyticsDashboard = () => {
         {/* DistributionOfPediatricians */}
         {categoryValue !== 'All' ? (
          <Grid item xs={12} md={6}>
-          <DistributionOfPediatricians />
+          <DistributionOfPediatricians category={categoryValue} />
         </Grid> ):null}
  
         {/* ChartjsBarChart */}

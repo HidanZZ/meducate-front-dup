@@ -54,7 +54,6 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
       try {
         // Call the service function to fetch medical data
         const data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
-        console.log(data);
         if (Array.isArray(data)) {
           setMedicalsData(data);
         }

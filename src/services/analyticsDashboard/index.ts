@@ -36,9 +36,9 @@ class AnalyticsDashboard {
   
   
   
-    static async getAveragePositiveScoreByCity() {
+    static async getAveragePositiveScoreByCity(category:string) {
       try {
-        const response = await fetch('http://localhost:8000/pediatres/getAveragePositiveScoreByCity');
+        const response = await fetch(`http://localhost:8000/getAveragePositiveScoreByCategory/${category}`);
         const data = await response.json();
         return data;
       } catch (error) {
@@ -103,6 +103,19 @@ class AnalyticsDashboard {
     static async  getCategoryCountsByCity(category:String){
       try {
         const response = await fetch(`http://localhost:8000/getCategoryCountsByCity/${category}`);
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+        throw new Error('Erreur serveur');
+      }
+    }
+
+
+
+    static async  getCategoryCountsByRegion(category:String){
+      try {
+        const response = await fetch(`http://localhost:8000/getCategoryCountsByRegion/${category}`);
         const data = await response.json();
         return data;
       } catch (error) {

@@ -10,8 +10,8 @@ import AnalyticsDashboard from 'src/services/analyticsDashboard';
 
 // Interface for a single coordinate point in the GeoJSON data
 interface CoordinatePoint {
-  lat: number;
-  lng: number;
+  0: number;
+  1: number;
 }
 
 // Interface for the GeoJSON polygon geometry
@@ -28,10 +28,12 @@ interface FeatureProperties {
 // Interface for a single feature in the GeoJSON data
 interface GeoJSONFeature {
   type: "Feature";
-  properties: FeatureProperties;
+  properties: {
+    [key: string]: any;
+    regionColor: string; // Add this property to store the color for each region
+  };
   geometry: PolygonGeometry;
 }
-
 // Interface for the FeatureCollection in the GeoJSON data
 interface GeoJSONFeatureCollection {
   type: "FeatureCollection";
@@ -71,6 +73,7 @@ interface MoroccoMapProps {
   center: { lat: number; lng: number };
   zoom: number;
   selectedMedical: MedicalData | null; 
+  category: string ;
 
 }
 
@@ -79,7 +82,8 @@ const MoroccoMap = ({
   onMarkerClick,
   center,
   zoom,
-  selectedMedical
+  selectedMedical,
+  category
 
 }: MoroccoMapProps): ReactElement => {
   const mapContainerStyle = {
@@ -94,20 +98,61 @@ const MoroccoMap = ({
 
   const [geoJsonData, setGeoJsonData] = useState<RegionData | null>(null);
 
+  const [mapsApiLoaded, setMapsApiLoaded] = useState(false);
+
+  const [minCategory, setMinCategory] = useState(0);
+  const [maxCategory, setMaxCategory] = useState(0);
+
+
+
   useEffect(() => {
     const fetchGeoJsonData = async () => {
       try {
-        const response = await fetch('/geojson/marrakech_safi.geojson');
-        const data = await response.json();
-        console.log(data);
-        setGeoJsonData(data);
+        const response = await fetch('/geojson/marocRegions.geojson');
+        const dataGeoJSON: GeoJSONFeatureCollection = await response.json();
+        const responseCategoryData = await AnalyticsDashboard.getCategoryCountsByRegion(category); // Replace with the API endpoint that returns the hospital data
+        const categoryData: { [regionId: string]: number } = await responseCategoryData;
+        
+        // Calculate the minimum and maximum population values to determine the range for the gradient
+        let minCategory= Number.MAX_VALUE;
+    let maxCategory = Number.MIN_VALUE;
+
+    Object.values(categoryData).forEach((count) => {
+      if (count < minCategory) {
+        minCategory= count;
+      }
+      if (count > maxCategory) {
+        maxCategory = count;
+      }
+    });
+    
+        // Define the colors for the gradient (replace these with your desired colors)
+        const startColor =[222, 148, 148];// Red (RGB values)
+        const endColor =  [166, 6, 6];  // White (RGB values)
+    
+        // Calculate the color for each region based on its population using the gradient formula
+        dataGeoJSON.features.forEach((feature) => {
+          const regionId = feature.properties.Indice.toString();
+          const categoryCount = categoryData[regionId];
+          const t = (categoryCount - minCategory) / (maxCategory - minCategory); // Normalize 
+          const color = startColor.map((startValue, index) => Math.round(startValue + t * (endColor[index] - startValue))); // Calculate the interpolated color
+          if (!categoryCount) {
+            feature.properties.regionColor = 'rgb(255,255,255)';
+          } else {
+          feature.properties.regionColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`; // Store the color as an "rgb(r, g, b)" string
+      }});
+
+        setGeoJsonData(dataGeoJSON);
+        setMinCategory(minCategory);
+        setMaxCategory(maxCategory);
       } catch (error) {
         console.error('Error fetching GeoJSON data:', error);
       }
     };
+    
 
     fetchGeoJsonData();
-  }, []);
+  }, [category]);
 
 
 // Custom marker icons for each category
@@ -122,7 +167,10 @@ const createCustomMarkerIcon = (color: string) => {
 
 
   return (
-    <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"}>
+    <div>
+  
+      
+    <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"} onLoad={() => setMapsApiLoaded(true)}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
       {medicalsData.map((medical) => {
 
@@ -133,6 +181,10 @@ const createCustomMarkerIcon = (color: string) => {
         const markerColor = category === 'hospital' ? 'red' : category === 'clinical' ? 'yellow' :category==='doctor'?'blue':category==='pharmacy'?'blue':category==='cabinet'?'green':category==='centre'?'orange': 'red';
         // Create the custom marker icon based on the desired color
         const icon = createCustomMarkerIcon(markerColor);
+
+        if (!mapsApiLoaded) {
+          return <div>Loading...</div>;
+        }
          
           return (
             <Marker
@@ -158,20 +210,38 @@ const createCustomMarkerIcon = (color: string) => {
             }}
           />
         )}
-     {geoJsonData && geoJsonData.features.map((feature, index) => (
-          <Polygon
-            key={index}
-            paths={feature.geometry.coordinates[0].map((coord) => ({ lat: coord.lat, lng: coord.lng }))}
-            options={{
-              strokeColor: "#FF0000", // Red stroke color
-              strokeOpacity: 0.5, // Red stroke opacity
-              fillColor: "#FF0000", // Red fill color
-              fillOpacity: 0.1, // Red fill opacity
-            }}
-          />
+        {geoJsonData && category !== 'All'&&
+          geoJsonData.features.map((feature, index) => (
+            <Polygon
+              key={index}
+              paths={feature.geometry.coordinates[0].map((coord: CoordinatePoint) => ({
+                lat: coord[1],
+                lng: coord[0],
+              }))}
+              options={{
+                strokeColor: feature.properties.regionColor, // Use the regionColor from the GeoJSON data
+                strokeOpacity: 0.2,
+                fillColor: feature.properties.regionColor, // Use the regionColor from the GeoJSON data
+                fillOpacity: 0.7, // Adjust the opacity as needed
+              }}
+            />
           ))}
       </GoogleMap>
     </LoadScript>
+    {category!=='All' && (
+      <div style={{ marginTop: '30px', display: 'flex', alignItems: 'center' }}>
+  <div style={{ width: '100px', textAlign: 'right', marginRight: '10px', color: 'black' }}>
+    0
+  </div>
+  <div style={{ flex: '1', height: '15px', background: `linear-gradient(to right, white, rgb(${[222, 148, 148].join(', ')}), rgb(${[166, 6, 6].join(', ')}))`, marginRight: '10px', position: 'relative' }}>
+  </div>
+  <div style={{ width: '100px', textAlign: 'left', marginLeft: '10px', color: 'black' }}>
+    {maxCategory}
+  </div>
+</div>
+
+)}
+    </div>
   );
 };
 
@@ -191,7 +261,7 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
       try {
         // Call the service function to fetch medical data
         const data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
-        console.log(data);
+       
         if (Array.isArray(data)) {
           setMedicalsData(data);
         }
@@ -233,6 +303,7 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
         center={center}
         zoom={zoom}
         selectedMedical={selectedMedical}
+        category={category}
       />
       {selectedMedical && (
         <Card>
