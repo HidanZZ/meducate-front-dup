@@ -187,14 +187,15 @@ const handleShowRegionInfoChange = () => {
 
 
   return (
-    <div>
-  <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+    <div >
+      {category !== 'All'  &&(
+    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
       <FormControlLabel
         control={<Checkbox checked={showRegionInfo} onChange={handleShowRegionInfoChange} />}
-        label="Informations sur les régions"
+        label="Regions Informations "
       />
     </div>
-      
+      )}
     <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"} onLoad={() => setMapsApiLoaded(true)}>
       <GoogleMap ref={mapRef} mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
       {medicalsData.map((medical) => {
@@ -206,7 +207,8 @@ const handleShowRegionInfoChange = () => {
         const markerColor = category === 'hospital' ? 'red' : category === 'clinical' ? 'yellow' :category==='doctor'?'blue':category==='pharmacy'?'blue':category==='cabinet'?'green':category==='centre'?'orange': 'red';
         // Create the custom marker icon based on the desired color
         const icon = createCustomMarkerIcon(markerColor);
-
+        console.log('Medical Category:', category);
+        console.log('Marker Color:', markerColor);
         if (!mapsApiLoaded) {
           return <div>Loading...</div>;
         }
@@ -294,7 +296,7 @@ const handleShowRegionInfoChange = () => {
       </GoogleMap>
     </LoadScript>
     {category!=='All'&& showRegionInfo && (
-      <div style={{ marginTop: '30px', display: 'flex', alignItems: 'center' }}>
+  <div style={{ marginTop: '30px', display: 'flex', alignItems: 'center' }}>
   <div style={{ width: '100px', textAlign: 'right', marginRight: '10px', color: 'black' }}>
     0
   </div>
@@ -308,6 +310,8 @@ const handleShowRegionInfoChange = () => {
 )}
     </div>
   );
+
+  setMapsApiLoaded(false)
 };
 
 const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValue: string ; category: string ;speciality: string ;  selectedMedicalTable: TableBodyRowType | null;}): ReactElement => {
@@ -323,9 +327,16 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
 
   useEffect(() => {
     const fetchMedicals = async () => {
+
+        // Nettoyage des anciens marqueurs
+        setMedicalsData([]);
+      
       try {
         // Call the service function to fetch medical data
-        const data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
+        let data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
+        if (category !== 'doctor') {
+          data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, 'All');
+        }
        
         if (Array.isArray(data)) {
           setMedicalsData(data);
@@ -334,7 +345,6 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
         console.error('Erreur lors de la récupération des données :', error);
       }
     };
-
     fetchMedicals();
   }, [cityValue, category, speciality]);
 
