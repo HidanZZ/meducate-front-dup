@@ -3,6 +3,8 @@ import { GoogleMap, LoadScript, Marker, Polygon , InfoWindow  } from '@react-goo
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { FormControlLabel, Checkbox } from '@mui/material';
+
 
 import { TableBodyRowType } from "src/views/pages/dashboard/TableOfPediatricians";
 import AnalyticsDashboard from 'src/services/analyticsDashboard';
@@ -109,6 +111,8 @@ const MoroccoMap = ({
   const [selectedMarkerPosition, setSelectedMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
 
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  
+  const [showRegionInfo, setShowRegionInfo] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchGeoJsonData = async () => {
@@ -177,11 +181,19 @@ const createCustomMarkerIcon = (color: string) => {
 };
 
 const mapRef = useRef<GoogleMap | null>(null); // Add this line
+const handleShowRegionInfoChange = () => {
+  setShowRegionInfo(!showRegionInfo);
+};
 
 
   return (
     <div>
-  
+  <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+      <FormControlLabel
+        control={<Checkbox checked={showRegionInfo} onChange={handleShowRegionInfoChange} />}
+        label="Informations sur les régions"
+      />
+    </div>
       
     <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"} onLoad={() => setMapsApiLoaded(true)}>
       <GoogleMap ref={mapRef} mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
@@ -223,8 +235,9 @@ const mapRef = useRef<GoogleMap | null>(null); // Add this line
             }}
           />
         )}
-{geoJsonData && category !== 'All' &&
+{geoJsonData && category !== 'All'  && showRegionInfo &&
             geoJsonData.features.map((feature, index) => (
+              
               <Polygon
                 key={index}
                 paths={feature.geometry.coordinates[0].map((coord: CoordinatePoint) => ({
@@ -280,7 +293,7 @@ const mapRef = useRef<GoogleMap | null>(null); // Add this line
           )}
       </GoogleMap>
     </LoadScript>
-    {category!=='All' && (
+    {category!=='All'&& showRegionInfo && (
       <div style={{ marginTop: '30px', display: 'flex', alignItems: 'center' }}>
   <div style={{ width: '100px', textAlign: 'right', marginRight: '10px', color: 'black' }}>
     0
@@ -307,7 +320,7 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
   const [medicalsData, setMedicalsData] = useState<MedicalData[]>([]);
   const [selectedMedical, setSelectedMedical] = useState<MedicalData | null>(null); 
   const [medicalTable, setMedicalTable] = useState<TableBodyRowType| null>(null);
-  
+
   useEffect(() => {
     const fetchMedicals = async () => {
       try {
@@ -356,6 +369,7 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
         zoom={zoom}
         selectedMedical={selectedMedical}
         category={category}
+        
       />
       {selectedMedical && (
         <Card>
