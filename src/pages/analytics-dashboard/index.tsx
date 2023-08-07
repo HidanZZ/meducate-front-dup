@@ -22,6 +22,7 @@ import Statistics from "src/views/pages/dashboard/Statistics";
 import PageHeader from 'src/@core/components/page-header';
 import ChartjsBarChart from 'src/views/charts/ChartjsBarChart'
 import ApexColumnChart from 'src/views/charts/ApexColumnChart'
+import DistributionOfPediatricians from 'src/views/pages/dashboard/DistributionOfPediatricians';
 
 const RechartsPieChart = dynamic(() => import('src/views/charts/ApexDonutChart'), { ssr: false })
 
@@ -43,9 +44,7 @@ const AnalyticsDashboard = () => {
   const [regionValue, setRegionValue] = useState<string>('')
   const [value, setValue] = useState<string>('')
 
-  const [mapLatitude, setMapLatitude] = useState<number>(31.7917); // Initial latitude value for the map
-  const [mapLongitude, setMapLongitude] = useState<number>(-7.0926); // Initial longitude value for the map
-  const [centerFiltred, setCenterFiltred] = useState<{ lat: number; lng: number }>({ lat: 31.7917, lng: -7.0926 });
+
 
   const handleCityValue = (e: SelectChangeEvent) => {
     setCityValue(e.target.value)
@@ -133,6 +132,7 @@ const AnalyticsDashboard = () => {
                       <MenuItem value='hospital'>Hopital</MenuItem>
                       <MenuItem value='clinical'>Clinique</MenuItem>
                       <MenuItem value='cabinet'>Cabinet</MenuItem>
+                      <MenuItem value='centre'>Centre</MenuItem>
                       <MenuItem value='pharmacy'>Pharmacie</MenuItem>
                       <MenuItem value='doctor'>Doctor</MenuItem>
                     </Select>
@@ -181,7 +181,8 @@ const AnalyticsDashboard = () => {
           <Grid item xs={12} >
         <Card sx={{ marginBottom: '20px' }}>
           <CardHeader
-            subheader={`Geographical Distribution of Medical Centers `}
+            title='Geographical Distribution of Medical Centers '
+            // subheader={`Geographical Distribution of Medical Centers `}
             subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
           />
           <CardContent>
@@ -224,11 +225,11 @@ const AnalyticsDashboard = () => {
         </Grid>
 
         {/* DistributionOfPediatricians */}
-        {/* {categoryValue !== 'All' ? (
+       {/* {categoryValue !== 'All' ? (
          <Grid item xs={12} md={6}>
-          <DistributionOfPediatricians />
+          <DistributionOfPediatricians category={categoryValue} />
         </Grid> ):null} */}
- 
+  
         {/* ChartjsBarChart */}
 
         {categoryValue === 'All' ? (

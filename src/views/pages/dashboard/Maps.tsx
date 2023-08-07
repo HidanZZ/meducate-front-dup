@@ -1,8 +1,10 @@
-import React, { ReactElement, useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Marker, Polygon  } from '@react-google-maps/api';
+import React, { ReactElement, useEffect, useState,useRef } from 'react';
+import { GoogleMap, LoadScript, Marker, Polygon , InfoWindow  } from '@react-google-maps/api';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { FormControlLabel, Checkbox } from '@mui/material';
+
 
 import { TableBodyRowType } from "src/views/pages/dashboard/TableOfPediatricians";
 import AnalyticsDashboard from 'src/services/analyticsDashboard';
@@ -10,8 +12,8 @@ import AnalyticsDashboard from 'src/services/analyticsDashboard';
 
 // Interface for a single coordinate point in the GeoJSON data
 interface CoordinatePoint {
-  lat: number;
-  lng: number;
+  0: number;
+  1: number;
 }
 
 // Interface for the GeoJSON polygon geometry
@@ -28,10 +30,12 @@ interface FeatureProperties {
 // Interface for a single feature in the GeoJSON data
 interface GeoJSONFeature {
   type: "Feature";
-  properties: FeatureProperties;
+  properties: {
+    [key: string]: any;
+    regionColor: string; // Add this property to store the color for each region
+  };
   geometry: PolygonGeometry;
 }
-
 // Interface for the FeatureCollection in the GeoJSON data
 interface GeoJSONFeatureCollection {
   type: "FeatureCollection";
@@ -71,6 +75,7 @@ interface MoroccoMapProps {
   center: { lat: number; lng: number };
   zoom: number;
   selectedMedical: MedicalData | null; 
+  category: string ;
 
 }
 
@@ -79,7 +84,8 @@ const MoroccoMap = ({
   onMarkerClick,
   center,
   zoom,
-  selectedMedical
+  selectedMedical,
+  category
 
 }: MoroccoMapProps): ReactElement => {
   const mapContainerStyle = {
@@ -94,20 +100,74 @@ const MoroccoMap = ({
 
   const [geoJsonData, setGeoJsonData] = useState<RegionData | null>(null);
 
+  const [mapsApiLoaded, setMapsApiLoaded] = useState(false);
+
+  const [minCategory, setMinCategory] = useState(0);
+  const [maxCategory, setMaxCategory] = useState(0);
+
+  const [categoryData, setCategoryData] = useState<{ [regionId: string]: number }>({});
+  const [infoWindowContent, setInfoWindowContent] = useState<JSX.Element | null>(null);
+  const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
+  const [selectedMarkerPosition, setSelectedMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
+
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  
+  const [showRegionInfo, setShowRegionInfo] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchGeoJsonData = async () => {
       try {
-        const response = await fetch('/geojson/marrakech_safi.geojson');
-        const data = await response.json();
-        console.log(data);
-        setGeoJsonData(data);
+        const response = await fetch('/geojson/marocRegions.geojson');
+        const dataGeoJSON: GeoJSONFeatureCollection = await response.json();
+        const responseCategoryData = await AnalyticsDashboard.getCategoryCountsByRegion(category); // Replace with the API endpoint that returns the hospital data
+        const categoryData: { [regionId: string]: number } = await responseCategoryData;
+        
+        // Calculate the minimum and maximum population values to determine the range for the gradient
+        let minCategory= Number.MAX_VALUE;
+    let maxCategory = Number.MIN_VALUE;
+
+    Object.values(categoryData).forEach((count) => {
+      if (count < minCategory) {
+        minCategory= count;
+      }
+      if (count > maxCategory) {
+        maxCategory = count;
+      }
+    });
+  
+
+        // Define the colors for the gradient (replace these with your desired colors)
+        const startColor =[222, 148, 148];// Red (RGB values)
+        const endColor =  [166, 6, 6];  // White (RGB values)
+    
+        // Calculate the color for each region based on its population using the gradient formula
+        dataGeoJSON.features.forEach((feature) => {
+          const regionId = feature.properties.Indice.toString();
+          const categoryCount = categoryData[regionId];
+          const t = (categoryCount - minCategory) / (maxCategory - minCategory); // Normalize 
+          const color = startColor.map((startValue, index) => Math.round(startValue + t * (endColor[index] - startValue))); // Calculate the interpolated color
+          if (!categoryCount) {
+            feature.properties.regionColor = 'rgb(255,255,255)';
+          } else {
+          feature.properties.regionColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`; // Store the color as an "rgb(r, g, b)" string
+      }});
+
+      const handleMarkerClick = (medical: MedicalData) => {
+        onMarkerClick(medical);
+      };
+
+        setGeoJsonData(dataGeoJSON);
+        setMinCategory(minCategory);
+        setMaxCategory(maxCategory);
+        setCategoryData(categoryData);
       } catch (error) {
         console.error('Error fetching GeoJSON data:', error);
       }
     };
+    
 
     fetchGeoJsonData();
-  }, []);
+  }, [category]);
 
 
 // Custom marker icons for each category
@@ -120,10 +180,24 @@ const createCustomMarkerIcon = (color: string) => {
   return markerIcon;
 };
 
+const mapRef = useRef<GoogleMap | null>(null); // Add this line
+const handleShowRegionInfoChange = () => {
+  setShowRegionInfo(!showRegionInfo);
+};
+
 
   return (
-    <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"}>
-      <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
+    <div >
+      {category !== 'All'  &&(
+    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+      <FormControlLabel
+        control={<Checkbox checked={showRegionInfo} onChange={handleShowRegionInfoChange} />}
+        label="Regions Informations "
+      />
+    </div>
+      )}
+    <LoadScript googleMapsApiKey={"AIzaSyAKqF-5P1loXKAbCWgN5oU8a0PVDAjCYy0"} onLoad={() => setMapsApiLoaded(true)}>
+      <GoogleMap ref={mapRef} mapContainerStyle={mapContainerStyle} center={center} zoom={zoom}>
       {medicalsData.map((medical) => {
 
         //Get the category of the pediatrician (e.g., hospital, clinic, pharmacy)
@@ -133,6 +207,11 @@ const createCustomMarkerIcon = (color: string) => {
         const markerColor = category === 'hospital' ? 'red' : category === 'clinical' ? 'yellow' :category==='doctor'?'blue':category==='pharmacy'?'blue':category==='cabinet'?'green':category==='centre'?'orange': 'red';
         // Create the custom marker icon based on the desired color
         const icon = createCustomMarkerIcon(markerColor);
+        console.log('Medical Category:', category);
+        console.log('Marker Color:', markerColor);
+        if (!mapsApiLoaded) {
+          return <div>Loading...</div>;
+        }
          
           return (
             <Marker
@@ -158,21 +237,81 @@ const createCustomMarkerIcon = (color: string) => {
             }}
           />
         )}
-     {geoJsonData && geoJsonData.features.map((feature, index) => (
-          <Polygon
-            key={index}
-            paths={feature.geometry.coordinates[0].map((coord) => ({ lat: coord.lat, lng: coord.lng }))}
-            options={{
-              strokeColor: "#FF0000", // Red stroke color
-              strokeOpacity: 0.5, // Red stroke opacity
-              fillColor: "#FF0000", // Red fill color
-              fillOpacity: 0.1, // Red fill opacity
-            }}
-          />
-          ))}
+{geoJsonData && category !== 'All'  && showRegionInfo &&
+            geoJsonData.features.map((feature, index) => (
+              
+              <Polygon
+                key={index}
+                paths={feature.geometry.coordinates[0].map((coord: CoordinatePoint) => ({
+                  lat: coord[1],
+                  lng: coord[0],
+                }))}
+                options={{
+                  strokeColor: feature.properties.regionColor,
+                  strokeOpacity: hoveredRegion === feature.properties.Indice.toString() ? 1 : 0.2, // Highlight if hovered
+                  strokeWeight: hoveredRegion === feature.properties.Indice.toString() ? 2 : 1, // Highlight if hovered
+                  fillColor: feature.properties.regionColor,
+                  fillOpacity: 0.7,
+                }}
+                onMouseOver={() => {
+                  const featureProperties = feature.properties;
+                  const regionName = featureProperties.nom_region; // Assurez-vous que "nom_region" est le bon nom de propriété
+                  
+                  const categoryCount = categoryData && categoryData[featureProperties.Indice.toString()] ? categoryData[featureProperties.Indice.toString()] : 0;
+                  const populationCount = featureProperties.Population; // Assurez-vous que "population" est le bon nom de propriété
+                  
+                  const medicalsPerPopulation = populationCount !== 0 ? categoryCount / populationCount : 0;
+                  
+                  const content  = (
+                    <div style={{ fontFamily: 'Arial, sans-serif' }}>
+                      <p style={{ fontWeight: 'bold' }}>{regionName}</p>
+                      <p>Number of {category}: {categoryCount !== undefined ? categoryCount : 0}</p>
+                      <p>Population: {populationCount}</p>
+                      <p>{category} per capita: {medicalsPerPopulation.toFixed(2)}</p>
+                    </div>
+                  );
+                  
+                  setInfoWindowContent(content);
+                  setHoveredRegion(featureProperties.Indice.toString());
+                  setSelectedMarkerPosition({
+                    lat: feature.geometry.coordinates[0][0][1],
+                    lng: feature.geometry.coordinates[0][0][0],
+                  });
+                  setIsInfoWindowOpen(true);
+                }}
+                onMouseOut={() => {
+                  setInfoWindowContent(null);
+                  setIsInfoWindowOpen(false);
+                }}
+              />
+            ))}
+          {isInfoWindowOpen && infoWindowContent && (
+            <InfoWindow
+              position={selectedMarkerPosition!}
+              onCloseClick={() => setIsInfoWindowOpen(false)}
+            >
+              <div>{infoWindowContent}</div>
+            </InfoWindow>
+          )}
       </GoogleMap>
     </LoadScript>
+    {category!=='All'&& showRegionInfo && (
+  <div style={{ marginTop: '30px', display: 'flex', alignItems: 'center' }}>
+  <div style={{ width: '100px', textAlign: 'right', marginRight: '10px', color: 'black' }}>
+    0
+  </div>
+  <div style={{ flex: '1', height: '15px', background: `linear-gradient(to right, white, rgb(${[222, 148, 148].join(', ')}), rgb(${[166, 6, 6].join(', ')}))`, marginRight: '10px', position: 'relative' }}>
+  </div>
+  <div style={{ width: '100px', textAlign: 'left', marginLeft: '10px', color: 'black' }}>
+    {maxCategory}
+  </div>
+</div>
+
+)}
+    </div>
   );
+
+  setMapsApiLoaded(false)
 };
 
 const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValue: string ; category: string ;speciality: string ;  selectedMedicalTable: TableBodyRowType | null;}): ReactElement => {
@@ -185,13 +324,20 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
   const [medicalsData, setMedicalsData] = useState<MedicalData[]>([]);
   const [selectedMedical, setSelectedMedical] = useState<MedicalData | null>(null); 
   const [medicalTable, setMedicalTable] = useState<TableBodyRowType| null>(null);
-  
+
   useEffect(() => {
     const fetchMedicals = async () => {
+
+        // Nettoyage des anciens marqueurs
+        setMedicalsData([]);
+      
       try {
         // Call the service function to fetch medical data
-        const data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
-        console.log(data);
+        let data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
+        if (category !== 'doctor') {
+          data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, 'All');
+        }
+       
         if (Array.isArray(data)) {
           setMedicalsData(data);
         }
@@ -199,7 +345,6 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
         console.error('Erreur lors de la récupération des données :', error);
       }
     };
-
     fetchMedicals();
   }, [cityValue, category, speciality]);
 
@@ -233,6 +378,8 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
         center={center}
         zoom={zoom}
         selectedMedical={selectedMedical}
+        category={category}
+        
       />
       {selectedMedical && (
         <Card>

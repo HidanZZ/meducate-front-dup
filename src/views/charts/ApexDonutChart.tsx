@@ -77,7 +77,7 @@ const RechartsPieChart = (props: StatisticsProps) => {
   return (
     <Card>
       <CardHeader
-        title={cityValue === 'All' ? 'In Morroco' : `In ${cityValue}`}
+        subheader={cityValue === 'All' ? 'In Morroco' : `In ${cityValue}`}
         titleTypographyProps={{ sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' } }}
        
       />
