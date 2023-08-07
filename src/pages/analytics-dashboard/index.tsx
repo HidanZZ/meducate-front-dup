@@ -71,7 +71,7 @@ const AnalyticsDashboard = () => {
   // State to keep track of the selected row in the TableOfPediatricians component
   const [selectedMedicalTable, setSelectedMedicalTable] = useState<TableBodyRowType | null>(null);
 
-  const [cities, setCities] = useState([]);
+  const [cities, setCities] = useState<string[]>([]);
 
   const fetchCities = async () => {
     try {
@@ -112,7 +112,7 @@ const AnalyticsDashboard = () => {
                       <MenuItem value='All'>All</MenuItem>
                       {cities.map((city) => (
                         <MenuItem key={city} value={city}>
-                          {city}
+                          {city.charAt(0).toUpperCase() + city.slice(1)}
                         </MenuItem>
                       ))}
                     </Select>

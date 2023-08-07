@@ -110,7 +110,7 @@ const RechartsPieChart = (props: StatisticsProps) => {
 
       doctor: 'blue',
 
-      pharmacy: 'blue',
+      pharmacy: 'purple',
 
       cabinet: 'green',
 
@@ -130,7 +130,7 @@ const RechartsPieChart = (props: StatisticsProps) => {
   return (
     <Card>
       <CardHeader
-        subheader={cityValue === 'All' ? 'In Morroco' : `In ${cityValue}`}
+        subheader={cityValue === 'All' ? 'In Morroco' : `In ${cityValue.charAt(0).toUpperCase() + cityValue.slice(1)}`}
         titleTypographyProps={{ sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' } }}
       />
       <CardContent>

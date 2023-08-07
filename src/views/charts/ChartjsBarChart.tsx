@@ -33,7 +33,7 @@ const ChartjsBarChart = (props: BarProp) => {
 
         // Mettre à jour les données du graphique
         const updatedData: ChartData<'bar'> = {
-          labels: labels,
+          labels: labels.map((cityName) => cityName.charAt(0).toUpperCase() + cityName.slice(1)),
           datasets: [
             {
               maxBarThickness: 15,

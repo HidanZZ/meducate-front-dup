@@ -92,7 +92,7 @@ const ApexColumnChart = () => {
     xaxis: {
       axisBorder: { show: false },
       axisTicks: { color: theme.palette.divider },
-      categories: Object.keys(medicalData),
+      categories: Object.keys(medicalData).map((cityName) => cityName.charAt(0).toUpperCase() + cityName.slice(1)),
       crosshairs: {
         stroke: { color: theme.palette.divider }
       },
