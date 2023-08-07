@@ -40,12 +40,19 @@ const AnalyticsTransactionsCard = (props: StatisticsProps) => {
     const fetchData = async () => {
       try { 
         const data1=await ServiceAnalyticsDashboard.getMedicalDataByFilters('All','All','All');
-        const data2=await ServiceAnalyticsDashboard.getMedicalDataByFilters(cityValue,category,speciality);
-        const data3=await ServiceAnalyticsDashboard.getMedicalPositifDataByFilters(cityValue,category,speciality);
-        const data4=await ServiceAnalyticsDashboard.getMedicalNegatifDataByFilters(cityValue,category,speciality);
+        let data2=await ServiceAnalyticsDashboard.getMedicalDataByFilters(cityValue,category,speciality);
+        let data3=await ServiceAnalyticsDashboard.getMedicalPositifDataByFilters(cityValue,category,speciality);
+        let data4=await ServiceAnalyticsDashboard.getMedicalNegatifDataByFilters(cityValue,category,speciality);
+        if (category !== 'doctor') {
+          data2 = await ServiceAnalyticsDashboard.getMedicalDataByFilters(cityValue, category, 'All');
+          data3=await ServiceAnalyticsDashboard.getMedicalPositifDataByFilters(cityValue,category,'All');
+          data4=await ServiceAnalyticsDashboard.getMedicalNegatifDataByFilters(cityValue,category,'All');
+        }
+        
+        
         const updatedSalesData: DataType[] = [
           {
-            stats: data1.length,
+            stats: data1.length ,
             title: 'General Data',
             color: 'primary',
             icon: <Icon icon='mdi:view-module' />
@@ -57,7 +64,7 @@ const AnalyticsTransactionsCard = (props: StatisticsProps) => {
             icon: <Icon icon='mdi:view-dashboard' />
           },
           {
-            stats: data3,
+            stats: data3 ,
             title: 'positive comments',
             color: 'warning',
             icon: <Icon icon='mdi:plus' />

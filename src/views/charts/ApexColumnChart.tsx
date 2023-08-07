@@ -14,8 +14,9 @@ const columnColors = {
    series1: '#008000', 
    series2: '#FF7f00', 
    series3: '#FFFF00', 
-   series4:'#0000FF' , 
-   series5:'#FF0000'
+   series4:'#FF0000' , 
+   series5:'#0000FF',
+   series6:'#800080'
 };
 
 const ApexColumnChart = () => {
@@ -58,7 +59,7 @@ const ApexColumnChart = () => {
    
     fill: { opacity: 1 },
     dataLabels: { enabled: false },
-    colors: [columnColors.series1, columnColors.series2,columnColors.series3,columnColors.series4,columnColors.series5],
+    colors: [columnColors.series1, columnColors.series2,columnColors.series3,columnColors.series4,columnColors.series5,columnColors.series6],
     legend: {
       position: 'top',
       horizontalAlign: 'left',

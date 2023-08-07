@@ -53,7 +53,10 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
     const fetchMedicals = async () => {
       try {
         // Call the service function to fetch medical data
-        const data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
+        let data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, speciality);
+        if (category !== 'doctor') {
+          data = await AnalyticsDashboard.getMedicalDataByFilters(cityValue, category, 'All');
+        }
         if (Array.isArray(data)) {
           setMedicalsData(data);
         }
@@ -185,7 +188,7 @@ const TableOfPediatricians = (props: TableOfPediatriciansProps): React.ReactElem
        page={currentPage - 1}
        onPageChange={handlePageChange}
        rowsPerPage={rowsPerPage}
-       rowsPerPageOptions={[5, 10, 25]}
+       rowsPerPageOptions={[5]}
       />
     </div>
   );

@@ -94,7 +94,9 @@ const MoroccoMap = ({
   };
 
   const handleMarkerClick = (medical: MedicalData) => {
+    // if (!showRegionInfo) {
     onMarkerClick(medical);
+  // }
   };
 
 
@@ -152,9 +154,7 @@ const MoroccoMap = ({
           feature.properties.regionColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`; // Store the color as an "rgb(r, g, b)" string
       }});
 
-      const handleMarkerClick = (medical: MedicalData) => {
-        onMarkerClick(medical);
-      };
+   
 
         setGeoJsonData(dataGeoJSON);
         setMinCategory(minCategory);
@@ -204,7 +204,7 @@ const handleShowRegionInfoChange = () => {
         const category = medical.category[0].libelle.toLowerCase();
 
         // Define the desired color based on the category (you can use any color logic here)
-        const markerColor = category === 'hospital' ? 'red' : category === 'clinical' ? 'yellow' :category==='doctor'?'blue':category==='pharmacy'?'blue':category==='cabinet'?'green':category==='centre'?'orange': 'red';
+        const markerColor = category === 'hospital' ? 'red' : category === 'clinical' ? 'yellow' :category==='doctor'?'blue':category==='pharmacy'?'purple':category==='cabinet'?'green':category==='centre'?'orange': 'red';
         // Create the custom marker icon based on the desired color
         const icon = createCustomMarkerIcon(markerColor);
         console.log('Medical Category:', category);
@@ -350,8 +350,6 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
 
   const handleMarkerClick = (pediatrician: MedicalData) => {
     setSelectedMedical(pediatrician);
-
-
     setCenter({ lat: pediatrician.latitude, lng: pediatrician.longitude });
     setZoom(20);
   };
@@ -392,9 +390,6 @@ const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValu
           </CardContent>
         </Card>
       )}
-
- 
-
     </Card>
   );
 };

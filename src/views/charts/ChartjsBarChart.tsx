@@ -68,14 +68,14 @@ const ChartjsBarChart = (props: BarProp) => {
       },
       y: {
         min: 0,
-        max: 70,
+        max: 270,
         grid: {
           borderColor,
           drawBorder: false,
           color: borderColor,
         },
         ticks: {
-          stepSize: 10,
+          stepSize: 20,
           color: labelColor,
         },
       },
