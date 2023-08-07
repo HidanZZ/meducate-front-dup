@@ -14,8 +14,8 @@ const columnColors = {
    series1: '#008000', 
    series2: '#FF7f00', 
    series3: '#FFFF00', 
-   series4:'#FF0000' , 
-   series5:'#0000FF',
+   series4:'#0000FF' , 
+   series5:'#FF0000',
    series6:'#800080'
 };
 
