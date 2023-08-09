@@ -209,10 +209,7 @@ const handleShowRegionInfoChange = () => {
         const icon = createCustomMarkerIcon(markerColor);
         console.log('Medical Category:', category);
         console.log('Marker Color:', markerColor);
-        if (!mapsApiLoaded) {
-          return <div>Loading...</div>;
-        }
-         
+
           return (
             <Marker
               key={medical.name}
@@ -224,7 +221,7 @@ const handleShowRegionInfoChange = () => {
         })}
 
                 {/* Afficher le cercle rouge autour du marqueur du pédiatre sélectionné */}
-                {selectedMedical && (
+                {selectedMedical && mapsApiLoaded && (
           <Marker
             position={{ lat: selectedMedical.latitude, lng: selectedMedical.longitude }}
             icon={{
@@ -237,6 +234,7 @@ const handleShowRegionInfoChange = () => {
             }}
           />
         )}
+        
 {geoJsonData && category !== 'All'  && showRegionInfo &&
             geoJsonData.features.map((feature, index) => (
               
@@ -295,6 +293,7 @@ const handleShowRegionInfoChange = () => {
           )}
       </GoogleMap>
     </LoadScript>
+    
     {category!=='All'&& showRegionInfo && (
   <div style={{ marginTop: '30px', display: 'flex', alignItems: 'center' }}>
   <div style={{ width: '100px', textAlign: 'right', marginRight: '10px', color: 'black' }}>
@@ -309,9 +308,10 @@ const handleShowRegionInfoChange = () => {
 
 )}
     </div>
+
   );
 
-  setMapsApiLoaded(false)
+ 
 };
 
 const Maps = ({ cityValue,category,speciality,selectedMedicalTable }: { cityValue: string ; category: string ;speciality: string ;  selectedMedicalTable: TableBodyRowType | null;}): ReactElement => {

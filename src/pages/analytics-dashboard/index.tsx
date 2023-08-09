@@ -129,11 +129,11 @@ const AnalyticsDashboard = () => {
                       labelId='category-select'
                     >
                       <MenuItem value='All'>All</MenuItem>
-                      <MenuItem value='hospital'>Hopital</MenuItem>
-                      <MenuItem value='clinical'>Clinique</MenuItem>
+                      <MenuItem value='hospital'>Hospital</MenuItem>
+                      <MenuItem value='clinical'>Clinical</MenuItem>
                       <MenuItem value='cabinet'>Cabinet</MenuItem>
                       <MenuItem value='centre'>Centre</MenuItem>
-                      <MenuItem value='pharmacy'>Pharmacie</MenuItem>
+                      <MenuItem value='pharmacy'>Pharmacy</MenuItem>
                       <MenuItem value='doctor'>Doctor</MenuItem>
                     </Select>
                   </FormControl>
